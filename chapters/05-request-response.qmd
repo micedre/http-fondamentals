@@ -1,0 +1,771 @@
+---
+title: "Chapter 5: Request & Response Bodies"
+subtitle: "Working with Different Content Types and Payloads"
+---
+
+# Introduction to HTTP Bodies
+
+The HTTP body contains the actual data being sent between client and server. Not all requests and responses have bodies, but when they do, the `Content-Type` header specifies the format.
+
+
+
+
+## Body Usage by Method
+
+| Method | Request Body | Response Body |
+|--------|--------------|---------------|
+| GET    | No           | Yes           |
+| POST   | Yes          | Yes           |
+| PUT    | Yes          | Yes           |
+| PATCH  | Yes          | Yes           |
+| DELETE | Rare         | Optional      |
+| HEAD   | No           | No            |
+| OPTIONS| Optional     | Yes           |
+
+
+
+
+## Content-Type Header
+
+The `Content-Type` header specifies the media type of the body:
+
+```
+Content-Type: type/subtype; parameter=value
+```
+
+Examples:
+- `application/json`
+- `text/html; charset=utf-8`
+- `multipart/form-data; boundary=----WebKitFormBoundary`
+
+
+
+
+## JSON (application/json)
+
+JSON is the most common format for modern APIs.
+
+### Simple JSON Request
+
+
+
+
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "name": "Alice",
+  "email": "alice@example.com",
+  "age": 30
+}
+```
+
+
+
+
+
+### Nested JSON Objects
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "user": {
+    "id": 123,
+    "name": "Bob",
+    "profile": {
+      "bio": "Developer",
+      "location": "Paris"
+    }
+  },
+  "preferences": {
+    "theme": "dark",
+    "language": "en"
+  }
+}
+```
+
+
+
+
+
+### JSON with Arrays
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "users": [
+    {"id": 1, "name": "Alice"},
+    {"id": 2, "name": "Bob"},
+    {"id": 3, "name": "Charlie"}
+  ],
+  "tags": ["http", "training", "api"]
+}
+```
+
+
+
+
+
+### JSON Data Types
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "string": "text value",
+  "number": 42,
+  "float": 3.14,
+  "boolean": true,
+  "null_value": null,
+  "array": [1, 2, 3],
+  "object": {"nested": "value"}
+}
+```
+
+
+
+
+
+### Receiving JSON Responses
+
+```{hurl}
+
+
+
+GET https://httpbin.io/json
+Accept: application/json
+```
+
+
+
+
+## Form Data
+
+Traditional HTML form submission format.
+
+### application/x-www-form-urlencoded
+
+
+
+
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+[FormParams]
+username: alice
+password: secret123
+remember: true
+```
+
+
+
+
+
+### Form Data with Special Characters
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+[FormParams]
+name: Alice Smith
+email: alice+test@example.com
+message: Hello World!
+```
+
+Hurl automatically URL-encodes special characters in form parameters.
+
+
+
+
+
+### Complete Form Example
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+[FormParams]
+username: admin
+password: P@ssw0rd!
+action: login
+redirect: /dashboard
+```
+
+
+
+
+## Multipart Form Data
+
+Used for file uploads and forms with mixed content types.
+
+### Basic Multipart Form
+
+
+
+
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+[MultipartFormData]
+username: alice
+email: alice@example.com
+```
+
+
+
+
+
+### Multipart with File Upload
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+[MultipartFormData]
+description: My profile picture
+```
+
+Note: Hurl can upload actual files using `file,<filepath>` syntax, but for this example we're just sending text data.
+
+
+
+
+## Plain Text
+
+Simple unformatted text.
+
+````{hurl}
+POST https://httpbin.io/post
+Content-Type: text/plain
+
+```
+This is plain text content.
+It can span multiple lines.
+No special formatting or structure.
+```
+````
+
+
+
+
+### HTML Response
+
+```{hurl}
+
+
+
+GET https://httpbin.io/html
+Accept: text/html
+```
+
+
+
+
+### XML Data
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<user>
+  <id>123</id>
+  <name>Alice</name>
+  <email>alice@example.com</email>
+  <roles>
+    <role>admin</role>
+    <role>user</role>
+  </roles>
+</user>
+```
+
+
+
+
+## Binary Data
+
+For raw binary data:
+
+````{hurl}
+
+POST https://httpbin.io/post
+Content-Type: application/octet-stream
+
+```
+Raw binary data here...
+```
+````
+
+
+
+
+
+### Receiving Binary Data
+
+```{hurl}
+%%verbose
+%%output=bytes.bin
+GET https://httpbin.io/bytes/100
+```
+
+
+
+
+
+
+
+
+## Images
+
+### Requesting Images
+
+```{hurl}
+%%verbose
+%%output=tmpjgfdslkf.jpeg
+GET https://httpbin.io/image/jpeg
+Accept: image/jpeg
+```
+
+![](tmpjgfdslkf.jpeg)
+
+
+
+
+
+
+
+
+
+
+
+## Content Negotiation
+
+### Simple Accept Header
+
+```{hurl}
+
+GET https://httpbin.io/get
+Accept: application/json
+```
+
+
+
+
+
+```{hurl}
+
+GET https://httpbin.io/get
+Accept: application/json, application/xml;q=0.9, text/plain;q=0.8
+```
+
+This says:
+1. Prefer JSON (quality 1.0, default)
+2. XML is acceptable (quality 0.9)
+3. Plain text is least preferred (quality 0.8)
+
+
+
+
+
+## Transfer Encoding
+
+For streaming or unknown content length:
+
+````{hurl}
+
+
+
+POST https://httpbin.io/post
+Transfer-Encoding: chunked
+Content-Type: text/plain
+
+```
+This is chunked data...
+```
+````
+
+
+
+
+
+### Streaming Responses
+
+```{hurl}
+
+GET https://httpbin.io/stream/5
+```
+
+This returns 5 JSON objects as a stream.
+
+
+
+
+
+
+
+
+## Request Body Best Practices
+
+### Validate Content
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "valid": "json",
+  "properly": "formatted"
+}
+```
+
+
+
+
+
+### Explicit Content-Length
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+Content-Length: 45
+
+{
+  "message": "Body with explicit length"
+}
+```
+
+
+
+
+
+
+
+
+## Response Body Patterns
+
+### Success Response with Body
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "action": "create",
+  "data": {
+    "name": "New Resource"
+  }
+}
+```
+
+
+
+
+
+### No Content Response
+
+```{hurl}
+
+
+
+GET https://httpbin.io/status/204
+```
+
+Status 204 typically has no body.
+
+
+
+
+
+
+
+
+## Common Response Structures
+
+### Envelope Pattern
+
+```json
+{
+  "data": {
+    "id": 123,
+    "name": "Alice",
+    "email": "alice@example.com"
+  },
+  "meta": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "version": "1.0"
+  }
+}
+```
+
+
+
+
+
+### Pagination Response
+
+```{hurl}
+
+
+
+GET https://httpbin.io/get?page=2&per_page=20
+```
+
+Typical pagination response structure:
+```json
+{
+  "data": [...],
+  "pagination": {
+    "page": 2,
+    "per_page": 20,
+    "total": 100,
+    "total_pages": 5
+  }
+}
+```
+
+
+
+
+
+### Error Response
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid input",
+    "details": [
+      {
+        "field": "email",
+        "error": "Invalid format"
+      }
+    ]
+  }
+}
+```
+
+
+
+
+
+
+
+
+## Best Practices
+
+### For Request Bodies
+
+1. **Use JSON for APIs**: Modern standard, widely supported
+2. **Set Content-Type**: Always specify the content type
+3. **Validate before sending**: Ensure valid format
+4. **Keep reasonable size**: Don't send huge payloads
+5. **Use compression**: Enable gzip for large bodies
+
+
+
+
+
+### For Response Bodies
+
+1. **Consistent format**: Use the same structure across endpoints
+2. **Include metadata**: Timestamps, versions, pagination
+3. **Meaningful errors**: Provide detailed error information
+4. **Proper status codes**: Match body content with status code
+5. **Use compression**: Reduce bandwidth with gzip/brotli
+
+
+
+
+
+
+
+
+## Comparison Examples
+
+### JSON vs Form Data
+
+```{hurl}
+
+
+
+POST https://httpbin.io/anything
+Content-Type: application/json
+
+{
+  "test": "json",
+  "number": 123
+}
+```
+
+
+
+
+
+```{hurl}
+
+
+
+POST https://httpbin.io/anything
+[FormParams]
+test: form
+number: 456
+```
+
+
+
+
+
+````{hurl}
+
+
+
+POST https://httpbin.io/anything
+Content-Type: text/plain
+
+```
+Plain text content
+```
+````
+
+
+
+
+
+### Comparing Parsing
+
+Notice how httpbin.io shows different parsing in `json`, `form`, and `data` fields based on Content-Type.
+
+
+
+
+### Complete Request-Response
+
+```{hurl}
+
+
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+Accept: application/json
+
+{
+  "sending": "json",
+  "expecting": "json back"
+}
+```
+
+
+
+
+### Character Encoding
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/json; charset=utf-8
+
+{
+  "message": "Hello World! 你好世界! Bonjour le monde!"
+}
+```
+
+
+
+
+Try these on your own:
+
+1. Send a deeply nested JSON object (3+ levels)
+2. Send form data with special characters (properly encoded)
+3. Request compressed content and verify the Content-Encoding
+4. Send the same data as JSON and form data - compare responses
+5. Use Accept header with multiple types and priorities
+
+
+
+
+- **Content-Type**: Specifies the format of the request/response body
+- **JSON**: Most common format for modern APIs
+- **Form data**: Two types - urlencoded (simple) and multipart (with files)
+- **Accept header**: Tells server what format you want
+- **Compression**: Use Accept-Encoding to reduce bandwidth
+- **Validation**: Always validate content format matches Content-Type
+- **Consistency**: Maintain consistent response structure across API
+
+
+
+
+Now that you understand request and response bodies, let's explore how to secure HTTP requests in [Chapter 6: Authentication](06-authentication.qmd).
+
+---
+
+## RFC References
+
+This chapter covers concepts from the following RFCs:
+
+::: {.callout-note icon=false}
+### Message Bodies and Representations
+
+- **[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)** - HTTP Semantics
+  - Section 6.4: [Message Body](https://www.rfc-editor.org/rfc/rfc9110.html#section-6.4)
+  - Section 8: [Representations](https://www.rfc-editor.org/rfc/rfc9110.html#section-8)
+  - Section 8.3: [Content-Type](https://www.rfc-editor.org/rfc/rfc9110.html#field.content-type)
+  - Section 8.4: [Content Encoding](https://www.rfc-editor.org/rfc/rfc9110.html#section-8.4)
+  - Section 8.5: [Content-Length](https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length)
+
+### Transfer Encoding
+
+- **[RFC 9112](https://www.rfc-editor.org/rfc/rfc9112.html)** - HTTP/1.1
+  - Section 6: [Message Body](https://www.rfc-editor.org/rfc/rfc9112.html#section-6)
+  - Section 7.1: [Chunked Transfer Encoding](https://www.rfc-editor.org/rfc/rfc9112.html#chunked.encoding)
+
+### Content Formats
+
+- **[RFC 8259](https://www.rfc-editor.org/rfc/rfc8259.html)** - JSON Data Interchange Format
+- **[RFC 7578](https://www.rfc-editor.org/rfc/rfc7578.html)** - Multipart Form Data
+- **[RFC 4648](https://www.rfc-editor.org/rfc/rfc4648.html)** - Base64 Encoding
+:::

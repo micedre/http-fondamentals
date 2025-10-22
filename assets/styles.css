@@ -1,0 +1,370 @@
+/* HTTP Fundamentals Training - Custom Styles */
+
+/* Code blocks */
+pre {
+  background-color: #f8f9fa;
+  border-left: 4px solid #007bff;
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+code {
+  color: #e83e8c;
+  background-color: #f8f9fa;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+}
+
+/* Hurl code blocks - Enhanced syntax highlighting */
+pre.sourceCode.hurl,
+pre.hurl,
+pre code.language-hurl,
+.cell pre.hurl {
+  background-color: #f8f9fa !important;
+  border-left: 4px solid #17a2b8 !important;
+  border-radius: 4px;
+  padding: 1rem !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+
+/* Target Quarto's cell code blocks */
+.cell pre.hurl code.cell-code {
+  background-color: transparent !important;
+}
+
+/* Hurl syntax highlighting - Global rules first */
+/* These apply to ALL highlight.js highlighted code */
+
+/* HTTP Methods - Bold red for visibility */
+.hljs-keyword {
+  color: #d73a49 !important;
+  font-weight: bold !important;
+}
+
+/* URLs - Blue for links */
+.hljs-string {
+  color: #032f62 !important;
+  font-weight: 500;
+}
+
+/* HTTP Headers - Purple */
+.hljs-attr {
+  color: #6f42c1 !important;
+  font-weight: 600;
+}
+
+/* Numbers and status codes */
+.hljs-number {
+  color: #005cc5 !important;
+  font-weight: bold !important;
+}
+
+/* Comments - Gray italic */
+.hljs-comment {
+  color: #6a737d !important;
+  font-style: italic !important;
+}
+
+/* Sections */
+.hljs-section {
+  color: #22863a !important;
+  font-weight: bold !important;
+  font-size: 1.05em;
+}
+
+/* Meta/directives */
+.hljs-meta {
+  color: #6a737d !important;
+  font-style: italic;
+}
+
+/* Parameters */
+.hljs-params {
+  color: #e36209 !important;
+}
+
+/* Properties */
+.hljs-property {
+  color: #0550ae;
+}
+
+/* Specific rules for Hurl code blocks */
+code.language-hurl .hljs-keyword,
+code.cell-code .hljs-keyword,
+.sourceCode.hurl .hljs-keyword,
+.sourceCode.hurl .kw {
+  color: #d73a49 !important;
+  font-weight: bold !important;
+}
+
+/* URLs - Blue for links */
+code.language-hurl .hljs-string,
+code.cell-code .hljs-string,
+.sourceCode.hurl .hljs-string,
+.sourceCode.hurl .st {
+  color: #032f62 !important;
+  font-weight: 500;
+}
+
+/* HTTP Headers - Purple */
+code.language-hurl .hljs-attr,
+code.cell-code .hljs-attr,
+.sourceCode.hurl .hljs-attr,
+.sourceCode.hurl .at {
+  color: #6f42c1 !important;
+  font-weight: 600;
+}
+
+/* Header values and strings */
+code.language-hurl .hljs-value,
+code.cell-code .hljs-value,
+code.language-hurl .hljs-string:not(.hljs-keyword):not(.hljs-attr),
+code.cell-code .hljs-string:not(.hljs-keyword):not(.hljs-attr),
+.sourceCode.hurl .hljs-value,
+.sourceCode.hurl .dv {
+  color: #005cc5 !important;
+}
+
+/* Comments - Gray italic */
+code.language-hurl .hljs-comment,
+code.cell-code .hljs-comment,
+.sourceCode.hurl .hljs-comment,
+.sourceCode.hurl .co {
+  color: #6a737d !important;
+  font-style: italic !important;
+}
+
+/* Status codes - Bold blue numbers */
+code.language-hurl .hljs-number,
+code.cell-code .hljs-number,
+.sourceCode.hurl .hljs-number,
+.sourceCode.hurl .bn {
+  color: #005cc5 !important;
+  font-weight: bold !important;
+}
+
+/* Hurl sections [FormParams], [Options], etc. - Green bold */
+code.language-hurl .hljs-section,
+code.cell-code .hljs-section,
+.sourceCode.hurl .hljs-section,
+.sourceCode.hurl .ss {
+  color: #22863a !important;
+  font-weight: bold !important;
+  font-size: 1.05em;
+}
+
+/* Hurl directives (#| echo, #| output) - Gray */
+code.language-hurl .hljs-meta,
+code.cell-code .hljs-meta,
+.sourceCode.hurl .hljs-meta,
+.sourceCode.hurl .pp {
+  color: #6a737d !important;
+  font-style: italic;
+}
+
+/* Query parameters - Orange */
+code.language-hurl .hljs-params,
+code.cell-code .hljs-params,
+.sourceCode.hurl .hljs-params,
+.sourceCode.hurl .vs {
+  color: #e36209 !important;
+}
+
+/* JSON content within Hurl */
+code.language-hurl .hljs-punctuation,
+code.cell-code .hljs-punctuation {
+  color: #393a34;
+}
+
+code.language-hurl .hljs-property,
+code.cell-code .hljs-property {
+  color: #0550ae;
+}
+
+/* Specific HTTP method colors for extra emphasis */
+code.language-hurl .hljs-keyword:first-of-type,
+code.cell-code .hljs-keyword:first-of-type {
+  color: #d73a49 !important;
+  font-weight: 900 !important;
+  font-size: 1.05em;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  margin: 1.5rem 0;
+}
+
+th {
+  background-color: #007bff;
+  color: white;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Headers */
+h1 {
+  color: #007bff;
+  border-bottom: 3px solid #007bff;
+  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+}
+
+h2 {
+  color: #0056b3;
+  margin-top: 2rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+h3 {
+  color: #495057;
+  margin-top: 1.5rem;
+}
+
+/* Callout boxes */
+.callout {
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 4px;
+  border-left: 5px solid;
+}
+
+.callout-note {
+  background-color: #d1ecf1;
+  border-color: #17a2b8;
+}
+
+.callout-warning {
+  background-color: #fff3cd;
+  border-color: #ffc107;
+}
+
+.callout-tip {
+  background-color: #d4edda;
+  border-color: #28a745;
+}
+
+/* Links */
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Navigation */
+.sidebar-item-container {
+  padding: 0.25rem;
+}
+
+.sidebar-item {
+  color: #495057;
+}
+
+.sidebar-item:hover {
+  background-color: #f8f9fa;
+  color: #007bff;
+}
+
+/* Blockquotes */
+blockquote {
+  border-left: 4px solid #6c757d;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Lists */
+ul, ol {
+  line-height: 1.8;
+}
+
+/* Status code styling */
+.status-1xx { color: #17a2b8; }
+.status-2xx { color: #28a745; }
+.status-3xx { color: #ffc107; }
+.status-4xx { color: #fd7e14; }
+.status-5xx { color: #dc3545; }
+
+/* Method badges */
+.method-get {
+  background-color: #28a745;
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.method-post {
+  background-color: #007bff;
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.method-put {
+  background-color: #ffc107;
+  color: #212529;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.method-delete {
+  background-color: #dc3545;
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.method-patch {
+  background-color: #6f42c1;
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  table {
+    font-size: 0.9rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .sidebar {
+    display: none;
+  }
+
+  pre {
+    page-break-inside: avoid;
+  }
+}

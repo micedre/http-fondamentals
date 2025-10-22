@@ -1,0 +1,1033 @@
+---
+title: "Chapter 7: Advanced Topics"
+subtitle: "CORS, Caching, Compression, and Modern HTTP"
+---
+
+# Introduction to Advanced HTTP
+
+This chapter covers advanced HTTP concepts that are crucial for building production-ready APIs and web applications.
+
+
+
+
+CORS is a security mechanism that controls how web pages from one domain can request resources from another domain.
+
+
+
+## CORS (Cross-Origin Resource Sharing)
+
+### Why CORS Exists
+
+Browsers enforce the Same-Origin Policy for security:
+- `https://example.com` cannot access `https://api.other.com` by default
+- CORS headers explicitly allow cross-origin requests
+
+```{mermaid}
+graph TD
+    A[Browser loads page from<br/>example.com] --> B[JavaScript tries to<br/>fetch api.other.com]
+    B --> C{Same Origin?}
+
+    C -->|Yes<br/>same domain| D[Request allowed ✓]
+    C -->|No<br/>different domain| E{CORS headers present?}
+
+    E -->|Yes<br/>Access-Control-Allow-Origin| F[Request allowed ✓]
+    E -->|No| G[Request blocked ✗<br/>CORS error]
+
+    style D fill:#c8e6c9
+    style F fill:#c8e6c9
+    style G fill:#ffccbc
+```
+
+
+
+### Simple CORS Request
+
+```{hurl}
+
+
+
+GET https://httpbin.io/get
+Origin: https://example.com
+```
+
+The server responds with CORS headers:
+- `Access-Control-Allow-Origin`: Which origins are allowed
+- `Access-Control-Allow-Methods`: Which HTTP methods are allowed
+- `Access-Control-Allow-Headers`: Which headers are allowed
+
+
+
+### CORS Preflight Request
+
+For complex requests (POST with JSON, custom headers), browsers send an OPTIONS request first:
+
+```{hurl}
+
+
+
+OPTIONS https://httpbin.io/post
+Origin: https://example.com
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type, Authorization
+```
+
+
+
+### CORS Headers in Response
+
+```{hurl}
+
+
+
+GET https://httpbin.io/get
+Origin: https://myapp.com
+```
+
+Look for these headers in the response:
+```
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization
+Access-Control-Max-Age: 86400
+```
+
+
+
+## CORS with Credentials
+
+```{hurl}
+
+
+
+GET https://httpbin.io/get
+Origin: https://example.com
+Cookie: session=abc123
+```
+
+When sending credentials (cookies, auth headers), the server must respond with:
+```
+Access-Control-Allow-Origin: https://example.com
+Access-Control-Allow-Credentials: true
+```
+
+Note: Cannot use `Access-Control-Allow-Origin: *` with credentials.
+
+
+
+### CORS Configuration Examples
+
+**Allowing all origins (permissive):**
+```
+Access-Control-Allow-Origin: *
+```
+
+**Allowing specific origin:**
+```
+Access-Control-Allow-Origin: https://trusted-app.com
+```
+
+**Allowing multiple origins:**
+Server must check the `Origin` header and respond dynamically.
+
+
+
+
+Caching improves performance by storing and reusing previous responses.
+
+
+
+## HTTP Caching
+
+```{mermaid}
+sequenceDiagram
+    participant Client
+    participant Cache
+    participant Server
+
+    Client->>Server: GET /data
+    Server->>Client: 200 OK<br/>Cache-Control: max-age=3600<br/>Data
+
+    Note over Client,Cache: Resource cached for 1 hour
+
+    Client->>Cache: GET /data (within 1 hour)
+    Cache->>Client: 200 OK<br/>Data (from cache)
+
+    Note over Client,Cache: Fast! No server roundtrip
+
+    Client->>Cache: GET /data (after 1 hour)
+    Cache->>Server: GET /data<br/>If-None-Match: "etag123"
+
+    alt Not Modified
+        Server->>Cache: 304 Not Modified
+        Cache->>Client: 200 OK<br/>Data (from cache)
+    else Modified
+        Server->>Cache: 200 OK<br/>New Data
+        Cache->>Client: 200 OK<br/>New Data
+    end
+```
+
+### Cache-Control Header
+
+```{hurl}
+
+
+
+GET https://httpbin.io/cache
+Cache-Control: max-age=3600
+```
+
+
+
+## Cache-Control Directives
+
+**Request Directives:**
+- `no-cache`: Validate with server before using cache
+- `no-store`: Don't cache at all
+- `max-age=N`: Use cached version if less than N seconds old
+- `max-stale=N`: Accept stale responses up to N seconds
+- `min-fresh=N`: Require response to be fresh for at least N seconds
+
+**Response Directives:**
+- `public`: Cacheable by any cache (CDN, browser)
+- `private`: Only cacheable by browser
+- `no-cache`: Must revalidate before using
+- `no-store`: Don't cache anywhere
+- `max-age=N`: Fresh for N seconds
+- `s-maxage=N`: Fresh for N seconds in shared caches
+- `must-revalidate`: Must validate when stale
+
+
+
+### Caching Examples
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/get
+Cache-Control: no-store
+```
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/cache/3600
+Cache-Control: private, max-age=3600
+```
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/cache
+Cache-Control: public, max-age=3600, s-maxage=86400
+```
+
+
+
+### ETag and Conditional Requests
+
+ETags enable efficient cache validation:
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/etag/abc123def456
+```
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/etag/abc123def456
+If-None-Match: "abc123def456"
+```
+
+If unchanged, server returns `304 Not Modified` with no body, saving bandwidth.
+
+
+
+## Last-Modified and If-Modified-Since
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/response-headers?Last-Modified=Mon,%2027%20Oct%202024%2015:30:00%20GMT
+```
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/response-headers?Last-Modified=Mon,%2027%20Oct%202024%2015:30:00%20GMT
+If-Modified-Since: Mon, 27 Oct 2024 15:30:00 GMT
+```
+
+
+
+### Vary Header
+
+Tells caches which request headers affect the response:
+
+```{hurl}
+
+%%include
+GET https://httpbin.io/response-headers?Vary=Accept-Encoding,%20Accept-Language
+Accept-Encoding: gzip
+Accept-Language: en-US
+[Options]
+compressed: true
+```
+
+The cache must store separate versions for different combinations of these headers.
+
+
+
+
+Compression reduces bandwidth and improves performance.
+
+
+
+## Compression
+
+### Gzip Compression
+
+```{hurl}
+%%include
+GET https://httpbin.io/gzip
+Accept-Encoding: gzip
+[Options]
+compressed: true
+```
+
+Response includes: `Content-Encoding: gzip`
+
+
+
+### Deflate Compression
+
+```{hurl}
+%%include
+GET https://httpbin.io/deflate
+Accept-Encoding: deflate
+[Options]
+compressed: true
+```
+
+
+
+### Brotli Compression
+
+```{hurl}
+%%include
+GET https://httpbin.io/brotli
+Accept-Encoding: br
+[Options]
+compressed: true
+```
+
+Brotli typically provides better compression than gzip.
+
+
+
+### Multiple Compression Options
+
+```{hurl}
+
+
+
+GET https://httpbin.io/get
+Accept-Encoding: br, gzip, deflate
+```
+
+Server chooses the best supported algorithm.
+
+
+
+### When to Use Compression
+
+**Compress:**
+- Text content (HTML, CSS, JavaScript, JSON, XML)
+- Large responses
+- API responses
+
+**Don't Compress:**
+- Already compressed (images, videos, PDFs)
+- Very small responses (overhead not worth it)
+- Streaming data that needs immediate access
+
+
+
+
+Clients and servers negotiate the best content format.
+
+
+
+## Content Negotiation
+
+### Accept Header
+
+```{hurl}
+
+
+
+GET https://httpbin.io/get
+Accept: application/json, application/xml;q=0.9, text/plain;q=0.8
+```
+
+Quality values (q) indicate preference (0.0 to 1.0, default 1.0).
+
+
+
+## Accept-Language
+
+```{hurl}
+
+
+
+GET https://httpbin.io/get
+Accept-Language: fr-FR, en-US;q=0.9, en;q=0.8
+```
+
+
+
+## Accept-Charset
+
+```{hurl}
+
+
+
+GET https://httpbin.io/get
+Accept-Charset: utf-8, iso-8859-1;q=0.7
+```
+
+
+
+## Accept-Encoding
+
+Already covered in compression section.
+
+
+
+### Complete Content Negotiation
+
+```{hurl}
+
+
+
+GET https://httpbin.io/get
+Accept: application/json;q=1.0, application/xml;q=0.8
+Accept-Language: en-US, fr;q=0.8
+Accept-Encoding: br, gzip
+Accept-Charset: utf-8
+```
+
+
+
+
+Request partial content, useful for resuming downloads or streaming.
+
+
+
+## Range Requests
+
+### Request Byte Range
+
+```{hurl}
+%%verbose
+%%output=request-range.bin
+GET https://httpbin.io/range/1000
+Range: bytes=0-499
+```
+
+Server responds with `206 Partial Content` and `Content-Range` header.
+
+
+
+### Multiple Ranges
+
+```{hurl}
+%%verbose
+%%output=request-range2.bin
+GET https://httpbin.io/range/1000
+Range: bytes=0-99, 200-299, 400-499
+```
+
+
+
+## Resume Download
+
+```{hurl}
+%%verbose
+%%output=request-range3.bin
+GET https://httpbin.io/range/1000
+Range: bytes=0-499
+```
+
+```{hurl}
+%%verbose
+%%output=request-range4.bin
+GET https://httpbin.io/range/1000
+Range: bytes=500-999
+```
+
+
+
+### Accept-Ranges Header
+
+Indicates server supports range requests:
+
+```{hurl}
+
+%%include
+HEAD https://httpbin.io/range/1000
+```
+
+Look for `Accept-Ranges: bytes` in response.
+
+
+
+
+
+
+## Persistent Connections
+
+### Connection: keep-alive
+
+```{hurl}
+
+GET https://httpbin.io/get
+Connection: keep-alive
+```
+
+Reuses the TCP connection for multiple requests (default in HTTP/1.1).
+
+
+
+## Connection: close
+
+```{hurl}
+
+GET https://httpbin.io/get
+Connection: close
+```
+
+Closes connection after this request.
+
+
+
+## Keep-Alive Settings
+
+```{hurl}
+
+
+
+GET https://httpbin.io/get
+Connection: keep-alive
+Keep-Alive: timeout=5, max=100
+```
+
+- `timeout=5`: Keep connection open for 5 seconds
+- `max=100`: Allow 100 requests on this connection
+
+
+
+
+HTTP/2 brings significant improvements over HTTP/1.1:
+
+
+
+## HTTP/2 Features
+
+```{mermaid}
+graph TD
+    A[HTTP/2 Improvements] --> B[Multiplexing]
+    A --> C[Server Push]
+    A --> D[Header Compression]
+    A --> E[Binary Protocol]
+    A --> F[Stream Priority]
+
+    B --> B1[Multiple requests<br/>on single connection]
+    C --> C1[Server sends resources<br/>before requested]
+    D --> D1[HPACK compression<br/>reduces overhead]
+    E --> E1[Binary framing<br/>faster parsing]
+    F --> F1[Prioritize critical<br/>resources]
+
+    style A fill:#e1f5ff
+    style B fill:#c8e6c9
+    style C fill:#c8e6c9
+    style D fill:#c8e6c9
+    style E fill:#c8e6c9
+    style F fill:#c8e6c9
+```
+
+### Multiplexing
+
+Multiple requests/responses on single connection simultaneously.
+
+
+
+## Server Push
+
+Server can proactively send resources to client.
+
+
+
+### Header Compression
+
+HPACK compression reduces header overhead.
+
+
+
+## Binary Protocol
+
+More efficient parsing than text-based HTTP/1.1.
+
+
+
+### Request Priority
+
+Clients can prioritize important resources.
+
+
+
+### Testing HTTP/2
+
+```{hurl}
+
+%%include
+GET https://httpbin.io/get
+```
+
+Check response protocol in output - may show HTTP/2 if supported.
+
+
+
+
+## HTTP/3 and QUIC
+
+HTTP/3 uses QUIC (over UDP) instead of TCP:
+
+- Faster connection establishment
+- Better handling of packet loss
+- Improved performance on mobile networks
+
+
+
+
+
+
+
+## Redirects
+
+### Types of Redirects
+
+
+
+
+
+
+## 301 Permanent Redirect
+
+```{hurl}
+%%include
+
+GET https://httpbin.io/redirect-to?url=https://httpbin.io/get&status_code=301
+```
+
+## 302 Temporary Redirect
+```{hurl}
+%%include
+
+GET https://httpbin.io/redirect-to?url=https://httpbin.io/get&status_code=302
+```
+
+## 307 Temporary (method preserved)
+```{hurl}
+%%include
+GET https://httpbin.io/redirect-to?url=https://httpbin.io/get&status_code=307
+```
+
+
+
+### Multiple Redirects
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/redirect/3
+```
+
+This redirects 3 times before returning final response.
+
+
+
+### Absolute vs Relative Redirects
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/absolute-redirect/1
+```
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/relative-redirect/1
+```
+
+
+
+
+## Rate Limiting
+
+APIs implement rate limiting to prevent abuse.
+
+
+
+### Rate Limit Headers
+
+```{hurl}
+
+
+
+GET https://httpbin.io/get
+```
+
+Look for headers like:
+```
+X-RateLimit-Limit: 5000
+X-RateLimit-Remaining: 4999
+X-RateLimit-Reset: 1640995200
+```
+
+
+
+## Rate Limit Exceeded
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/status/429
+```
+
+Response includes `Retry-After` header indicating when to retry.
+
+
+
+
+
+
+## Timeouts
+
+### Request Timeout
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/delay/2
+```
+
+This delays response by 2 seconds.
+
+
+
+
+
+## Security Headers
+
+### Common Security Headers
+
+```{hurl}
+
+
+
+GET https://httpbin.io/response-headers?Strict-Transport-Security=max-age=31536000&X-Content-Type-Options=nosniff&X-Frame-Options=DENY
+```
+
+Important security headers:
+- `Strict-Transport-Security`: Force HTTPS
+- `X-Content-Type-Options: nosniff`: Prevent MIME sniffing
+- `X-Frame-Options: DENY`: Prevent clickjacking
+- `Content-Security-Policy`: Control resource loading
+- `X-XSS-Protection`: Enable XSS filter (legacy)
+
+
+
+
+## Webhooks and Server Push
+
+Webhooks allow servers to push data to clients.
+
+
+
+### Webhook Request Example
+
+```{hurl}
+
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+X-Webhook-Signature: sha256=abc123def456
+
+{
+  "event": "user.created",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "data": {
+    "user_id": 123,
+    "email": "newuser@example.com"
+  }
+}
+```
+
+
+
+
+### Long Polling
+
+Client repeatedly requests updates until new data is available.
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/delay/5
+```
+
+Server holds connection open until data is available or timeout.
+
+
+
+
+### Server-Sent Events
+
+One-way streaming from server to client.
+
+```{hurl}
+
+
+
+GET https://httpbin.io/stream/5
+Accept: text/event-stream
+```
+
+
+
+
+## HTTP Request Lifecycle
+
+Complete lifecycle of an HTTP request:
+
+1. **DNS Resolution**: Resolve hostname to IP
+2. **TCP Connection**: Three-way handshake
+3. **TLS Handshake**: (HTTPS only) Establish encryption
+4. **HTTP Request**: Send request
+5. **HTTP Response**: Receive response
+6. **Connection Close/Keep-Alive**: Close or reuse connection
+
+
+
+
+
+
+## HTTP Debugging
+
+### Echo Request Details
+
+```{hurl}
+
+
+
+GET https://httpbin.io/anything
+X-Custom-Header: debug-mode
+User-Agent: Testing-Client/1.0
+```
+
+
+
+### Test HTTP Methods
+
+```{hurl}
+
+GET https://httpbin.io/anything
+```
+
+
+
+## Simulate Delays
+
+```{hurl}
+
+
+
+GET https://httpbin.io/delay/3
+```
+
+
+
+### Test Response Codes
+
+```{hurl}
+
+
+GET https://httpbin.io/status/418
+```
+
+
+
+
+
+
+## Performance
+
+1. Enable compression (gzip/brotli)
+2. Use caching appropriately
+3. Implement HTTP/2 or HTTP/3
+4. Use connection keep-alive
+5. Minimize header size
+6. Use range requests for large files
+
+
+
+### Security
+
+1. Always use HTTPS
+2. Implement CORS correctly
+3. Add security headers
+4. Validate inputs
+5. Rate limit requests
+6. Use proper authentication
+
+
+
+## Reliability
+
+1. Handle redirects
+2. Implement retries with backoff
+3. Set appropriate timeouts
+4. Handle rate limits gracefully
+5. Validate responses
+6. Log errors properly
+
+
+
+
+## Practice Exercises
+
+Try these on your own:
+
+1. Send a CORS preflight request and examine the response
+2. Make a conditional request using ETag
+3. Request compressed content and verify the encoding
+4. Test range requests with different byte ranges
+5. Follow a redirect chain and observe each step
+6. Simulate rate limiting and check Retry-After header
+
+
+
+
+- **CORS**: Controls cross-origin requests, requires proper headers
+- **Caching**: Improves performance with Cache-Control, ETag, and conditional requests
+- **Compression**: Reduces bandwidth with gzip, deflate, or brotli
+- **Range Requests**: Enable partial content and resume capabilities
+- **HTTP/2**: Provides multiplexing, header compression, and server push
+- **Security**: Use HTTPS, CORS, security headers, and rate limiting
+- **Modern APIs**: Implement webhooks, SSE, and proper error handling
+
+
+
+
+You've now completed the HTTP Fundamentals training! You've learned:
+
+1. **HTTP Basics**: Protocol fundamentals and request/response cycle
+2. **HTTP Methods**: GET, POST, PUT, PATCH, DELETE, and their semantics
+3. **HTTP Headers**: Controlling behavior with request and response headers
+4. **Status Codes**: Understanding and using 1xx through 5xx responses
+5. **Bodies**: Working with JSON, form data, and other content types
+6. **Authentication**: Securing APIs with Basic, Bearer, and other methods
+7. **Advanced Topics**: CORS, caching, compression, and modern HTTP features
+
+
+
+
+- **REST API Design**: Design principles and best practices
+- **GraphQL**: Alternative to REST for flexible queries
+- **WebSockets**: Full-duplex communication
+- **gRPC**: High-performance RPC framework
+- **API Documentation**: OpenAPI/Swagger specifications
+- **Load Testing**: Performance testing with tools like k6 or Locust
+- **API Gateways**: Kong, Nginx, AWS API Gateway
+
+
+
+
+- [MDN HTTP Documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP)
+- [RFC 7230-7237](https://tools.ietf.org/html/rfc7230): HTTP/1.1 Specification
+- [RFC 7540](https://tools.ietf.org/html/rfc7540): HTTP/2 Specification
+- [httpbin.io](https://httpbin.io): HTTP testing service
+- [Hurl Documentation](https://hurl.dev): Hurl testing tool
+
+Thank you for completing this HTTP Fundamentals training! You now have a solid foundation for working with HTTP in your development projects.
+
+---
+
+## RFC References
+
+This chapter covers concepts from the following RFCs:
+
+::: {.callout-note icon=false}
+### HTTP Semantics and Encoding
+
+- **[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)** - HTTP Semantics
+  - Section 8.4: [Content Encoding](https://www.rfc-editor.org/rfc/rfc9110.html#section-8.4)
+  - Section 8.6: [Content Negotiation](https://www.rfc-editor.org/rfc/rfc9110.html#content.negotiation)
+  - Section 14: [Range Requests](https://www.rfc-editor.org/rfc/rfc9110.html#section-14)
+  - Section 14.1: [Range](https://www.rfc-editor.org/rfc/rfc9110.html#field.range)
+  - Section 14.2: [Accept-Ranges](https://www.rfc-editor.org/rfc/rfc9110.html#field.accept-ranges)
+  - Section 17.2: [Redirection 3xx](https://www.rfc-editor.org/rfc/rfc9110.html#redirection.3xx)
+
+### HTTP Caching
+
+- **[RFC 9111](https://www.rfc-editor.org/rfc/rfc9111.html)** - HTTP Caching
+  - Section 3: [Storing Responses in Caches](https://www.rfc-editor.org/rfc/rfc9111.html#section-3)
+  - Section 4: [Constructing Responses from Caches](https://www.rfc-editor.org/rfc/rfc9111.html#section-4)
+  - Section 5.2: [Cache-Control](https://www.rfc-editor.org/rfc/rfc9111.html#field.cache-control)
+  - Section 8: [Invalidation](https://www.rfc-editor.org/rfc/rfc9111.html#invalidation)
+
+### HTTP/2 and HTTP/3
+
+- **[RFC 9113](https://www.rfc-editor.org/rfc/rfc9113.html)** - HTTP/2
+  - Section 5: [Streams and Multiplexing](https://www.rfc-editor.org/rfc/rfc9113.html#StreamsLayer)
+  - Section 8: [HTTP Message Exchanges](https://www.rfc-editor.org/rfc/rfc9113.html#HttpSequence)
+- **[RFC 9114](https://www.rfc-editor.org/rfc/rfc9114.html)** - HTTP/3
+- **[RFC 9000](https://www.rfc-editor.org/rfc/rfc9000.html)** - QUIC: A UDP-Based Multiplexed and Secure Transport
+
+### CORS and Additional Topics
+
+- **[Fetch Standard](https://fetch.spec.whatwg.org/#http-cors-protocol)** - CORS Protocol (WHATWG)
+- **[RFC 9209](https://www.rfc-editor.org/rfc/rfc9209.html)** - The Proxy-Status HTTP Response Header Field
+- **[RFC 7694](https://www.rfc-editor.org/rfc/rfc7694.html)** - HTTP Client-Initiated Content Encoding
+:::

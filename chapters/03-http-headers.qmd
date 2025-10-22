@@ -1,0 +1,695 @@
+---
+title: "Chapter 3: HTTP Headers"
+subtitle: "Controlling Request and Response Behavior"
+---
+
+# Introduction to HTTP Headers
+
+HTTP headers allow clients and servers to pass additional information with requests and responses. They define the operating parameters of an HTTP transaction.
+
+## Header Format
+
+Headers are key-value pairs sent before the body:
+
+```
+Header-Name: value
+Another-Header: another value
+```
+
+Rules:
+- Header names are case-insensitive (`Content-Type` = `content-type`)
+- Values are case-sensitive
+- Multiple values can be comma-separated
+- Custom headers traditionally start with `X-` (though this is deprecated)
+
+```{mermaid}
+graph TD
+    A[HTTP Headers] --> B[Request Headers]
+    A --> C[Response Headers]
+    A --> D[General Headers]
+
+    B --> E[Accept]
+    B --> F[Authorization]
+    B --> G[User-Agent]
+    B --> H[Cookie]
+
+    C --> I[Content-Type]
+    C --> J[Set-Cookie]
+    C --> K[Server]
+    C --> L[ETag]
+
+    D --> M[Cache-Control]
+    D --> N[Connection]
+    D --> O[Date]
+
+    style B fill:#bbdefb
+    style C fill:#c8e6c9
+    style D fill:#fff9c4
+```
+
+## Request Headers
+
+Request headers provide information about the client and the requested resource.
+
+### Host Header
+
+HEAD https://httpbin.io/der
+
+The `Host` header specifies the domain name of the server (required in HTTP/1.1):
+
+```{hurl}
+
+
+
+GET https://httpbin.io/headers
+Host: httpbin.io
+```
+
+### User-Agent Header
+
+Identifies the client making the request:
+
+```{hurl}
+
+
+
+GET https://httpbin.io/user-agent
+User-Agent: Mozilla/5.0 (Training-Client) HTTP-Course/1.0
+```
+
+### Accept Headers
+
+Tell the server what content types, encodings, and languages the client can handle:
+
+```{hurl}
+
+
+
+GET https://httpbin.io/headers
+Accept: application/json, text/html
+Accept-Language: en-US, fr-FR
+Accept-Encoding: gzip, deflate, br
+```
+
+#### Accept Header Examples
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/headers
+Accept: application/json
+```
+
+```{hurl}
+
+
+
+
+GET https://httpbin.io/headers
+Accept: application/xml, application/json;q=0.9
+```
+
+The `q` parameter indicates preference (0.0 to 1.0), with 1.0 being highest priority.
+
+### Referer Header
+
+Indicates the URL of the page that linked to the current request:
+
+```{hurl}
+
+GET https://httpbin.io/headers
+Referer: https://example.com/previous-page
+```
+
+## Response Headers
+
+Response headers provide information about the server and the response.
+
+### Content-Type Header
+
+Specifies the media type of the response body:
+
+```{hurl}
+
+
+
+GET https://httpbin.io/json
+```
+
+Look for `Content-Type: application/json` in the response headers.
+
+### Content-Length Header
+
+Indicates the size of the response body in bytes:
+
+```{hurl}
+#| output: false
+
+%%include
+GET https://httpbin.io/get
+```
+
+The response will include `Content-Length: 100` (output disabled as this returns binary data).
+
+### Server Header
+
+Identifies the server software:
+
+```{hurl}
+
+
+
+GET https://httpbin.io/headers
+```
+
+Look for the `Server` header in the response (e.g., `Server: nginx`).
+
+
+
+
+
+
+## Content-Type in Requests
+
+When sending data, specify its format:
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "message": "This is JSON data"
+}
+```
+
+```{hurl}
+POST https://httpbin.io/post
+Content-Type: application/xml
+
+<message>This is XML data</message>
+```
+
+```{hurl}
+POST https://httpbin.io/post
+Content-Type: text/plain
+
+"This is plain text data"
+```
+
+
+
+### Accept-Language Header
+
+Request content in specific languages:
+
+```{hurl}
+
+GET https://httpbin.io/headers
+Accept-Language: fr-FR, en-US;q=0.8, en;q=0.6
+```
+
+This requests:
+1. French (France) - highest priority
+2. English (US) - medium priority (0.8)
+3. Any English - lower priority (0.6)
+
+
+
+
+
+
+## Cache-Control
+
+Controls caching behavior:
+
+```{hurl}
+GET https://httpbin.io/cache
+Cache-Control: no-cache
+```
+
+Common `Cache-Control` directives:
+- `no-cache`: Validate with server before using cache
+- `no-store`: Don't cache at all
+- `max-age=3600`: Cache for 3600 seconds
+- `public`: Can be cached by any cache
+- `private`: Can only be cached by browser
+
+```{mermaid}
+flowchart TD
+    A[Cache-Control Directives] --> B[Request]
+    A --> C[Response]
+
+    B --> D[no-cache: Revalidate]
+    B --> E[no-store: Don't cache]
+    B --> F[max-age: Time limit]
+
+    C --> G[public: Any cache]
+    C --> H[private: Browser only]
+    C --> I[no-store: Don't cache]
+    C --> J[max-age: Fresh duration]
+    C --> K[must-revalidate: Check when stale]
+
+    style B fill:#bbdefb
+    style C fill:#c8e6c9
+```
+
+
+
+### ETag and If-None-Match
+
+ETags enable conditional requests:
+
+```{hurl}
+
+GET https://httpbin.io/etag/test-etag-123
+```
+
+```{hurl}
+GET https://httpbin.io/etag/test-etag-123
+If-None-Match: "test-etag-123"
+```
+
+If the resource hasn't changed, the server returns `304 Not Modified`.
+
+```{mermaid}
+sequenceDiagram
+    participant Client
+    participant Server
+
+    Client->>Server: GET /resource
+    Server->>Client: 200 OK<br/>ETag: "abc123"<br/>[Full Content]
+
+    Note over Client: Client caches resource<br/>with ETag "abc123"
+
+    Client->>Server: GET /resource<br/>If-None-Match: "abc123"
+
+    alt Resource Unchanged
+        Server->>Client: 304 Not Modified<br/>(no body, saves bandwidth)
+    else Resource Changed
+        Server->>Client: 200 OK<br/>ETag: "xyz789"<br/>[New Content]
+    end
+```
+
+
+
+
+
+
+### If-Modified-Since
+
+Request resource only if modified after a certain date:
+
+```{hurl}
+GET https://httpbin.io/headers
+If-Modified-Since: Wed, 21 Oct 2024 07:28:00 GMT
+```
+
+
+
+### If-Unmodified-Since
+
+Proceed only if resource hasn't been modified:
+
+```{hurl}
+PUT https://httpbin.io/put
+If-Unmodified-Since: Wed, 21 Oct 2024 07:28:00 GMT
+Content-Type: application/json
+
+{
+  "data": "update only if not modified"
+}
+```
+
+
+
+
+You can add custom headers for application-specific purposes:
+
+```{hurl}
+GET https://httpbin.io/headers
+X-Request-ID: abc-123-def-456
+X-Client-Version: 2.5.1
+X-Debug-Mode: true
+X-User-Region: EU-West
+```
+
+
+
+### Best Practices for Custom Headers
+
+1. Use descriptive names
+2. Modern convention: avoid `X-` prefix (though still widely used)
+3. Document custom headers in API documentation
+4. Keep values simple and parseable
+
+
+
+
+
+
+## Cookies
+
+### Setting Cookies (Response)
+
+```{hurl}
+%%include
+GET https://httpbin.io/cookies/set?session=abc123&user=alice
+```
+
+The server responds with `Set-Cookie` headers.
+
+
+
+### Sending Cookies (Request)
+
+```{hurl}
+%%include
+GET https://httpbin.io/cookies
+Cookie: session=abc123; user=alice
+```
+
+
+
+
+## CORS Headers
+
+Cross-Origin Resource Sharing (CORS) headers control cross-domain requests:
+
+```{hurl}
+%%include
+GET https://httpbin.io/get
+Origin: https://example.com
+```
+
+The server may respond with:
+- `Access-Control-Allow-Origin`: Allowed origins
+- `Access-Control-Allow-Methods`: Allowed HTTP methods
+- `Access-Control-Allow-Headers`: Allowed headers
+- `Access-Control-Max-Age`: How long to cache preflight results
+
+```{mermaid}
+sequenceDiagram
+    participant Browser
+    participant example.com
+    participant api.other.com
+
+    Browser->>example.com: Load page
+    Note over Browser: JavaScript wants to<br/>call api.other.com
+
+    Browser->>api.other.com: OPTIONS /api/data<br/>Origin: https://example.com<br/>Access-Control-Request-Method: POST
+
+    api.other.com->>Browser: 200 OK<br/>Access-Control-Allow-Origin: *<br/>Access-Control-Allow-Methods: POST, GET
+
+    Browser->>api.other.com: POST /api/data<br/>Origin: https://example.com
+
+    api.other.com->>Browser: 200 OK<br/>Access-Control-Allow-Origin: *<br/>[Response Data]
+```
+
+
+
+### Preflight CORS Request
+
+```{hurl}
+%%include
+OPTIONS https://httpbin.io/post
+Origin: https://example.com
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type
+```
+
+
+
+
+Request partial content (useful for resuming downloads):
+
+```{hurl}
+%%verbose
+%%ouput=range1.bin
+GET https://httpbin.io/range/1000
+Range: bytes=0-499
+```
+
+This requests the first 500 bytes. The server responds with `206 Partial Content` and includes:
+- `Content-Range`: Indicates which bytes are being returned
+- `Accept-Ranges`: Indicates support for range requests
+
+
+
+### Multiple Ranges
+
+```{hurl}
+%%verbose
+%%ouput=range2.bin
+GET https://httpbin.io/range/1000
+Range: bytes=0-99, 200-299
+```
+
+
+
+
+
+
+## Compression Headers
+
+### Accept-Encoding
+
+Request compressed responses:
+
+```{hurl}
+%%include
+GET https://httpbin.io/gzip
+Accept-Encoding: gzip, deflate, br
+[Options]
+compressed: true
+```
+
+The server may compress the response and include `Content-Encoding: gzip`.
+
+
+
+### Content-Encoding
+
+Indicates the response is compressed:
+
+```{hurl}
+%%include
+GET https://httpbin.io/gzip
+[Options]
+compressed: true
+```
+
+Look for `Content-Encoding: gzip` in the response.
+
+
+
+
+
+
+## Authentication Headers
+
+### Authorization Header
+
+Send credentials with requests:
+
+```{hurl}
+%%include
+GET https://httpbin.io/bearer
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+```
+
+Common schemes:
+- `Basic`: Base64-encoded username:password
+- `Bearer`: Token-based authentication
+- `Digest`: Hash-based authentication
+
+We'll cover authentication in detail in Chapter 6.
+
+
+
+
+
+
+## Connection Management
+
+### Connection
+
+Control the connection behavior:
+
+```{hurl}
+%%include
+GET https://httpbin.io/headers
+Connection: keep-alive
+```
+
+- `keep-alive`: Reuse the connection for multiple requests
+- `close`: Close the connection after this request
+
+
+
+### Keep-Alive
+
+Specify timeout and max requests for persistent connections:
+
+```{hurl}
+
+
+
+GET https://httpbin.io/headers
+Connection: keep-alive
+Keep-Alive: timeout=5, max=100
+```
+
+
+
+
+
+
+## Examples
+
+### Request with Multiple Headers
+
+```{hurl}
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+Accept: application/json
+User-Agent: MyApp/1.0
+Authorization: Bearer token123
+X-Request-ID: req-789
+X-Client-Version: 1.2.3
+
+{
+  "action": "update",
+  "data": {
+    "field": "value"
+  }
+}
+```
+
+
+
+### Inspecting All Headers
+
+```{hurl}
+
+
+
+GET https://httpbin.io/headers
+```
+
+This endpoint returns all headers it received, which is great for debugging.
+
+
+
+
+## Security Headers
+
+While httpbin.io doesn't demonstrate all security headers, here are important ones:
+
+### Common Security Headers
+- `Strict-Transport-Security`: Force HTTPS
+- `X-Content-Type-Options`: Prevent MIME sniffing
+- `X-Frame-Options`: Prevent clickjacking
+- `Content-Security-Policy`: Control resource loading
+- `X-XSS-Protection`: Enable XSS filter
+
+Example request (headers won't affect httpbin.io, but shows the pattern):
+
+```{hurl}
+
+
+
+GET https://httpbin.io/headers
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+```
+
+
+
+
+## Header Size Limits
+
+Be aware of limits:
+- Most servers limit total header size (8-16 KB typical)
+- Individual headers also have limits
+- URLs in request line have limits (2-8 KB typical)
+
+
+
+
+## Best Practices
+
+1. **Use standard headers**: Prefer standard headers over custom ones
+2. **Keep headers small**: Don't send unnecessary data
+3. **Case-insensitive names**: Remember header names are case-insensitive
+4. **Security**: Don't send sensitive data in headers unless necessary
+5. **Compression**: Use `Accept-Encoding` to reduce bandwidth
+6. **Caching**: Use cache headers appropriately
+7. **Content negotiation**: Use Accept headers for API versioning
+
+
+
+
+Try these on your own:
+
+1. Send a request with custom headers and verify they appear in the response
+2. Request compressed content using `Accept-Encoding: gzip`
+3. Send a conditional request using `If-None-Match`
+4. Experiment with different `Accept` header values and priorities
+5. Send multiple cookies in a single request
+
+
+
+
+- Headers are key-value pairs that control HTTP behavior
+- **Request headers**: Provide info about the client and request
+- **Response headers**: Provide info about the server and response
+- **Content negotiation**: Use Accept headers to specify desired format
+- **Caching**: Use ETag, Cache-Control for efficient caching
+- **Custom headers**: Can be used for application-specific data
+- **Security**: Several headers enhance security (CORS, CSP, etc.)
+
+
+
+
+Now that you understand headers, let's decode HTTP status codes in [Chapter 4: Status Codes](04-status-codes.qmd).
+
+---
+
+## RFC References
+
+This chapter covers concepts from the following RFCs:
+
+::: {.callout-note icon=false}
+### HTTP Headers and Fields
+
+- **[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)** - HTTP Semantics
+  - Section 5: [Fields](https://www.rfc-editor.org/rfc/rfc9110.html#section-5)
+  - Section 6.3: [Header Fields](https://www.rfc-editor.org/rfc/rfc9110.html#section-6.3)
+  - Section 10: [Message Context](https://www.rfc-editor.org/rfc/rfc9110.html#section-10)
+  - Section 12: [Content Negotiation](https://www.rfc-editor.org/rfc/rfc9110.html#section-12)
+    - 12.3: [Accept](https://www.rfc-editor.org/rfc/rfc9110.html#field.accept)
+    - 12.4: [Accept-Charset](https://www.rfc-editor.org/rfc/rfc9110.html#field.accept-charset)
+    - 12.5: [Accept-Encoding](https://www.rfc-editor.org/rfc/rfc9110.html#field.accept-encoding)
+    - 12.6: [Accept-Language](https://www.rfc-editor.org/rfc/rfc9110.html#field.accept-language)
+
+### Caching Headers
+
+- **[RFC 9111](https://www.rfc-editor.org/rfc/rfc9111.html)** - HTTP Caching
+  - Section 5: [Field Definitions](https://www.rfc-editor.org/rfc/rfc9111.html#section-5)
+    - 5.2: [Cache-Control](https://www.rfc-editor.org/rfc/rfc9111.html#field.cache-control)
+    - 5.3: [ETag](https://www.rfc-editor.org/rfc/rfc9111.html#field.etag)
+
+### Cookies and HTTP/2
+
+- **[RFC 6265](https://www.rfc-editor.org/rfc/rfc6265.html)** - HTTP State Management (Cookies)
+- **[RFC 9113](https://www.rfc-editor.org/rfc/rfc9113.html)** - HTTP/2
+  - Section 8.2: [HTTP Fields](https://www.rfc-editor.org/rfc/rfc9113.html#section-8.2)
+:::

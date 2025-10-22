@@ -1,0 +1,98 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "HTTP Fundamentals Training"
+  description: "A comprehensive guide to HTTP protocol, networking, and semantics"
+  navbar:
+    left:
+      - text: "Home"
+        file: index.qmd
+      - text: "Chapters"
+        menu:
+          - text: "1. HTTP Basics"
+            file: chapters/01-http-basics.qmd
+          - text: "2. HTTP Methods"
+            file: chapters/02-http-methods.qmd
+          - text: "3. HTTP Headers"
+            file: chapters/03-http-headers.qmd
+          - text: "4. Status Codes"
+            file: chapters/04-status-codes.qmd
+          - text: "5. Request & Response"
+            file: chapters/05-request-response.qmd
+          - text: "6. Authentication"
+            file: chapters/06-authentication.qmd
+          - text: "7. Advanced Topics"
+            file: chapters/07-advanced.qmd
+    right:
+      - icon: github
+        href: https://github.com
+  sidebar:
+    style: "docked"
+    contents:
+      - text: "Introduction"
+        file: index.qmd
+      - section: "Core Concepts"
+        contents:
+          - text: "1. HTTP Basics"
+            file: chapters/01-http-basics.qmd
+          - text: "2. HTTP Methods"
+            file: chapters/02-http-methods.qmd
+          - text: "3. HTTP Headers"
+            file: chapters/03-http-headers.qmd
+          - text: "4. Status Codes"
+            file: chapters/04-status-codes.qmd
+      - section: "Working with HTTP"
+        contents:
+          - text: "5. Request & Response"
+            file: chapters/05-request-response.qmd
+          - text: "6. Authentication"
+            file: chapters/06-authentication.qmd
+          - text: "7. Advanced Topics"
+            file: chapters/07-advanced.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: assets/styles.css
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-fold: false
+    code-tools: true
+    highlight-style: github
+    include-in-header:
+      - text: |
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+          <script src="assets/hurl-highlight.js"></script>
+          <script>
+            document.addEventListener('DOMContentLoaded', (event) => {
+              // Register Hurl language
+              if (window.hljsDefineHurl) {
+                hljs.registerLanguage('hurl', window.hljsDefineHurl);
+                console.log('Hurl language registered');
+              } else {
+                console.error('hljsDefineHurl not found');
+              }
+
+              // Find all Hurl code blocks - Quarto renders as <pre class="hurl cell-code"><code>
+              const hurlBlocks = document.querySelectorAll('pre.hurl code, pre.cell-code code');
+              console.log('Found Hurl blocks:', hurlBlocks.length);
+
+              hurlBlocks.forEach((block) => {
+                try {
+                  // Highlight with Hurl language
+                  const result = hljs.highlight(block.textContent, {language: 'hurl'});
+                  block.innerHTML = result.value;
+                  block.classList.add('hljs');
+                  console.log('Highlighted block');
+                } catch (e) {
+                  console.error('Error highlighting:', e);
+                }
+              });
+            });
+          </script>
+
+execute:
+  freeze: auto
