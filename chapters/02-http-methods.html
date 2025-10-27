@@ -522,24 +522,92 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>GET retrieves data from the server. It should not modify any resources.</p>
 <section id="basic-get-request" class="level3">
 <h3 class="anchored" data-anchor-id="basic-get-request">Basic GET Request</h3>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-GET https://httpbin.io/get</code></pre>
+<div id="ca0b0e55" class="cell" data-execution_count="1">
+<pre class="hurl cell-code"><code>GET https://httpbin.io/get</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "GET",
+  "origin": "40.76.191.165:51242",
+  "url": "http://httpbin.io/get"
+}</code></pre>
+</div>
+</div>
 </section>
 <section id="get-with-query-parameters" class="level3">
 <h3 class="anchored" data-anchor-id="get-with-query-parameters">GET with Query Parameters</h3>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-GET https://httpbin.io/get?user=alice&amp;role=admin&amp;status=active</code></pre>
+<div id="ff90de98" class="cell" data-execution_count="2">
+<pre class="hurl cell-code"><code>GET https://httpbin.io/get?user=alice&amp;role=admin&amp;status=active</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {
+    "role": [
+      "admin"
+    ],
+    "status": [
+      "active"
+    ],
+    "user": [
+      "alice"
+    ]
+  },
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "GET",
+  "origin": "40.76.191.165:51241",
+  "url": "http://httpbin.io/get?user=alice&amp;role=admin&amp;status=active"
+}</code></pre>
+</div>
+</div>
 </section>
 <section id="get-with-path-parameters" class="level3">
 <h3 class="anchored" data-anchor-id="get-with-path-parameters">GET with Path Parameters</h3>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-GET https://httpbin.io/anything/users/123</code></pre>
+<div id="441fc228" class="cell" data-execution_count="3">
+<pre class="hurl cell-code"><code>GET https://httpbin.io/anything/users/123</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "GET",
+  "origin": "40.76.191.165:51251",
+  "url": "http://httpbin.io/anything/users/123",
+  "data": "",
+  "files": {},
+  "form": {},
+  "json": null
+}</code></pre>
+</div>
+</div>
 </section>
 <section id="why-get-is-safe-and-idempotent" class="level3">
 <h3 class="anchored" data-anchor-id="why-get-is-safe-and-idempotent">Why GET is Safe and Idempotent</h3>
@@ -554,10 +622,8 @@ GET https://httpbin.io/anything/users/123</code></pre>
 <p>POST submits data to create a new resource. It’s commonly used for form submissions and API calls.</p>
 <section id="post-with-json-data" class="level3">
 <h3 class="anchored" data-anchor-id="post-with-json-data">POST with JSON Data</h3>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-POST https://httpbin.io/post
+<div id="07d898c7" class="cell" data-execution_count="4">
+<pre class="hurl cell-code"><code>POST https://httpbin.io/post
 Content-Type: application/json
 
 {
@@ -565,24 +631,94 @@ Content-Type: application/json
   "email": "alice@example.com",
   "role": "developer"
 }</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Content-Length": [
+      "76"
+    ],
+    "Content-Type": [
+      "application/json"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "POST",
+  "origin": "40.76.191.165:51246",
+  "url": "http://httpbin.io/post",
+  "data": "{\n  \"name\": \"Alice\",\n  \"email\": \"alice@example.com\",\n  \"role\": \"developer\"\n}",
+  "files": {},
+  "form": {},
+  "json": {
+    "email": "alice@example.com",
+    "name": "Alice",
+    "role": "developer"
+  }
+}</code></pre>
+</div>
+</div>
 </section>
 <section id="post-with-form-data" class="level3">
 <h3 class="anchored" data-anchor-id="post-with-form-data">POST with Form Data</h3>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-POST https://httpbin.io/post
+<div id="7cd111f7" class="cell" data-execution_count="5">
+<pre class="hurl cell-code"><code>POST https://httpbin.io/post
 [FormParams]
 username: alice
 password: secret123
 remember: true</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Content-Length": [
+      "47"
+    ],
+    "Content-Type": [
+      "application/x-www-form-urlencoded"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "POST",
+  "origin": "40.76.191.165:51243",
+  "url": "http://httpbin.io/post",
+  "data": "username=alice&amp;password=secret123&amp;remember=true",
+  "files": {},
+  "form": {
+    "password": [
+      "secret123"
+    ],
+    "remember": [
+      "true"
+    ],
+    "username": [
+      "alice"
+    ]
+  },
+  "json": null
+}</code></pre>
+</div>
+</div>
 </section>
 <section id="post-with-multiple-fields" class="level3">
 <h3 class="anchored" data-anchor-id="post-with-multiple-fields">POST with Multiple Fields</h3>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-POST https://httpbin.io/post
+<div id="7ac6b2b9" class="cell" data-execution_count="6">
+<pre class="hurl cell-code"><code>POST https://httpbin.io/post
 Content-Type: application/json
 
 {
@@ -596,6 +732,50 @@ Content-Type: application/json
   },
   "tags": ["developer", "python", "http"]
 }</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Content-Length": [
+      "166"
+    ],
+    "Content-Type": [
+      "application/json"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "POST",
+  "origin": "40.76.191.165:51243",
+  "url": "http://httpbin.io/post",
+  "data": "{\n  \"user\": {\n    \"name\": \"Bob\",\n    \"age\": 30\n  },\n  \"preferences\": {\n    \"theme\": \"dark\",\n    \"notifications\": true\n  },\n  \"tags\": [\"developer\", \"python\", \"http\"]\n}",
+  "files": {},
+  "form": {},
+  "json": {
+    "preferences": {
+      "notifications": true,
+      "theme": "dark"
+    },
+    "tags": [
+      "developer",
+      "python",
+      "http"
+    ],
+    "user": {
+      "age": 30,
+      "name": "Bob"
+    }
+  }
+}</code></pre>
+</div>
+</div>
 </section>
 <section id="why-post-is-not-idempotent" class="level3">
 <h3 class="anchored" data-anchor-id="why-post-is-not-idempotent">Why POST is Not Idempotent</h3>
@@ -637,10 +817,8 @@ POST /users → Creates user (ID: 3)</code></pre>
 <p>PUT replaces an entire resource. It requires sending the complete representation.</p>
 <section id="put-to-update-resource" class="level3">
 <h3 class="anchored" data-anchor-id="put-to-update-resource">PUT to Update Resource</h3>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-PUT https://httpbin.io/put
+<div id="c82deac8" class="cell" data-execution_count="7">
+<pre class="hurl cell-code"><code>PUT https://httpbin.io/put
 Content-Type: application/json
 
 {
@@ -650,6 +828,42 @@ Content-Type: application/json
   "role": "senior-developer",
   "active": true
 }</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Content-Length": [
+      "126"
+    ],
+    "Content-Type": [
+      "application/json"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "PUT",
+  "origin": "40.76.191.165:51242",
+  "url": "http://httpbin.io/put",
+  "data": "{\n  \"id\": 123,\n  \"name\": \"Alice Updated\",\n  \"email\": \"alice.new@example.com\",\n  \"role\": \"senior-developer\",\n  \"active\": true\n}",
+  "files": {},
+  "form": {},
+  "json": {
+    "active": true,
+    "email": "alice.new@example.com",
+    "id": 123,
+    "name": "Alice Updated",
+    "role": "senior-developer"
+  }
+}</code></pre>
+</div>
+</div>
 </section>
 <section id="why-put-is-idempotent" class="level3">
 <h3 class="anchored" data-anchor-id="why-put-is-idempotent">Why PUT is Idempotent</h3>
@@ -701,35 +915,91 @@ PUT /users/123 {"name": "Alice"} → User 123 has name "Alice" (same result)</co
 <p>PATCH applies partial modifications to a resource. Unlike PUT, you only send the fields to update.</p>
 <section id="patch-for-partial-update" class="level3">
 <h3 class="anchored" data-anchor-id="patch-for-partial-update">PATCH for Partial Update</h3>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-PATCH https://httpbin.io/patch
+<div id="7ea60df0" class="cell" data-execution_count="8">
+<pre class="hurl cell-code"><code>PATCH https://httpbin.io/patch
 Content-Type: application/json
 
 {
   "email": "alice.updated@example.com"
 }</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Content-Length": [
+      "42"
+    ],
+    "Content-Type": [
+      "application/json"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "PATCH",
+  "origin": "40.76.191.165:51243",
+  "url": "http://httpbin.io/patch",
+  "data": "{\n  \"email\": \"alice.updated@example.com\"\n}",
+  "files": {},
+  "form": {},
+  "json": {
+    "email": "alice.updated@example.com"
+  }
+}</code></pre>
+</div>
+</div>
 </section>
 <section id="patch-with-json-patch-format" class="level3">
 <h3 class="anchored" data-anchor-id="patch-with-json-patch-format">PATCH with JSON Patch Format</h3>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-PATCH https://httpbin.io/patch
+<div id="27d63612" class="cell" data-execution_count="9">
+<pre class="hurl cell-code"><code>PATCH https://httpbin.io/patch
 Content-Type: application/json-patch+json
 
 [
   { "op": "replace", "path": "/email", "value": "newemail@example.com" },
   { "op": "add", "path": "/phone", "value": "+1234567890" }
 ]</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Content-Length": [
+      "137"
+    ],
+    "Content-Type": [
+      "application/json-patch+json"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "PATCH",
+  "origin": "40.76.191.165:51244",
+  "url": "http://httpbin.io/patch",
+  "data": "data:application/json-patch+json;base64,WwogIHsgIm9wIjogInJlcGxhY2UiLCAicGF0aCI6ICIvZW1haWwiLCAidmFsdWUiOiAibmV3ZW1haWxAZXhhbXBsZS5jb20iIH0sCiAgeyAib3AiOiAiYWRkIiwgInBhdGgiOiAiL3Bob25lIiwgInZhbHVlIjogIisxMjM0NTY3ODkwIiB9Cl0=",
+  "files": {},
+  "form": {},
+  "json": null
+}</code></pre>
+</div>
+</div>
 </section>
 <section id="put-vs-patch" class="level3">
 <h3 class="anchored" data-anchor-id="put-vs-patch">PUT vs PATCH</h3>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-# PUT: Must send complete resource
+<div id="13c69bb2" class="cell" data-execution_count="10">
+<pre class="hurl cell-code"><code># PUT: Must send complete resource
 PUT https://httpbin.io/put
 Content-Type: application/json
 
@@ -739,16 +1009,81 @@ Content-Type: application/json
   "role": "developer",
   "active": true
 }</code></pre>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-# PATCH: Only send what changes
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Content-Length": [
+      "94"
+    ],
+    "Content-Type": [
+      "application/json"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "PUT",
+  "origin": "40.76.191.165:51244",
+  "url": "http://httpbin.io/put",
+  "data": "{\n  \"name\": \"Alice\",\n  \"email\": \"alice@example.com\",\n  \"role\": \"developer\",\n  \"active\": true\n}",
+  "files": {},
+  "form": {},
+  "json": {
+    "active": true,
+    "email": "alice@example.com",
+    "name": "Alice",
+    "role": "developer"
+  }
+}</code></pre>
+</div>
+</div>
+<div id="fede1e10" class="cell" data-execution_count="11">
+<pre class="hurl cell-code"><code># PATCH: Only send what changes
 PATCH https://httpbin.io/patch
 Content-Type: application/json
 
 {
   "email": "alice@example.com"
 }</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Content-Length": [
+      "34"
+    ],
+    "Content-Type": [
+      "application/json"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "PATCH",
+  "origin": "40.76.191.165:51245",
+  "url": "http://httpbin.io/patch",
+  "data": "{\n  \"email\": \"alice@example.com\"\n}",
+  "files": {},
+  "form": {},
+  "json": {
+    "email": "alice@example.com"
+  }
+}</code></pre>
+</div>
+</div>
 </section>
 </section>
 <section id="delete-method" class="level2">
@@ -756,17 +1091,61 @@ Content-Type: application/json
 <p>DELETE removes a resource from the server.</p>
 <section id="basic-delete-request" class="level3">
 <h3 class="anchored" data-anchor-id="basic-delete-request">Basic DELETE Request</h3>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-DELETE https://httpbin.io/delete</code></pre>
+<div id="c7d770c2" class="cell" data-execution_count="12">
+<pre class="hurl cell-code"><code>DELETE https://httpbin.io/delete</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "DELETE",
+  "origin": "40.76.191.165:51247",
+  "url": "http://httpbin.io/delete",
+  "data": "",
+  "files": {},
+  "form": {},
+  "json": null
+}</code></pre>
+</div>
+</div>
 </section>
 <section id="delete-with-specific-resource" class="level3">
 <h3 class="anchored" data-anchor-id="delete-with-specific-resource">DELETE with Specific Resource</h3>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-DELETE https://httpbin.io/anything/users/123</code></pre>
+<div id="541b4f81" class="cell" data-execution_count="13">
+<pre class="hurl cell-code"><code>DELETE https://httpbin.io/anything/users/123</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "DELETE",
+  "origin": "40.76.191.165:51245",
+  "url": "http://httpbin.io/anything/users/123",
+  "data": "",
+  "files": {},
+  "form": {},
+  "json": null
+}</code></pre>
+</div>
+</div>
 </section>
 <section id="why-delete-is-idempotent" class="level3">
 <h3 class="anchored" data-anchor-id="why-delete-is-idempotent">Why DELETE is Idempotent</h3>
@@ -782,10 +1161,9 @@ DELETE /users/123 → User already gone (same final state)</code></pre>
 <p>HEAD is identical to GET but returns only the headers, not the body. It’s useful for checking if a resource exists or getting metadata.</p>
 <section id="head-request" class="level3">
 <h3 class="anchored" data-anchor-id="head-request">HEAD Request</h3>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-HEAD https://httpbin.io/get</code></pre>
+<div id="4694a0c8" class="cell" data-execution_count="14">
+<pre class="hurl cell-code"><code>HEAD https://httpbin.io/get</code></pre>
+</div>
 <p>Notice: No response body is returned, only status and headers.</p>
 </section>
 <section id="use-cases-for-head" class="level3">
@@ -803,22 +1181,20 @@ HEAD https://httpbin.io/get</code></pre>
 <p>OPTIONS returns the HTTP methods supported by a resource. It’s crucial for CORS (Cross-Origin Resource Sharing).</p>
 <section id="options-request" class="level3">
 <h3 class="anchored" data-anchor-id="options-request">OPTIONS Request</h3>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-OPTIONS https://httpbin.io/get</code></pre>
+<div id="5e786a7d" class="cell" data-execution_count="15">
+<pre class="hurl cell-code"><code>OPTIONS https://httpbin.io/get</code></pre>
+</div>
 <p>Look for the <code>Access-Control-Allow-Methods</code> header in the response, which lists allowed methods.</p>
 </section>
 <section id="cors-preflight-request" class="level3">
 <h3 class="anchored" data-anchor-id="cors-preflight-request">CORS Preflight Request</h3>
 <p>Browsers send OPTIONS automatically before certain cross-origin requests:</p>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-OPTIONS https://httpbin.io/post
+<div id="29090412" class="cell" data-execution_count="16">
+<pre class="hurl cell-code"><code>OPTIONS https://httpbin.io/post
 Access-Control-Request-Method: POST
 Access-Control-Request-Headers: Content-Type
 Origin: https://example.com</code></pre>
+</div>
 </section>
 </section>
 <section id="less-common-methods" class="level2">
@@ -826,12 +1202,33 @@ Origin: https://example.com</code></pre>
 <section id="trace" class="level3">
 <h3 class="anchored" data-anchor-id="trace">TRACE</h3>
 <p>TRACE echoes back the received request, useful for debugging:</p>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-# Note: httpbin doesn't support TRACE, so this may not work
+<div id="d5646984" class="cell" data-execution_count="17">
+<pre class="hurl cell-code"><code># Note: httpbin doesn't support TRACE, so this may not work
 GET https://httpbin.io/get
 X-Custom-Header: debug-trace</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ],
+    "X-Custom-Header": [
+      "debug-trace"
+    ]
+  },
+  "method": "GET",
+  "origin": "40.76.191.165:51249",
+  "url": "http://httpbin.io/get"
+}</code></pre>
+</div>
+</div>
 </section>
 <section id="connect" class="level3">
 <h3 class="anchored" data-anchor-id="connect">CONNECT</h3>
@@ -917,10 +1314,8 @@ X-Custom-Header: debug-trace</code></pre>
 </div>
 </div>
 </div>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-# Create (POST)
+<div id="e281e465" class="cell" data-execution_count="18">
+<pre class="hurl cell-code"><code># Create (POST)
 POST https://httpbin.io/anything/users
 Content-Type: application/json
 
@@ -928,15 +1323,68 @@ Content-Type: application/json
   "name": "Charlie",
   "email": "charlie@example.com"
 }</code></pre>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-# Read (GET)
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Content-Length": [
+      "57"
+    ],
+    "Content-Type": [
+      "application/json"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "POST",
+  "origin": "40.76.191.165:51250",
+  "url": "http://httpbin.io/anything/users",
+  "data": "{\n  \"name\": \"Charlie\",\n  \"email\": \"charlie@example.com\"\n}",
+  "files": {},
+  "form": {},
+  "json": {
+    "email": "charlie@example.com",
+    "name": "Charlie"
+  }
+}</code></pre>
+</div>
+</div>
+<div id="233a8153" class="cell" data-execution_count="19">
+<pre class="hurl cell-code"><code># Read (GET)
 GET https://httpbin.io/anything/users/123</code></pre>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-# Update (PUT)
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "GET",
+  "origin": "40.76.191.165:51246",
+  "url": "http://httpbin.io/anything/users/123",
+  "data": "",
+  "files": {},
+  "form": {},
+  "json": null
+}</code></pre>
+</div>
+</div>
+<div id="e3f4a35c" class="cell" data-execution_count="20">
+<pre class="hurl cell-code"><code># Update (PUT)
 PUT https://httpbin.io/anything/users/123
 Content-Type: application/json
 
@@ -944,21 +1392,106 @@ Content-Type: application/json
   "name": "Charlie Updated",
   "email": "charlie.new@example.com"
 }</code></pre>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-# Partial Update (PATCH)
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Content-Length": [
+      "69"
+    ],
+    "Content-Type": [
+      "application/json"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "PUT",
+  "origin": "40.76.191.165:51247",
+  "url": "http://httpbin.io/anything/users/123",
+  "data": "{\n  \"name\": \"Charlie Updated\",\n  \"email\": \"charlie.new@example.com\"\n}",
+  "files": {},
+  "form": {},
+  "json": {
+    "email": "charlie.new@example.com",
+    "name": "Charlie Updated"
+  }
+}</code></pre>
+</div>
+</div>
+<div id="5382f51f" class="cell" data-execution_count="21">
+<pre class="hurl cell-code"><code># Partial Update (PATCH)
 PATCH https://httpbin.io/anything/users/123
 Content-Type: application/json
 
 {
   "email": "charlie.newest@example.com"
 }</code></pre>
-<pre class="{hurl}"><code>#| echo: true
-#| output: true
-
-# Delete (DELETE)
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Content-Length": [
+      "43"
+    ],
+    "Content-Type": [
+      "application/json"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "PATCH",
+  "origin": "40.76.191.165:51248",
+  "url": "http://httpbin.io/anything/users/123",
+  "data": "{\n  \"email\": \"charlie.newest@example.com\"\n}",
+  "files": {},
+  "form": {},
+  "json": {
+    "email": "charlie.newest@example.com"
+  }
+}</code></pre>
+</div>
+</div>
+<div id="83c33dfc" class="cell" data-execution_count="22">
+<pre class="hurl cell-code"><code># Delete (DELETE)
 DELETE https://httpbin.io/anything/users/123</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "args": {},
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "Host": [
+      "httpbin.io"
+    ],
+    "User-Agent": [
+      "hurl/7.0.0"
+    ]
+  },
+  "method": "DELETE",
+  "origin": "40.76.191.165:51247",
+  "url": "http://httpbin.io/anything/users/123",
+  "data": "",
+  "files": {},
+  "form": {},
+  "json": null
+}</code></pre>
+</div>
+</div>
 </section>
 <section id="practice-exercises" class="level2">
 <h2 class="anchored" data-anchor-id="practice-exercises">Practice Exercises</h2>
@@ -1491,579 +2024,579 @@ DELETE https://httpbin.io/anything/users/123</code></pre>
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Chapter 2: HTTP Methods"</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Understanding REST Verbs and Their Semantics"</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu"># HTTP Methods Overview</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>HTTP methods (also called verbs) define the action to be performed on a resource. Each method has specific semantics and use cases.</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Main HTTP Methods</span></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Method  <span class="pp">|</span> Purpose              <span class="pp">|</span> Safe <span class="pp">|</span> Idempotent <span class="pp">|</span> Has Body <span class="pp">|</span></span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="pp">|---------|---------------------|------|------------|----------|</span></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> GET     <span class="pp">|</span> Retrieve resource   <span class="pp">|</span> Yes  <span class="pp">|</span> Yes        <span class="pp">|</span> No       <span class="pp">|</span></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> POST    <span class="pp">|</span> Create resource     <span class="pp">|</span> No   <span class="pp">|</span> No         <span class="pp">|</span> Yes      <span class="pp">|</span></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> PUT     <span class="pp">|</span> Replace resource    <span class="pp">|</span> No   <span class="pp">|</span> Yes        <span class="pp">|</span> Yes      <span class="pp">|</span></span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> PATCH   <span class="pp">|</span> Modify resource     <span class="pp">|</span> No   <span class="pp">|</span> No         <span class="pp">|</span> Yes      <span class="pp">|</span></span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> DELETE  <span class="pp">|</span> Remove resource     <span class="pp">|</span> No   <span class="pp">|</span> Yes        <span class="pp">|</span> No       <span class="pp">|</span></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> HEAD    <span class="pp">|</span> Get headers only    <span class="pp">|</span> Yes  <span class="pp">|</span> Yes        <span class="pp">|</span> No       <span class="pp">|</span></span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> OPTIONS <span class="pp">|</span> Get allowed methods <span class="pp">|</span> Yes  <span class="pp">|</span> Yes        <span class="pp">|</span> No       <span class="pp">|</span></span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
-<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>graph TD</span>
-<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>    A[HTTP Methods] --&gt; B[Safe Methods]</span>
-<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>    A --&gt; C[Unsafe Methods]</span>
-<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>    B --&gt; D[GET]</span>
-<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>    B --&gt; E[HEAD]</span>
-<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>    B --&gt; F[OPTIONS]</span>
-<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>    C --&gt; G[POST]</span>
-<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>    C --&gt; H[PUT]</span>
-<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>    C --&gt; I[PATCH]</span>
-<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>    C --&gt; J[DELETE]</span>
-<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>    K[Idempotent] --&gt; D</span>
-<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a>    K --&gt; E</span>
-<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a>    K --&gt; F</span>
-<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a>    K --&gt; H</span>
-<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a>    K --&gt; J</span>
-<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a>    L[Not Idempotent] --&gt; G</span>
-<span id="cb26-45"><a href="#cb26-45" aria-hidden="true" tabindex="-1"></a>    L --&gt; I</span>
-<span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a>    style B fill:<span class="co">#c8e6c9</span></span>
-<span id="cb26-48"><a href="#cb26-48" aria-hidden="true" tabindex="-1"></a>    style C fill:<span class="co">#ffccbc</span></span>
-<span id="cb26-49"><a href="#cb26-49" aria-hidden="true" tabindex="-1"></a>    style K fill:<span class="co">#bbdefb</span></span>
-<span id="cb26-50"><a href="#cb26-50" aria-hidden="true" tabindex="-1"></a>    style L fill:<span class="co">#fff9c4</span></span>
-<span id="cb26-51"><a href="#cb26-51" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-52"><a href="#cb26-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-53"><a href="#cb26-53" aria-hidden="true" tabindex="-1"></a><span class="fu">### Key Concepts</span></span>
-<span id="cb26-54"><a href="#cb26-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-55"><a href="#cb26-55" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Safe**: The method doesn't modify server state</span>
-<span id="cb26-56"><a href="#cb26-56" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Idempotent**: Multiple identical requests have the same effect as a single request</span>
-<span id="cb26-57"><a href="#cb26-57" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Has Body**: Whether the request can include a message body</span>
-<span id="cb26-58"><a href="#cb26-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-59"><a href="#cb26-59" aria-hidden="true" tabindex="-1"></a><span class="fu">## GET Method</span></span>
-<span id="cb26-60"><a href="#cb26-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-61"><a href="#cb26-61" aria-hidden="true" tabindex="-1"></a>GET retrieves data from the server. It should not modify any resources.</span>
-<span id="cb26-62"><a href="#cb26-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-63"><a href="#cb26-63" aria-hidden="true" tabindex="-1"></a><span class="fu">### Basic GET Request</span></span>
-<span id="cb26-64"><a href="#cb26-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-67"><a href="#cb26-67" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-68"><a href="#cb26-68" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-69"><a href="#cb26-69" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-70"><a href="#cb26-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-71"><a href="#cb26-71" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
-<span id="cb26-72"><a href="#cb26-72" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-73"><a href="#cb26-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-74"><a href="#cb26-74" aria-hidden="true" tabindex="-1"></a><span class="fu">### GET with Query Parameters</span></span>
-<span id="cb26-75"><a href="#cb26-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-78"><a href="#cb26-78" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-79"><a href="#cb26-79" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-80"><a href="#cb26-80" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-81"><a href="#cb26-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-82"><a href="#cb26-82" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get?user=alice&amp;role=admin&amp;status=active</span></span>
-<span id="cb26-83"><a href="#cb26-83" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-84"><a href="#cb26-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-85"><a href="#cb26-85" aria-hidden="true" tabindex="-1"></a><span class="fu">### GET with Path Parameters</span></span>
-<span id="cb26-86"><a href="#cb26-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-89"><a href="#cb26-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-90"><a href="#cb26-90" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-91"><a href="#cb26-91" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-92"><a href="#cb26-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-93"><a href="#cb26-93" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
-<span id="cb26-94"><a href="#cb26-94" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-95"><a href="#cb26-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-96"><a href="#cb26-96" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why GET is Safe and Idempotent</span></span>
-<span id="cb26-97"><a href="#cb26-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-98"><a href="#cb26-98" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Safe**: Reading data doesn't change it</span>
-<span id="cb26-99"><a href="#cb26-99" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Idempotent**: Calling GET 100 times returns the same result (assuming no external changes)</span>
-<span id="cb26-100"><a href="#cb26-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-101"><a href="#cb26-101" aria-hidden="true" tabindex="-1"></a><span class="fu">## POST Method</span></span>
-<span id="cb26-102"><a href="#cb26-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-103"><a href="#cb26-103" aria-hidden="true" tabindex="-1"></a>POST submits data to create a new resource. It's commonly used for form submissions and API calls.</span>
-<span id="cb26-104"><a href="#cb26-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-105"><a href="#cb26-105" aria-hidden="true" tabindex="-1"></a><span class="fu">### POST with JSON Data</span></span>
-<span id="cb26-106"><a href="#cb26-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-109"><a href="#cb26-109" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-110"><a href="#cb26-110" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-111"><a href="#cb26-111" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-112"><a href="#cb26-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-113"><a href="#cb26-113" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
-<span id="cb26-114"><a href="#cb26-114" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
-<span id="cb26-115"><a href="#cb26-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-116"><a href="#cb26-116" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb26-117"><a href="#cb26-117" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Alice"</span><span class="op">,</span></span>
-<span id="cb26-118"><a href="#cb26-118" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice@example.com"</span><span class="op">,</span></span>
-<span id="cb26-119"><a href="#cb26-119" aria-hidden="true" tabindex="-1"></a>  <span class="st">"role"</span><span class="op">:</span> <span class="st">"developer"</span></span>
-<span id="cb26-120"><a href="#cb26-120" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb26-121"><a href="#cb26-121" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-122"><a href="#cb26-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-123"><a href="#cb26-123" aria-hidden="true" tabindex="-1"></a><span class="fu">### POST with Form Data</span></span>
-<span id="cb26-124"><a href="#cb26-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-127"><a href="#cb26-127" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-128"><a href="#cb26-128" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-129"><a href="#cb26-129" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-130"><a href="#cb26-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-131"><a href="#cb26-131" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
-<span id="cb26-132"><a href="#cb26-132" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>FormParams<span class="op">]</span></span>
-<span id="cb26-133"><a href="#cb26-133" aria-hidden="true" tabindex="-1"></a>username<span class="op">:</span> alice</span>
-<span id="cb26-134"><a href="#cb26-134" aria-hidden="true" tabindex="-1"></a>password<span class="op">:</span> secret123</span>
-<span id="cb26-135"><a href="#cb26-135" aria-hidden="true" tabindex="-1"></a>remember<span class="op">:</span> <span class="kw">true</span></span>
-<span id="cb26-136"><a href="#cb26-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-137"><a href="#cb26-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-138"><a href="#cb26-138" aria-hidden="true" tabindex="-1"></a><span class="fu">### POST with Multiple Fields</span></span>
-<span id="cb26-139"><a href="#cb26-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-142"><a href="#cb26-142" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-143"><a href="#cb26-143" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-144"><a href="#cb26-144" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-145"><a href="#cb26-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-146"><a href="#cb26-146" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
-<span id="cb26-147"><a href="#cb26-147" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
-<span id="cb26-148"><a href="#cb26-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-149"><a href="#cb26-149" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb26-150"><a href="#cb26-150" aria-hidden="true" tabindex="-1"></a>  <span class="st">"user"</span><span class="op">:</span> <span class="op">{</span></span>
-<span id="cb26-151"><a href="#cb26-151" aria-hidden="true" tabindex="-1"></a>    <span class="st">"name"</span><span class="op">:</span> <span class="st">"Bob"</span><span class="op">,</span></span>
-<span id="cb26-152"><a href="#cb26-152" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age"</span><span class="op">:</span> <span class="dv">30</span></span>
-<span id="cb26-153"><a href="#cb26-153" aria-hidden="true" tabindex="-1"></a>  <span class="op">},</span></span>
-<span id="cb26-154"><a href="#cb26-154" aria-hidden="true" tabindex="-1"></a>  <span class="st">"preferences"</span><span class="op">:</span> <span class="op">{</span></span>
-<span id="cb26-155"><a href="#cb26-155" aria-hidden="true" tabindex="-1"></a>    <span class="st">"theme"</span><span class="op">:</span> <span class="st">"dark"</span><span class="op">,</span></span>
-<span id="cb26-156"><a href="#cb26-156" aria-hidden="true" tabindex="-1"></a>    <span class="st">"notifications"</span><span class="op">:</span> <span class="kw">true</span></span>
-<span id="cb26-157"><a href="#cb26-157" aria-hidden="true" tabindex="-1"></a>  <span class="op">},</span></span>
-<span id="cb26-158"><a href="#cb26-158" aria-hidden="true" tabindex="-1"></a>  <span class="st">"tags"</span><span class="op">:</span> <span class="op">[</span><span class="st">"developer"</span><span class="op">,</span> <span class="st">"python"</span><span class="op">,</span> <span class="st">"http"</span><span class="op">]</span></span>
-<span id="cb26-159"><a href="#cb26-159" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb26-160"><a href="#cb26-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-161"><a href="#cb26-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-162"><a href="#cb26-162" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why POST is Not Idempotent</span></span>
-<span id="cb26-163"><a href="#cb26-163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-164"><a href="#cb26-164" aria-hidden="true" tabindex="-1"></a>Calling POST multiple times creates multiple resources:</span>
-<span id="cb26-165"><a href="#cb26-165" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-166"><a href="#cb26-166" aria-hidden="true" tabindex="-1"></a><span class="in">POST /users → Creates user (ID: 1)</span></span>
-<span id="cb26-167"><a href="#cb26-167" aria-hidden="true" tabindex="-1"></a><span class="in">POST /users → Creates user (ID: 2)</span></span>
-<span id="cb26-168"><a href="#cb26-168" aria-hidden="true" tabindex="-1"></a><span class="in">POST /users → Creates user (ID: 3)</span></span>
-<span id="cb26-169"><a href="#cb26-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-170"><a href="#cb26-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-173"><a href="#cb26-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
-<span id="cb26-174"><a href="#cb26-174" aria-hidden="true" tabindex="-1"></a>sequenceDiagram</span>
-<span id="cb26-175"><a href="#cb26-175" aria-hidden="true" tabindex="-1"></a>    participant Client</span>
-<span id="cb26-176"><a href="#cb26-176" aria-hidden="true" tabindex="-1"></a>    participant Server</span>
-<span id="cb26-177"><a href="#cb26-177" aria-hidden="true" tabindex="-1"></a>    participant DB as Database</span>
-<span id="cb26-178"><a href="#cb26-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-179"><a href="#cb26-179" aria-hidden="true" tabindex="-1"></a>    Client-&gt;&gt;Server: POST /users {name: <span class="ot">"</span><span class="st">Alice</span><span class="ot">"</span>}</span>
-<span id="cb26-180"><a href="#cb26-180" aria-hidden="true" tabindex="-1"></a>    Server-&gt;&gt;DB: INSERT user (ID: <span class="dv">1</span>)</span>
-<span id="cb26-181"><a href="#cb26-181" aria-hidden="true" tabindex="-1"></a>    DB--&gt;&gt;Server: Created</span>
-<span id="cb26-182"><a href="#cb26-182" aria-hidden="true" tabindex="-1"></a>    Server--&gt;&gt;Client: <span class="dv">201</span> Created (ID: <span class="dv">1</span>)</span>
-<span id="cb26-183"><a href="#cb26-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-184"><a href="#cb26-184" aria-hidden="true" tabindex="-1"></a>    Client-&gt;&gt;Server: POST /users {name: <span class="ot">"</span><span class="st">Alice</span><span class="ot">"</span>}</span>
-<span id="cb26-185"><a href="#cb26-185" aria-hidden="true" tabindex="-1"></a>    Server-&gt;&gt;DB: INSERT user (ID: <span class="dv">2</span>)</span>
-<span id="cb26-186"><a href="#cb26-186" aria-hidden="true" tabindex="-1"></a>    DB--&gt;&gt;Server: Created</span>
-<span id="cb26-187"><a href="#cb26-187" aria-hidden="true" tabindex="-1"></a>    Server--&gt;&gt;Client: <span class="dv">201</span> Created (ID: <span class="dv">2</span>)</span>
-<span id="cb26-188"><a href="#cb26-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-189"><a href="#cb26-189" aria-hidden="true" tabindex="-1"></a>    Note over Client,DB: Same request creates different resources!</span>
-<span id="cb26-190"><a href="#cb26-190" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-191"><a href="#cb26-191" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-192"><a href="#cb26-192" aria-hidden="true" tabindex="-1"></a><span class="fu">## PUT Method</span></span>
-<span id="cb26-193"><a href="#cb26-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-194"><a href="#cb26-194" aria-hidden="true" tabindex="-1"></a>PUT replaces an entire resource. It requires sending the complete representation.</span>
-<span id="cb26-195"><a href="#cb26-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-196"><a href="#cb26-196" aria-hidden="true" tabindex="-1"></a><span class="fu">### PUT to Update Resource</span></span>
-<span id="cb26-197"><a href="#cb26-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-200"><a href="#cb26-200" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-201"><a href="#cb26-201" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-202"><a href="#cb26-202" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-203"><a href="#cb26-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-204"><a href="#cb26-204" aria-hidden="true" tabindex="-1"></a>PUT https<span class="op">:</span><span class="co">//httpbin.io/put</span></span>
-<span id="cb26-205"><a href="#cb26-205" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
-<span id="cb26-206"><a href="#cb26-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-207"><a href="#cb26-207" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb26-208"><a href="#cb26-208" aria-hidden="true" tabindex="-1"></a>  <span class="st">"id"</span><span class="op">:</span> <span class="dv">123</span><span class="op">,</span></span>
-<span id="cb26-209"><a href="#cb26-209" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Alice Updated"</span><span class="op">,</span></span>
-<span id="cb26-210"><a href="#cb26-210" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice.new@example.com"</span><span class="op">,</span></span>
-<span id="cb26-211"><a href="#cb26-211" aria-hidden="true" tabindex="-1"></a>  <span class="st">"role"</span><span class="op">:</span> <span class="st">"senior-developer"</span><span class="op">,</span></span>
-<span id="cb26-212"><a href="#cb26-212" aria-hidden="true" tabindex="-1"></a>  <span class="st">"active"</span><span class="op">:</span> <span class="kw">true</span></span>
-<span id="cb26-213"><a href="#cb26-213" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb26-214"><a href="#cb26-214" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-215"><a href="#cb26-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-216"><a href="#cb26-216" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why PUT is Idempotent</span></span>
-<span id="cb26-217"><a href="#cb26-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-218"><a href="#cb26-218" aria-hidden="true" tabindex="-1"></a>Calling PUT multiple times with the same data results in the same final state:</span>
-<span id="cb26-219"><a href="#cb26-219" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-220"><a href="#cb26-220" aria-hidden="true" tabindex="-1"></a><span class="in">PUT /users/123 {"name": "Alice"} → User 123 has name "Alice"</span></span>
-<span id="cb26-221"><a href="#cb26-221" aria-hidden="true" tabindex="-1"></a><span class="in">PUT /users/123 {"name": "Alice"} → User 123 has name "Alice" (same result)</span></span>
-<span id="cb26-222"><a href="#cb26-222" aria-hidden="true" tabindex="-1"></a><span class="in">PUT /users/123 {"name": "Alice"} → User 123 has name "Alice" (same result)</span></span>
-<span id="cb26-223"><a href="#cb26-223" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-224"><a href="#cb26-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-225"><a href="#cb26-225" aria-hidden="true" tabindex="-1"></a><span class="fu">### PUT vs POST</span></span>
-<span id="cb26-226"><a href="#cb26-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-227"><a href="#cb26-227" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PUT**: Usually for updates, targets a specific resource (<span class="in">`PUT /users/123`</span>)</span>
-<span id="cb26-228"><a href="#cb26-228" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**POST**: Usually for creation, targets a collection (<span class="in">`POST /users`</span>)</span>
-<span id="cb26-229"><a href="#cb26-229" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PUT**: Idempotent (same result each time)</span>
-<span id="cb26-230"><a href="#cb26-230" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**POST**: Not idempotent (may create multiple resources)</span>
-<span id="cb26-231"><a href="#cb26-231" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-234"><a href="#cb26-234" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
-<span id="cb26-235"><a href="#cb26-235" aria-hidden="true" tabindex="-1"></a>graph LR</span>
-<span id="cb26-236"><a href="#cb26-236" aria-hidden="true" tabindex="-1"></a>    A[Client wants to save data] --&gt; B{Know the exact resource URI?}</span>
-<span id="cb26-237"><a href="#cb26-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-238"><a href="#cb26-238" aria-hidden="true" tabindex="-1"></a>    B --&gt;|Yes| C[Use PUT]</span>
-<span id="cb26-239"><a href="#cb26-239" aria-hidden="true" tabindex="-1"></a>    B --&gt;|No| D[Use POST]</span>
-<span id="cb26-240"><a href="#cb26-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-241"><a href="#cb26-241" aria-hidden="true" tabindex="-1"></a>    C --&gt; E[PUT /users/<span class="dv">123</span>]</span>
-<span id="cb26-242"><a href="#cb26-242" aria-hidden="true" tabindex="-1"></a>    D --&gt; F[POST /users]</span>
-<span id="cb26-243"><a href="#cb26-243" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-244"><a href="#cb26-244" aria-hidden="true" tabindex="-1"></a>    E --&gt; G[Replace entire resource]</span>
-<span id="cb26-245"><a href="#cb26-245" aria-hidden="true" tabindex="-1"></a>    F --&gt; H[Server assigns new ID]</span>
-<span id="cb26-246"><a href="#cb26-246" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-247"><a href="#cb26-247" aria-hidden="true" tabindex="-1"></a>    G --&gt; I[Idempotent ✓]</span>
-<span id="cb26-248"><a href="#cb26-248" aria-hidden="true" tabindex="-1"></a>    H --&gt; J[Not Idempotent ✗]</span>
-<span id="cb26-249"><a href="#cb26-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-250"><a href="#cb26-250" aria-hidden="true" tabindex="-1"></a>    style C fill:<span class="co">#a5d6a7</span></span>
-<span id="cb26-251"><a href="#cb26-251" aria-hidden="true" tabindex="-1"></a>    style D fill:<span class="co">#ffcc80</span></span>
-<span id="cb26-252"><a href="#cb26-252" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-253"><a href="#cb26-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-254"><a href="#cb26-254" aria-hidden="true" tabindex="-1"></a><span class="fu">## PATCH Method</span></span>
-<span id="cb26-255"><a href="#cb26-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-256"><a href="#cb26-256" aria-hidden="true" tabindex="-1"></a>PATCH applies partial modifications to a resource. Unlike PUT, you only send the fields to update.</span>
-<span id="cb26-257"><a href="#cb26-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-258"><a href="#cb26-258" aria-hidden="true" tabindex="-1"></a><span class="fu">### PATCH for Partial Update</span></span>
-<span id="cb26-259"><a href="#cb26-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-262"><a href="#cb26-262" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-263"><a href="#cb26-263" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-264"><a href="#cb26-264" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-265"><a href="#cb26-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-266"><a href="#cb26-266" aria-hidden="true" tabindex="-1"></a>PATCH https<span class="op">:</span><span class="co">//httpbin.io/patch</span></span>
-<span id="cb26-267"><a href="#cb26-267" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
-<span id="cb26-268"><a href="#cb26-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-269"><a href="#cb26-269" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb26-270"><a href="#cb26-270" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice.updated@example.com"</span></span>
-<span id="cb26-271"><a href="#cb26-271" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb26-272"><a href="#cb26-272" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-273"><a href="#cb26-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-274"><a href="#cb26-274" aria-hidden="true" tabindex="-1"></a><span class="fu">### PATCH with JSON Patch Format</span></span>
-<span id="cb26-275"><a href="#cb26-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-278"><a href="#cb26-278" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-279"><a href="#cb26-279" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-280"><a href="#cb26-280" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-281"><a href="#cb26-281" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-282"><a href="#cb26-282" aria-hidden="true" tabindex="-1"></a>PATCH https<span class="op">:</span><span class="co">//httpbin.io/patch</span></span>
-<span id="cb26-283"><a href="#cb26-283" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json<span class="op">-</span>patch<span class="op">+</span>json</span>
-<span id="cb26-284"><a href="#cb26-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-285"><a href="#cb26-285" aria-hidden="true" tabindex="-1"></a><span class="op">[</span></span>
-<span id="cb26-286"><a href="#cb26-286" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> <span class="st">"op"</span><span class="op">:</span> <span class="st">"replace"</span><span class="op">,</span> <span class="st">"path"</span><span class="op">:</span> <span class="st">"/email"</span><span class="op">,</span> <span class="st">"value"</span><span class="op">:</span> <span class="st">"newemail@example.com"</span> <span class="op">},</span></span>
-<span id="cb26-287"><a href="#cb26-287" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> <span class="st">"op"</span><span class="op">:</span> <span class="st">"add"</span><span class="op">,</span> <span class="st">"path"</span><span class="op">:</span> <span class="st">"/phone"</span><span class="op">,</span> <span class="st">"value"</span><span class="op">:</span> <span class="st">"+1234567890"</span> <span class="op">}</span></span>
-<span id="cb26-288"><a href="#cb26-288" aria-hidden="true" tabindex="-1"></a><span class="op">]</span></span>
-<span id="cb26-289"><a href="#cb26-289" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-290"><a href="#cb26-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-291"><a href="#cb26-291" aria-hidden="true" tabindex="-1"></a><span class="fu">### PUT vs PATCH</span></span>
-<span id="cb26-292"><a href="#cb26-292" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-295"><a href="#cb26-295" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-296"><a href="#cb26-296" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-297"><a href="#cb26-297" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-298"><a href="#cb26-298" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-299"><a href="#cb26-299" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">PUT: Must send complete resource</span></span>
-<span id="cb26-300"><a href="#cb26-300" aria-hidden="true" tabindex="-1"></a>PUT https<span class="op">:</span><span class="co">//httpbin.io/put</span></span>
-<span id="cb26-301"><a href="#cb26-301" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
-<span id="cb26-302"><a href="#cb26-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-303"><a href="#cb26-303" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb26-304"><a href="#cb26-304" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Alice"</span><span class="op">,</span></span>
-<span id="cb26-305"><a href="#cb26-305" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice@example.com"</span><span class="op">,</span></span>
-<span id="cb26-306"><a href="#cb26-306" aria-hidden="true" tabindex="-1"></a>  <span class="st">"role"</span><span class="op">:</span> <span class="st">"developer"</span><span class="op">,</span></span>
-<span id="cb26-307"><a href="#cb26-307" aria-hidden="true" tabindex="-1"></a>  <span class="st">"active"</span><span class="op">:</span> <span class="kw">true</span></span>
-<span id="cb26-308"><a href="#cb26-308" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb26-309"><a href="#cb26-309" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-310"><a href="#cb26-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-313"><a href="#cb26-313" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-314"><a href="#cb26-314" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-315"><a href="#cb26-315" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-316"><a href="#cb26-316" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-317"><a href="#cb26-317" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">PATCH: Only send what changes</span></span>
-<span id="cb26-318"><a href="#cb26-318" aria-hidden="true" tabindex="-1"></a>PATCH https<span class="op">:</span><span class="co">//httpbin.io/patch</span></span>
-<span id="cb26-319"><a href="#cb26-319" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
-<span id="cb26-320"><a href="#cb26-320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-321"><a href="#cb26-321" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb26-322"><a href="#cb26-322" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice@example.com"</span></span>
-<span id="cb26-323"><a href="#cb26-323" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb26-324"><a href="#cb26-324" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-325"><a href="#cb26-325" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-326"><a href="#cb26-326" aria-hidden="true" tabindex="-1"></a><span class="fu">## DELETE Method</span></span>
-<span id="cb26-327"><a href="#cb26-327" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-328"><a href="#cb26-328" aria-hidden="true" tabindex="-1"></a>DELETE removes a resource from the server.</span>
-<span id="cb26-329"><a href="#cb26-329" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-330"><a href="#cb26-330" aria-hidden="true" tabindex="-1"></a><span class="fu">### Basic DELETE Request</span></span>
-<span id="cb26-331"><a href="#cb26-331" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-334"><a href="#cb26-334" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-335"><a href="#cb26-335" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-336"><a href="#cb26-336" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-337"><a href="#cb26-337" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-338"><a href="#cb26-338" aria-hidden="true" tabindex="-1"></a>DELETE https<span class="op">:</span><span class="co">//httpbin.io/delete</span></span>
-<span id="cb26-339"><a href="#cb26-339" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-340"><a href="#cb26-340" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-341"><a href="#cb26-341" aria-hidden="true" tabindex="-1"></a><span class="fu">### DELETE with Specific Resource</span></span>
-<span id="cb26-342"><a href="#cb26-342" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-345"><a href="#cb26-345" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-346"><a href="#cb26-346" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-347"><a href="#cb26-347" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-348"><a href="#cb26-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-349"><a href="#cb26-349" aria-hidden="true" tabindex="-1"></a>DELETE https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
-<span id="cb26-350"><a href="#cb26-350" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-351"><a href="#cb26-351" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-352"><a href="#cb26-352" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why DELETE is Idempotent</span></span>
-<span id="cb26-353"><a href="#cb26-353" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-354"><a href="#cb26-354" aria-hidden="true" tabindex="-1"></a>Deleting the same resource multiple times has the same effect:</span>
-<span id="cb26-355"><a href="#cb26-355" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-356"><a href="#cb26-356" aria-hidden="true" tabindex="-1"></a><span class="in">DELETE /users/123 → User deleted</span></span>
-<span id="cb26-357"><a href="#cb26-357" aria-hidden="true" tabindex="-1"></a><span class="in">DELETE /users/123 → User already gone (same final state)</span></span>
-<span id="cb26-358"><a href="#cb26-358" aria-hidden="true" tabindex="-1"></a><span class="in">DELETE /users/123 → User already gone (same final state)</span></span>
-<span id="cb26-359"><a href="#cb26-359" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-360"><a href="#cb26-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-361"><a href="#cb26-361" aria-hidden="true" tabindex="-1"></a>The second and third calls might return 404 (Not Found), but the final state is the same: the resource doesn't exist.</span>
-<span id="cb26-362"><a href="#cb26-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-363"><a href="#cb26-363" aria-hidden="true" tabindex="-1"></a><span class="fu">## HEAD Method</span></span>
-<span id="cb26-364"><a href="#cb26-364" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-365"><a href="#cb26-365" aria-hidden="true" tabindex="-1"></a>HEAD is identical to GET but returns only the headers, not the body. It's useful for checking if a resource exists or getting metadata.</span>
-<span id="cb26-366"><a href="#cb26-366" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-367"><a href="#cb26-367" aria-hidden="true" tabindex="-1"></a><span class="fu">### HEAD Request</span></span>
-<span id="cb26-368"><a href="#cb26-368" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-371"><a href="#cb26-371" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-372"><a href="#cb26-372" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-373"><a href="#cb26-373" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-374"><a href="#cb26-374" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-375"><a href="#cb26-375" aria-hidden="true" tabindex="-1"></a>HEAD https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
-<span id="cb26-376"><a href="#cb26-376" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-377"><a href="#cb26-377" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-378"><a href="#cb26-378" aria-hidden="true" tabindex="-1"></a>Notice: No response body is returned, only status and headers.</span>
-<span id="cb26-379"><a href="#cb26-379" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-380"><a href="#cb26-380" aria-hidden="true" tabindex="-1"></a><span class="fu">### Use Cases for HEAD</span></span>
-<span id="cb26-381"><a href="#cb26-381" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-382"><a href="#cb26-382" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Check if a resource exists (without downloading it)</span>
-<span id="cb26-383"><a href="#cb26-383" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Get the size of a file before downloading (<span class="in">`Content-Length`</span> header)</span>
-<span id="cb26-384"><a href="#cb26-384" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Check last modification time (<span class="in">`Last-Modified`</span> header)</span>
-<span id="cb26-385"><a href="#cb26-385" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Verify link validity</span>
-<span id="cb26-386"><a href="#cb26-386" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-387"><a href="#cb26-387" aria-hidden="true" tabindex="-1"></a><span class="fu">## OPTIONS Method</span></span>
-<span id="cb26-388"><a href="#cb26-388" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-389"><a href="#cb26-389" aria-hidden="true" tabindex="-1"></a>OPTIONS returns the HTTP methods supported by a resource. It's crucial for CORS (Cross-Origin Resource Sharing).</span>
-<span id="cb26-390"><a href="#cb26-390" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-391"><a href="#cb26-391" aria-hidden="true" tabindex="-1"></a><span class="fu">### OPTIONS Request</span></span>
-<span id="cb26-392"><a href="#cb26-392" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-395"><a href="#cb26-395" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-396"><a href="#cb26-396" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-397"><a href="#cb26-397" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-398"><a href="#cb26-398" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-399"><a href="#cb26-399" aria-hidden="true" tabindex="-1"></a>OPTIONS https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
-<span id="cb26-400"><a href="#cb26-400" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-401"><a href="#cb26-401" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-402"><a href="#cb26-402" aria-hidden="true" tabindex="-1"></a>Look for the <span class="in">`Access-Control-Allow-Methods`</span> header in the response, which lists allowed methods.</span>
-<span id="cb26-403"><a href="#cb26-403" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-404"><a href="#cb26-404" aria-hidden="true" tabindex="-1"></a><span class="fu">### CORS Preflight Request</span></span>
-<span id="cb26-405"><a href="#cb26-405" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-406"><a href="#cb26-406" aria-hidden="true" tabindex="-1"></a>Browsers send OPTIONS automatically before certain cross-origin requests:</span>
-<span id="cb26-407"><a href="#cb26-407" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-410"><a href="#cb26-410" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-411"><a href="#cb26-411" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-412"><a href="#cb26-412" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-413"><a href="#cb26-413" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-414"><a href="#cb26-414" aria-hidden="true" tabindex="-1"></a>OPTIONS https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
-<span id="cb26-415"><a href="#cb26-415" aria-hidden="true" tabindex="-1"></a>Access<span class="op">-</span>Control<span class="op">-</span>Request<span class="op">-</span>Method<span class="op">:</span> POST</span>
-<span id="cb26-416"><a href="#cb26-416" aria-hidden="true" tabindex="-1"></a>Access<span class="op">-</span>Control<span class="op">-</span>Request<span class="op">-</span>Headers<span class="op">:</span> Content<span class="op">-</span>Type</span>
-<span id="cb26-417"><a href="#cb26-417" aria-hidden="true" tabindex="-1"></a>Origin<span class="op">:</span> https<span class="op">:</span><span class="co">//example.com</span></span>
-<span id="cb26-418"><a href="#cb26-418" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-419"><a href="#cb26-419" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-420"><a href="#cb26-420" aria-hidden="true" tabindex="-1"></a><span class="fu">## Less Common Methods</span></span>
-<span id="cb26-421"><a href="#cb26-421" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-422"><a href="#cb26-422" aria-hidden="true" tabindex="-1"></a><span class="fu">### TRACE</span></span>
-<span id="cb26-423"><a href="#cb26-423" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-424"><a href="#cb26-424" aria-hidden="true" tabindex="-1"></a>TRACE echoes back the received request, useful for debugging:</span>
-<span id="cb26-425"><a href="#cb26-425" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-428"><a href="#cb26-428" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-429"><a href="#cb26-429" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-430"><a href="#cb26-430" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-431"><a href="#cb26-431" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-432"><a href="#cb26-432" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Note: httpbin doesn't support TRACE, so this may not work</span></span>
-<span id="cb26-433"><a href="#cb26-433" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
-<span id="cb26-434"><a href="#cb26-434" aria-hidden="true" tabindex="-1"></a>X<span class="op">-</span>Custom<span class="op">-</span>Header<span class="op">:</span> debug<span class="op">-</span>trace</span>
-<span id="cb26-435"><a href="#cb26-435" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-436"><a href="#cb26-436" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-437"><a href="#cb26-437" aria-hidden="true" tabindex="-1"></a><span class="fu">### CONNECT</span></span>
-<span id="cb26-438"><a href="#cb26-438" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-439"><a href="#cb26-439" aria-hidden="true" tabindex="-1"></a>CONNECT establishes a tunnel, typically used for HTTPS through proxies. Not commonly used in APIs.</span>
-<span id="cb26-440"><a href="#cb26-440" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-441"><a href="#cb26-441" aria-hidden="true" tabindex="-1"></a><span class="fu">## Method Safety and Idempotency Summary</span></span>
-<span id="cb26-442"><a href="#cb26-442" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-443"><a href="#cb26-443" aria-hidden="true" tabindex="-1"></a><span class="fu">### Safe Methods (No Side Effects)</span></span>
-<span id="cb26-444"><a href="#cb26-444" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GET</span>
-<span id="cb26-445"><a href="#cb26-445" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>HEAD</span>
-<span id="cb26-446"><a href="#cb26-446" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>OPTIONS</span>
-<span id="cb26-447"><a href="#cb26-447" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-448"><a href="#cb26-448" aria-hidden="true" tabindex="-1"></a>Safe methods can be called without worrying about changing server state.</span>
-<span id="cb26-449"><a href="#cb26-449" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-450"><a href="#cb26-450" aria-hidden="true" tabindex="-1"></a><span class="fu">### Idempotent Methods (Same Result Each Time)</span></span>
-<span id="cb26-451"><a href="#cb26-451" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GET</span>
-<span id="cb26-452"><a href="#cb26-452" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PUT</span>
-<span id="cb26-453"><a href="#cb26-453" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>DELETE</span>
-<span id="cb26-454"><a href="#cb26-454" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>HEAD</span>
-<span id="cb26-455"><a href="#cb26-455" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>OPTIONS</span>
-<span id="cb26-456"><a href="#cb26-456" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-457"><a href="#cb26-457" aria-hidden="true" tabindex="-1"></a>Idempotent methods can be safely retried if there's a network failure.</span>
-<span id="cb26-458"><a href="#cb26-458" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-459"><a href="#cb26-459" aria-hidden="true" tabindex="-1"></a><span class="fu">### Neither Safe Nor Idempotent</span></span>
-<span id="cb26-460"><a href="#cb26-460" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POST</span>
-<span id="cb26-461"><a href="#cb26-461" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PATCH (typically)</span>
-<span id="cb26-462"><a href="#cb26-462" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-463"><a href="#cb26-463" aria-hidden="true" tabindex="-1"></a>These methods require careful handling and may need special retry logic.</span>
-<span id="cb26-464"><a href="#cb26-464" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-465"><a href="#cb26-465" aria-hidden="true" tabindex="-1"></a><span class="fu">## Best Practices</span></span>
-<span id="cb26-466"><a href="#cb26-466" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-467"><a href="#cb26-467" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Use GET for retrieval**: Never use GET to modify data</span>
-<span id="cb26-468"><a href="#cb26-468" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Use POST for creation**: Create new resources with POST</span>
-<span id="cb26-469"><a href="#cb26-469" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Use PUT for full replacement**: Send complete resource representation</span>
-<span id="cb26-470"><a href="#cb26-470" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Use PATCH for partial updates**: Send only changed fields</span>
-<span id="cb26-471"><a href="#cb26-471" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Use DELETE for removal**: Remove resources with DELETE</span>
-<span id="cb26-472"><a href="#cb26-472" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>**Respect idempotency**: Design APIs where PUT and DELETE are truly idempotent</span>
-<span id="cb26-473"><a href="#cb26-473" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>**Use proper status codes**: Return appropriate codes for each method</span>
-<span id="cb26-474"><a href="#cb26-474" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-475"><a href="#cb26-475" aria-hidden="true" tabindex="-1"></a><span class="fu">## Real-World API Example</span></span>
-<span id="cb26-476"><a href="#cb26-476" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-477"><a href="#cb26-477" aria-hidden="true" tabindex="-1"></a>Here's a complete CRUD (Create, Read, Update, Delete) example:</span>
-<span id="cb26-478"><a href="#cb26-478" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-481"><a href="#cb26-481" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
-<span id="cb26-482"><a href="#cb26-482" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
-<span id="cb26-483"><a href="#cb26-483" aria-hidden="true" tabindex="-1"></a>    A[CRUD Operations] --&gt; B[Create]</span>
-<span id="cb26-484"><a href="#cb26-484" aria-hidden="true" tabindex="-1"></a>    A --&gt; C[Read]</span>
-<span id="cb26-485"><a href="#cb26-485" aria-hidden="true" tabindex="-1"></a>    A --&gt; D[Update]</span>
-<span id="cb26-486"><a href="#cb26-486" aria-hidden="true" tabindex="-1"></a>    A --&gt; E[Delete]</span>
-<span id="cb26-487"><a href="#cb26-487" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-488"><a href="#cb26-488" aria-hidden="true" tabindex="-1"></a>    B --&gt; F[POST /users]</span>
-<span id="cb26-489"><a href="#cb26-489" aria-hidden="true" tabindex="-1"></a>    C --&gt; G[GET /users/:id]</span>
-<span id="cb26-490"><a href="#cb26-490" aria-hidden="true" tabindex="-1"></a>    D --&gt; H[PUT /users/:id]</span>
-<span id="cb26-491"><a href="#cb26-491" aria-hidden="true" tabindex="-1"></a>    D --&gt; I[PATCH /users/:id]</span>
-<span id="cb26-492"><a href="#cb26-492" aria-hidden="true" tabindex="-1"></a>    E --&gt; J[DELETE /users/:id]</span>
-<span id="cb26-493"><a href="#cb26-493" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-494"><a href="#cb26-494" aria-hidden="true" tabindex="-1"></a>    F --&gt; K[<span class="dv">201</span> Created]</span>
-<span id="cb26-495"><a href="#cb26-495" aria-hidden="true" tabindex="-1"></a>    G --&gt; L[<span class="dv">200</span> OK]</span>
-<span id="cb26-496"><a href="#cb26-496" aria-hidden="true" tabindex="-1"></a>    H --&gt; M[<span class="dv">200</span> OK]</span>
-<span id="cb26-497"><a href="#cb26-497" aria-hidden="true" tabindex="-1"></a>    I --&gt; M</span>
-<span id="cb26-498"><a href="#cb26-498" aria-hidden="true" tabindex="-1"></a>    J --&gt; N[<span class="dv">204</span> No Content]</span>
-<span id="cb26-499"><a href="#cb26-499" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-500"><a href="#cb26-500" aria-hidden="true" tabindex="-1"></a>    style B fill:<span class="co">#c8e6c9</span></span>
-<span id="cb26-501"><a href="#cb26-501" aria-hidden="true" tabindex="-1"></a>    style C fill:<span class="co">#bbdefb</span></span>
-<span id="cb26-502"><a href="#cb26-502" aria-hidden="true" tabindex="-1"></a>    style D fill:<span class="co">#fff9c4</span></span>
-<span id="cb26-503"><a href="#cb26-503" aria-hidden="true" tabindex="-1"></a>    style E fill:<span class="co">#ffccbc</span></span>
-<span id="cb26-504"><a href="#cb26-504" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-505"><a href="#cb26-505" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-508"><a href="#cb26-508" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-509"><a href="#cb26-509" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-510"><a href="#cb26-510" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-511"><a href="#cb26-511" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-512"><a href="#cb26-512" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Create (POST)</span></span>
-<span id="cb26-513"><a href="#cb26-513" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/anything/users</span></span>
-<span id="cb26-514"><a href="#cb26-514" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
-<span id="cb26-515"><a href="#cb26-515" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-516"><a href="#cb26-516" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb26-517"><a href="#cb26-517" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Charlie"</span><span class="op">,</span></span>
-<span id="cb26-518"><a href="#cb26-518" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"charlie@example.com"</span></span>
-<span id="cb26-519"><a href="#cb26-519" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb26-520"><a href="#cb26-520" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-521"><a href="#cb26-521" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-524"><a href="#cb26-524" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-525"><a href="#cb26-525" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-526"><a href="#cb26-526" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-527"><a href="#cb26-527" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-528"><a href="#cb26-528" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Read (GET)</span></span>
-<span id="cb26-529"><a href="#cb26-529" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
-<span id="cb26-530"><a href="#cb26-530" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-531"><a href="#cb26-531" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-534"><a href="#cb26-534" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-535"><a href="#cb26-535" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-536"><a href="#cb26-536" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-537"><a href="#cb26-537" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-538"><a href="#cb26-538" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Update (PUT)</span></span>
-<span id="cb26-539"><a href="#cb26-539" aria-hidden="true" tabindex="-1"></a>PUT https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
-<span id="cb26-540"><a href="#cb26-540" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
-<span id="cb26-541"><a href="#cb26-541" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-542"><a href="#cb26-542" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb26-543"><a href="#cb26-543" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Charlie Updated"</span><span class="op">,</span></span>
-<span id="cb26-544"><a href="#cb26-544" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"charlie.new@example.com"</span></span>
-<span id="cb26-545"><a href="#cb26-545" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb26-546"><a href="#cb26-546" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-547"><a href="#cb26-547" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-550"><a href="#cb26-550" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-551"><a href="#cb26-551" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-552"><a href="#cb26-552" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-553"><a href="#cb26-553" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-554"><a href="#cb26-554" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Partial Update (PATCH)</span></span>
-<span id="cb26-555"><a href="#cb26-555" aria-hidden="true" tabindex="-1"></a>PATCH https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
-<span id="cb26-556"><a href="#cb26-556" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
-<span id="cb26-557"><a href="#cb26-557" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-558"><a href="#cb26-558" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb26-559"><a href="#cb26-559" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"charlie.newest@example.com"</span></span>
-<span id="cb26-560"><a href="#cb26-560" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb26-561"><a href="#cb26-561" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-562"><a href="#cb26-562" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-565"><a href="#cb26-565" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
-<span id="cb26-566"><a href="#cb26-566" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
-<span id="cb26-567"><a href="#cb26-567" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
-<span id="cb26-568"><a href="#cb26-568" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-569"><a href="#cb26-569" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Delete (DELETE)</span></span>
-<span id="cb26-570"><a href="#cb26-570" aria-hidden="true" tabindex="-1"></a>DELETE https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
-<span id="cb26-571"><a href="#cb26-571" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb26-572"><a href="#cb26-572" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-573"><a href="#cb26-573" aria-hidden="true" tabindex="-1"></a><span class="fu">## Practice Exercises</span></span>
-<span id="cb26-574"><a href="#cb26-574" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-575"><a href="#cb26-575" aria-hidden="true" tabindex="-1"></a>Try these on your own:</span>
-<span id="cb26-576"><a href="#cb26-576" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-577"><a href="#cb26-577" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Send a POST request with nested JSON data</span>
-<span id="cb26-578"><a href="#cb26-578" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Send a PUT request and then send the same request again - verify it's idempotent</span>
-<span id="cb26-579"><a href="#cb26-579" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Use HEAD to check if <span class="in">`https://httpbin.io/status/200`</span> is accessible</span>
-<span id="cb26-580"><a href="#cb26-580" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Send an OPTIONS request and examine the allowed methods</span>
-<span id="cb26-581"><a href="#cb26-581" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Compare the difference between PUT and PATCH with different payloads</span>
-<span id="cb26-582"><a href="#cb26-582" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-583"><a href="#cb26-583" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key Takeaways</span></span>
-<span id="cb26-584"><a href="#cb26-584" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-585"><a href="#cb26-585" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**GET**: Retrieve data, safe and idempotent</span>
-<span id="cb26-586"><a href="#cb26-586" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**POST**: Create new resources, not idempotent</span>
-<span id="cb26-587"><a href="#cb26-587" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PUT**: Replace entire resource, idempotent</span>
-<span id="cb26-588"><a href="#cb26-588" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PATCH**: Partial update, typically not idempotent</span>
-<span id="cb26-589"><a href="#cb26-589" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**DELETE**: Remove resource, idempotent</span>
-<span id="cb26-590"><a href="#cb26-590" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**HEAD**: Get headers only, safe and idempotent</span>
-<span id="cb26-591"><a href="#cb26-591" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**OPTIONS**: Get allowed methods, used in CORS</span>
-<span id="cb26-592"><a href="#cb26-592" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-593"><a href="#cb26-593" aria-hidden="true" tabindex="-1"></a><span class="fu">## Next Steps</span></span>
-<span id="cb26-594"><a href="#cb26-594" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-595"><a href="#cb26-595" aria-hidden="true" tabindex="-1"></a>Now that you understand HTTP methods, let's explore how headers control request and response behavior in <span class="co">[</span><span class="ot">Chapter 3: HTTP Headers</span><span class="co">](03-http-headers.qmd)</span>.</span>
-<span id="cb26-596"><a href="#cb26-596" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-597"><a href="#cb26-597" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb26-598"><a href="#cb26-598" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-599"><a href="#cb26-599" aria-hidden="true" tabindex="-1"></a><span class="fu">## RFC References</span></span>
-<span id="cb26-600"><a href="#cb26-600" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-601"><a href="#cb26-601" aria-hidden="true" tabindex="-1"></a>This chapter covers concepts from the following RFCs:</span>
-<span id="cb26-602"><a href="#cb26-602" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-603"><a href="#cb26-603" aria-hidden="true" tabindex="-1"></a>::: {.callout-note icon=false}</span>
-<span id="cb26-604"><a href="#cb26-604" aria-hidden="true" tabindex="-1"></a><span class="fu">### HTTP Methods Specification</span></span>
-<span id="cb26-605"><a href="#cb26-605" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-606"><a href="#cb26-606" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)** - HTTP Semantics</span>
-<span id="cb26-607"><a href="#cb26-607" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 9: <span class="co">[</span><span class="ot">Methods</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9)</span></span>
-<span id="cb26-608"><a href="#cb26-608" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 9.1: <span class="co">[</span><span class="ot">Overview</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.1)</span></span>
-<span id="cb26-609"><a href="#cb26-609" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 9.2: <span class="co">[</span><span class="ot">Common Method Properties</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2)</span></span>
-<span id="cb26-610"><a href="#cb26-610" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.2.1: <span class="co">[</span><span class="ot">Safe Methods</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.1)</span></span>
-<span id="cb26-611"><a href="#cb26-611" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.2.2: <span class="co">[</span><span class="ot">Idempotent Methods</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2)</span></span>
-<span id="cb26-612"><a href="#cb26-612" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 9.3: <span class="co">[</span><span class="ot">Method Definitions</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.3)</span></span>
-<span id="cb26-613"><a href="#cb26-613" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.1: <span class="co">[</span><span class="ot">GET</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#GET)</span></span>
-<span id="cb26-614"><a href="#cb26-614" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.2: <span class="co">[</span><span class="ot">HEAD</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#HEAD)</span></span>
-<span id="cb26-615"><a href="#cb26-615" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.3: <span class="co">[</span><span class="ot">POST</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#POST)</span></span>
-<span id="cb26-616"><a href="#cb26-616" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.4: <span class="co">[</span><span class="ot">PUT</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#PUT)</span></span>
-<span id="cb26-617"><a href="#cb26-617" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.5: <span class="co">[</span><span class="ot">DELETE</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#DELETE)</span></span>
-<span id="cb26-618"><a href="#cb26-618" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.6: <span class="co">[</span><span class="ot">CONNECT</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#CONNECT)</span></span>
-<span id="cb26-619"><a href="#cb26-619" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.7: <span class="co">[</span><span class="ot">OPTIONS</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#OPTIONS)</span></span>
-<span id="cb26-620"><a href="#cb26-620" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.8: <span class="co">[</span><span class="ot">TRACE</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#TRACE)</span></span>
-<span id="cb26-621"><a href="#cb26-621" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-622"><a href="#cb26-622" aria-hidden="true" tabindex="-1"></a><span class="fu">### PATCH Method</span></span>
-<span id="cb26-623"><a href="#cb26-623" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-624"><a href="#cb26-624" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 5789](https://www.rfc-editor.org/rfc/rfc5789.html)** - PATCH Method for HTTP</span>
-<span id="cb26-625"><a href="#cb26-625" aria-hidden="true" tabindex="-1"></a>:::</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Chapter 2: HTTP Methods"</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Understanding REST Verbs and Their Semantics"</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="fu"># HTTP Methods Overview</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>HTTP methods (also called verbs) define the action to be performed on a resource. Each method has specific semantics and use cases.</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Main HTTP Methods</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Method  <span class="pp">|</span> Purpose              <span class="pp">|</span> Safe <span class="pp">|</span> Idempotent <span class="pp">|</span> Has Body <span class="pp">|</span></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="pp">|---------|---------------------|------|------------|----------|</span></span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> GET     <span class="pp">|</span> Retrieve resource   <span class="pp">|</span> Yes  <span class="pp">|</span> Yes        <span class="pp">|</span> No       <span class="pp">|</span></span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> POST    <span class="pp">|</span> Create resource     <span class="pp">|</span> No   <span class="pp">|</span> No         <span class="pp">|</span> Yes      <span class="pp">|</span></span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> PUT     <span class="pp">|</span> Replace resource    <span class="pp">|</span> No   <span class="pp">|</span> Yes        <span class="pp">|</span> Yes      <span class="pp">|</span></span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> PATCH   <span class="pp">|</span> Modify resource     <span class="pp">|</span> No   <span class="pp">|</span> No         <span class="pp">|</span> Yes      <span class="pp">|</span></span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> DELETE  <span class="pp">|</span> Remove resource     <span class="pp">|</span> No   <span class="pp">|</span> Yes        <span class="pp">|</span> No       <span class="pp">|</span></span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> HEAD    <span class="pp">|</span> Get headers only    <span class="pp">|</span> Yes  <span class="pp">|</span> Yes        <span class="pp">|</span> No       <span class="pp">|</span></span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> OPTIONS <span class="pp">|</span> Get allowed methods <span class="pp">|</span> Yes  <span class="pp">|</span> Yes        <span class="pp">|</span> No       <span class="pp">|</span></span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a>graph TD</span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a>    A[HTTP Methods] --&gt; B[Safe Methods]</span>
+<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a>    A --&gt; C[Unsafe Methods]</span>
+<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-29"><a href="#cb45-29" aria-hidden="true" tabindex="-1"></a>    B --&gt; D[GET]</span>
+<span id="cb45-30"><a href="#cb45-30" aria-hidden="true" tabindex="-1"></a>    B --&gt; E[HEAD]</span>
+<span id="cb45-31"><a href="#cb45-31" aria-hidden="true" tabindex="-1"></a>    B --&gt; F[OPTIONS]</span>
+<span id="cb45-32"><a href="#cb45-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-33"><a href="#cb45-33" aria-hidden="true" tabindex="-1"></a>    C --&gt; G[POST]</span>
+<span id="cb45-34"><a href="#cb45-34" aria-hidden="true" tabindex="-1"></a>    C --&gt; H[PUT]</span>
+<span id="cb45-35"><a href="#cb45-35" aria-hidden="true" tabindex="-1"></a>    C --&gt; I[PATCH]</span>
+<span id="cb45-36"><a href="#cb45-36" aria-hidden="true" tabindex="-1"></a>    C --&gt; J[DELETE]</span>
+<span id="cb45-37"><a href="#cb45-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-38"><a href="#cb45-38" aria-hidden="true" tabindex="-1"></a>    K[Idempotent] --&gt; D</span>
+<span id="cb45-39"><a href="#cb45-39" aria-hidden="true" tabindex="-1"></a>    K --&gt; E</span>
+<span id="cb45-40"><a href="#cb45-40" aria-hidden="true" tabindex="-1"></a>    K --&gt; F</span>
+<span id="cb45-41"><a href="#cb45-41" aria-hidden="true" tabindex="-1"></a>    K --&gt; H</span>
+<span id="cb45-42"><a href="#cb45-42" aria-hidden="true" tabindex="-1"></a>    K --&gt; J</span>
+<span id="cb45-43"><a href="#cb45-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-44"><a href="#cb45-44" aria-hidden="true" tabindex="-1"></a>    L[Not Idempotent] --&gt; G</span>
+<span id="cb45-45"><a href="#cb45-45" aria-hidden="true" tabindex="-1"></a>    L --&gt; I</span>
+<span id="cb45-46"><a href="#cb45-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-47"><a href="#cb45-47" aria-hidden="true" tabindex="-1"></a>    style B fill:<span class="co">#c8e6c9</span></span>
+<span id="cb45-48"><a href="#cb45-48" aria-hidden="true" tabindex="-1"></a>    style C fill:<span class="co">#ffccbc</span></span>
+<span id="cb45-49"><a href="#cb45-49" aria-hidden="true" tabindex="-1"></a>    style K fill:<span class="co">#bbdefb</span></span>
+<span id="cb45-50"><a href="#cb45-50" aria-hidden="true" tabindex="-1"></a>    style L fill:<span class="co">#fff9c4</span></span>
+<span id="cb45-51"><a href="#cb45-51" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-52"><a href="#cb45-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-53"><a href="#cb45-53" aria-hidden="true" tabindex="-1"></a><span class="fu">### Key Concepts</span></span>
+<span id="cb45-54"><a href="#cb45-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-55"><a href="#cb45-55" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Safe**: The method doesn't modify server state</span>
+<span id="cb45-56"><a href="#cb45-56" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Idempotent**: Multiple identical requests have the same effect as a single request</span>
+<span id="cb45-57"><a href="#cb45-57" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Has Body**: Whether the request can include a message body</span>
+<span id="cb45-58"><a href="#cb45-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-59"><a href="#cb45-59" aria-hidden="true" tabindex="-1"></a><span class="fu">## GET Method</span></span>
+<span id="cb45-60"><a href="#cb45-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-61"><a href="#cb45-61" aria-hidden="true" tabindex="-1"></a>GET retrieves data from the server. It should not modify any resources.</span>
+<span id="cb45-62"><a href="#cb45-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-63"><a href="#cb45-63" aria-hidden="true" tabindex="-1"></a><span class="fu">### Basic GET Request</span></span>
+<span id="cb45-64"><a href="#cb45-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-67"><a href="#cb45-67" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-68"><a href="#cb45-68" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-69"><a href="#cb45-69" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-70"><a href="#cb45-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-71"><a href="#cb45-71" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb45-72"><a href="#cb45-72" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-73"><a href="#cb45-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-74"><a href="#cb45-74" aria-hidden="true" tabindex="-1"></a><span class="fu">### GET with Query Parameters</span></span>
+<span id="cb45-75"><a href="#cb45-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-78"><a href="#cb45-78" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-79"><a href="#cb45-79" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-80"><a href="#cb45-80" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-81"><a href="#cb45-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-82"><a href="#cb45-82" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get?user=alice&amp;role=admin&amp;status=active</span></span>
+<span id="cb45-83"><a href="#cb45-83" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-84"><a href="#cb45-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-85"><a href="#cb45-85" aria-hidden="true" tabindex="-1"></a><span class="fu">### GET with Path Parameters</span></span>
+<span id="cb45-86"><a href="#cb45-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-89"><a href="#cb45-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-90"><a href="#cb45-90" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-91"><a href="#cb45-91" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-92"><a href="#cb45-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-93"><a href="#cb45-93" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
+<span id="cb45-94"><a href="#cb45-94" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-95"><a href="#cb45-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-96"><a href="#cb45-96" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why GET is Safe and Idempotent</span></span>
+<span id="cb45-97"><a href="#cb45-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-98"><a href="#cb45-98" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Safe**: Reading data doesn't change it</span>
+<span id="cb45-99"><a href="#cb45-99" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Idempotent**: Calling GET 100 times returns the same result (assuming no external changes)</span>
+<span id="cb45-100"><a href="#cb45-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-101"><a href="#cb45-101" aria-hidden="true" tabindex="-1"></a><span class="fu">## POST Method</span></span>
+<span id="cb45-102"><a href="#cb45-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-103"><a href="#cb45-103" aria-hidden="true" tabindex="-1"></a>POST submits data to create a new resource. It's commonly used for form submissions and API calls.</span>
+<span id="cb45-104"><a href="#cb45-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-105"><a href="#cb45-105" aria-hidden="true" tabindex="-1"></a><span class="fu">### POST with JSON Data</span></span>
+<span id="cb45-106"><a href="#cb45-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-109"><a href="#cb45-109" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-110"><a href="#cb45-110" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-111"><a href="#cb45-111" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-112"><a href="#cb45-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-113"><a href="#cb45-113" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb45-114"><a href="#cb45-114" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb45-115"><a href="#cb45-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-116"><a href="#cb45-116" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb45-117"><a href="#cb45-117" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Alice"</span><span class="op">,</span></span>
+<span id="cb45-118"><a href="#cb45-118" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice@example.com"</span><span class="op">,</span></span>
+<span id="cb45-119"><a href="#cb45-119" aria-hidden="true" tabindex="-1"></a>  <span class="st">"role"</span><span class="op">:</span> <span class="st">"developer"</span></span>
+<span id="cb45-120"><a href="#cb45-120" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb45-121"><a href="#cb45-121" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-122"><a href="#cb45-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-123"><a href="#cb45-123" aria-hidden="true" tabindex="-1"></a><span class="fu">### POST with Form Data</span></span>
+<span id="cb45-124"><a href="#cb45-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-127"><a href="#cb45-127" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-128"><a href="#cb45-128" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-129"><a href="#cb45-129" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-130"><a href="#cb45-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-131"><a href="#cb45-131" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb45-132"><a href="#cb45-132" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>FormParams<span class="op">]</span></span>
+<span id="cb45-133"><a href="#cb45-133" aria-hidden="true" tabindex="-1"></a>username<span class="op">:</span> alice</span>
+<span id="cb45-134"><a href="#cb45-134" aria-hidden="true" tabindex="-1"></a>password<span class="op">:</span> secret123</span>
+<span id="cb45-135"><a href="#cb45-135" aria-hidden="true" tabindex="-1"></a>remember<span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb45-136"><a href="#cb45-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-137"><a href="#cb45-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-138"><a href="#cb45-138" aria-hidden="true" tabindex="-1"></a><span class="fu">### POST with Multiple Fields</span></span>
+<span id="cb45-139"><a href="#cb45-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-142"><a href="#cb45-142" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-143"><a href="#cb45-143" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-144"><a href="#cb45-144" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-145"><a href="#cb45-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-146"><a href="#cb45-146" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb45-147"><a href="#cb45-147" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb45-148"><a href="#cb45-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-149"><a href="#cb45-149" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb45-150"><a href="#cb45-150" aria-hidden="true" tabindex="-1"></a>  <span class="st">"user"</span><span class="op">:</span> <span class="op">{</span></span>
+<span id="cb45-151"><a href="#cb45-151" aria-hidden="true" tabindex="-1"></a>    <span class="st">"name"</span><span class="op">:</span> <span class="st">"Bob"</span><span class="op">,</span></span>
+<span id="cb45-152"><a href="#cb45-152" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age"</span><span class="op">:</span> <span class="dv">30</span></span>
+<span id="cb45-153"><a href="#cb45-153" aria-hidden="true" tabindex="-1"></a>  <span class="op">},</span></span>
+<span id="cb45-154"><a href="#cb45-154" aria-hidden="true" tabindex="-1"></a>  <span class="st">"preferences"</span><span class="op">:</span> <span class="op">{</span></span>
+<span id="cb45-155"><a href="#cb45-155" aria-hidden="true" tabindex="-1"></a>    <span class="st">"theme"</span><span class="op">:</span> <span class="st">"dark"</span><span class="op">,</span></span>
+<span id="cb45-156"><a href="#cb45-156" aria-hidden="true" tabindex="-1"></a>    <span class="st">"notifications"</span><span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb45-157"><a href="#cb45-157" aria-hidden="true" tabindex="-1"></a>  <span class="op">},</span></span>
+<span id="cb45-158"><a href="#cb45-158" aria-hidden="true" tabindex="-1"></a>  <span class="st">"tags"</span><span class="op">:</span> <span class="op">[</span><span class="st">"developer"</span><span class="op">,</span> <span class="st">"python"</span><span class="op">,</span> <span class="st">"http"</span><span class="op">]</span></span>
+<span id="cb45-159"><a href="#cb45-159" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb45-160"><a href="#cb45-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-161"><a href="#cb45-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-162"><a href="#cb45-162" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why POST is Not Idempotent</span></span>
+<span id="cb45-163"><a href="#cb45-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-164"><a href="#cb45-164" aria-hidden="true" tabindex="-1"></a>Calling POST multiple times creates multiple resources:</span>
+<span id="cb45-165"><a href="#cb45-165" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-166"><a href="#cb45-166" aria-hidden="true" tabindex="-1"></a><span class="in">POST /users → Creates user (ID: 1)</span></span>
+<span id="cb45-167"><a href="#cb45-167" aria-hidden="true" tabindex="-1"></a><span class="in">POST /users → Creates user (ID: 2)</span></span>
+<span id="cb45-168"><a href="#cb45-168" aria-hidden="true" tabindex="-1"></a><span class="in">POST /users → Creates user (ID: 3)</span></span>
+<span id="cb45-169"><a href="#cb45-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-170"><a href="#cb45-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-173"><a href="#cb45-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb45-174"><a href="#cb45-174" aria-hidden="true" tabindex="-1"></a>sequenceDiagram</span>
+<span id="cb45-175"><a href="#cb45-175" aria-hidden="true" tabindex="-1"></a>    participant Client</span>
+<span id="cb45-176"><a href="#cb45-176" aria-hidden="true" tabindex="-1"></a>    participant Server</span>
+<span id="cb45-177"><a href="#cb45-177" aria-hidden="true" tabindex="-1"></a>    participant DB as Database</span>
+<span id="cb45-178"><a href="#cb45-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-179"><a href="#cb45-179" aria-hidden="true" tabindex="-1"></a>    Client-&gt;&gt;Server: POST /users {name: <span class="ot">"</span><span class="st">Alice</span><span class="ot">"</span>}</span>
+<span id="cb45-180"><a href="#cb45-180" aria-hidden="true" tabindex="-1"></a>    Server-&gt;&gt;DB: INSERT user (ID: <span class="dv">1</span>)</span>
+<span id="cb45-181"><a href="#cb45-181" aria-hidden="true" tabindex="-1"></a>    DB--&gt;&gt;Server: Created</span>
+<span id="cb45-182"><a href="#cb45-182" aria-hidden="true" tabindex="-1"></a>    Server--&gt;&gt;Client: <span class="dv">201</span> Created (ID: <span class="dv">1</span>)</span>
+<span id="cb45-183"><a href="#cb45-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-184"><a href="#cb45-184" aria-hidden="true" tabindex="-1"></a>    Client-&gt;&gt;Server: POST /users {name: <span class="ot">"</span><span class="st">Alice</span><span class="ot">"</span>}</span>
+<span id="cb45-185"><a href="#cb45-185" aria-hidden="true" tabindex="-1"></a>    Server-&gt;&gt;DB: INSERT user (ID: <span class="dv">2</span>)</span>
+<span id="cb45-186"><a href="#cb45-186" aria-hidden="true" tabindex="-1"></a>    DB--&gt;&gt;Server: Created</span>
+<span id="cb45-187"><a href="#cb45-187" aria-hidden="true" tabindex="-1"></a>    Server--&gt;&gt;Client: <span class="dv">201</span> Created (ID: <span class="dv">2</span>)</span>
+<span id="cb45-188"><a href="#cb45-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-189"><a href="#cb45-189" aria-hidden="true" tabindex="-1"></a>    Note over Client,DB: Same request creates different resources!</span>
+<span id="cb45-190"><a href="#cb45-190" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-191"><a href="#cb45-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-192"><a href="#cb45-192" aria-hidden="true" tabindex="-1"></a><span class="fu">## PUT Method</span></span>
+<span id="cb45-193"><a href="#cb45-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-194"><a href="#cb45-194" aria-hidden="true" tabindex="-1"></a>PUT replaces an entire resource. It requires sending the complete representation.</span>
+<span id="cb45-195"><a href="#cb45-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-196"><a href="#cb45-196" aria-hidden="true" tabindex="-1"></a><span class="fu">### PUT to Update Resource</span></span>
+<span id="cb45-197"><a href="#cb45-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-200"><a href="#cb45-200" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-201"><a href="#cb45-201" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-202"><a href="#cb45-202" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-203"><a href="#cb45-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-204"><a href="#cb45-204" aria-hidden="true" tabindex="-1"></a>PUT https<span class="op">:</span><span class="co">//httpbin.io/put</span></span>
+<span id="cb45-205"><a href="#cb45-205" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb45-206"><a href="#cb45-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-207"><a href="#cb45-207" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb45-208"><a href="#cb45-208" aria-hidden="true" tabindex="-1"></a>  <span class="st">"id"</span><span class="op">:</span> <span class="dv">123</span><span class="op">,</span></span>
+<span id="cb45-209"><a href="#cb45-209" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Alice Updated"</span><span class="op">,</span></span>
+<span id="cb45-210"><a href="#cb45-210" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice.new@example.com"</span><span class="op">,</span></span>
+<span id="cb45-211"><a href="#cb45-211" aria-hidden="true" tabindex="-1"></a>  <span class="st">"role"</span><span class="op">:</span> <span class="st">"senior-developer"</span><span class="op">,</span></span>
+<span id="cb45-212"><a href="#cb45-212" aria-hidden="true" tabindex="-1"></a>  <span class="st">"active"</span><span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb45-213"><a href="#cb45-213" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb45-214"><a href="#cb45-214" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-215"><a href="#cb45-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-216"><a href="#cb45-216" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why PUT is Idempotent</span></span>
+<span id="cb45-217"><a href="#cb45-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-218"><a href="#cb45-218" aria-hidden="true" tabindex="-1"></a>Calling PUT multiple times with the same data results in the same final state:</span>
+<span id="cb45-219"><a href="#cb45-219" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-220"><a href="#cb45-220" aria-hidden="true" tabindex="-1"></a><span class="in">PUT /users/123 {"name": "Alice"} → User 123 has name "Alice"</span></span>
+<span id="cb45-221"><a href="#cb45-221" aria-hidden="true" tabindex="-1"></a><span class="in">PUT /users/123 {"name": "Alice"} → User 123 has name "Alice" (same result)</span></span>
+<span id="cb45-222"><a href="#cb45-222" aria-hidden="true" tabindex="-1"></a><span class="in">PUT /users/123 {"name": "Alice"} → User 123 has name "Alice" (same result)</span></span>
+<span id="cb45-223"><a href="#cb45-223" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-224"><a href="#cb45-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-225"><a href="#cb45-225" aria-hidden="true" tabindex="-1"></a><span class="fu">### PUT vs POST</span></span>
+<span id="cb45-226"><a href="#cb45-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-227"><a href="#cb45-227" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PUT**: Usually for updates, targets a specific resource (<span class="in">`PUT /users/123`</span>)</span>
+<span id="cb45-228"><a href="#cb45-228" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**POST**: Usually for creation, targets a collection (<span class="in">`POST /users`</span>)</span>
+<span id="cb45-229"><a href="#cb45-229" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PUT**: Idempotent (same result each time)</span>
+<span id="cb45-230"><a href="#cb45-230" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**POST**: Not idempotent (may create multiple resources)</span>
+<span id="cb45-231"><a href="#cb45-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-234"><a href="#cb45-234" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb45-235"><a href="#cb45-235" aria-hidden="true" tabindex="-1"></a>graph LR</span>
+<span id="cb45-236"><a href="#cb45-236" aria-hidden="true" tabindex="-1"></a>    A[Client wants to save data] --&gt; B{Know the exact resource URI?}</span>
+<span id="cb45-237"><a href="#cb45-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-238"><a href="#cb45-238" aria-hidden="true" tabindex="-1"></a>    B --&gt;|Yes| C[Use PUT]</span>
+<span id="cb45-239"><a href="#cb45-239" aria-hidden="true" tabindex="-1"></a>    B --&gt;|No| D[Use POST]</span>
+<span id="cb45-240"><a href="#cb45-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-241"><a href="#cb45-241" aria-hidden="true" tabindex="-1"></a>    C --&gt; E[PUT /users/<span class="dv">123</span>]</span>
+<span id="cb45-242"><a href="#cb45-242" aria-hidden="true" tabindex="-1"></a>    D --&gt; F[POST /users]</span>
+<span id="cb45-243"><a href="#cb45-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-244"><a href="#cb45-244" aria-hidden="true" tabindex="-1"></a>    E --&gt; G[Replace entire resource]</span>
+<span id="cb45-245"><a href="#cb45-245" aria-hidden="true" tabindex="-1"></a>    F --&gt; H[Server assigns new ID]</span>
+<span id="cb45-246"><a href="#cb45-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-247"><a href="#cb45-247" aria-hidden="true" tabindex="-1"></a>    G --&gt; I[Idempotent ✓]</span>
+<span id="cb45-248"><a href="#cb45-248" aria-hidden="true" tabindex="-1"></a>    H --&gt; J[Not Idempotent ✗]</span>
+<span id="cb45-249"><a href="#cb45-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-250"><a href="#cb45-250" aria-hidden="true" tabindex="-1"></a>    style C fill:<span class="co">#a5d6a7</span></span>
+<span id="cb45-251"><a href="#cb45-251" aria-hidden="true" tabindex="-1"></a>    style D fill:<span class="co">#ffcc80</span></span>
+<span id="cb45-252"><a href="#cb45-252" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-253"><a href="#cb45-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-254"><a href="#cb45-254" aria-hidden="true" tabindex="-1"></a><span class="fu">## PATCH Method</span></span>
+<span id="cb45-255"><a href="#cb45-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-256"><a href="#cb45-256" aria-hidden="true" tabindex="-1"></a>PATCH applies partial modifications to a resource. Unlike PUT, you only send the fields to update.</span>
+<span id="cb45-257"><a href="#cb45-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-258"><a href="#cb45-258" aria-hidden="true" tabindex="-1"></a><span class="fu">### PATCH for Partial Update</span></span>
+<span id="cb45-259"><a href="#cb45-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-262"><a href="#cb45-262" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-263"><a href="#cb45-263" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-264"><a href="#cb45-264" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-265"><a href="#cb45-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-266"><a href="#cb45-266" aria-hidden="true" tabindex="-1"></a>PATCH https<span class="op">:</span><span class="co">//httpbin.io/patch</span></span>
+<span id="cb45-267"><a href="#cb45-267" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb45-268"><a href="#cb45-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-269"><a href="#cb45-269" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb45-270"><a href="#cb45-270" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice.updated@example.com"</span></span>
+<span id="cb45-271"><a href="#cb45-271" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb45-272"><a href="#cb45-272" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-273"><a href="#cb45-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-274"><a href="#cb45-274" aria-hidden="true" tabindex="-1"></a><span class="fu">### PATCH with JSON Patch Format</span></span>
+<span id="cb45-275"><a href="#cb45-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-278"><a href="#cb45-278" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-279"><a href="#cb45-279" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-280"><a href="#cb45-280" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-281"><a href="#cb45-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-282"><a href="#cb45-282" aria-hidden="true" tabindex="-1"></a>PATCH https<span class="op">:</span><span class="co">//httpbin.io/patch</span></span>
+<span id="cb45-283"><a href="#cb45-283" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json<span class="op">-</span>patch<span class="op">+</span>json</span>
+<span id="cb45-284"><a href="#cb45-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-285"><a href="#cb45-285" aria-hidden="true" tabindex="-1"></a><span class="op">[</span></span>
+<span id="cb45-286"><a href="#cb45-286" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> <span class="st">"op"</span><span class="op">:</span> <span class="st">"replace"</span><span class="op">,</span> <span class="st">"path"</span><span class="op">:</span> <span class="st">"/email"</span><span class="op">,</span> <span class="st">"value"</span><span class="op">:</span> <span class="st">"newemail@example.com"</span> <span class="op">},</span></span>
+<span id="cb45-287"><a href="#cb45-287" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> <span class="st">"op"</span><span class="op">:</span> <span class="st">"add"</span><span class="op">,</span> <span class="st">"path"</span><span class="op">:</span> <span class="st">"/phone"</span><span class="op">,</span> <span class="st">"value"</span><span class="op">:</span> <span class="st">"+1234567890"</span> <span class="op">}</span></span>
+<span id="cb45-288"><a href="#cb45-288" aria-hidden="true" tabindex="-1"></a><span class="op">]</span></span>
+<span id="cb45-289"><a href="#cb45-289" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-290"><a href="#cb45-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-291"><a href="#cb45-291" aria-hidden="true" tabindex="-1"></a><span class="fu">### PUT vs PATCH</span></span>
+<span id="cb45-292"><a href="#cb45-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-295"><a href="#cb45-295" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-296"><a href="#cb45-296" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-297"><a href="#cb45-297" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-298"><a href="#cb45-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-299"><a href="#cb45-299" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">PUT: Must send complete resource</span></span>
+<span id="cb45-300"><a href="#cb45-300" aria-hidden="true" tabindex="-1"></a>PUT https<span class="op">:</span><span class="co">//httpbin.io/put</span></span>
+<span id="cb45-301"><a href="#cb45-301" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb45-302"><a href="#cb45-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-303"><a href="#cb45-303" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb45-304"><a href="#cb45-304" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Alice"</span><span class="op">,</span></span>
+<span id="cb45-305"><a href="#cb45-305" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice@example.com"</span><span class="op">,</span></span>
+<span id="cb45-306"><a href="#cb45-306" aria-hidden="true" tabindex="-1"></a>  <span class="st">"role"</span><span class="op">:</span> <span class="st">"developer"</span><span class="op">,</span></span>
+<span id="cb45-307"><a href="#cb45-307" aria-hidden="true" tabindex="-1"></a>  <span class="st">"active"</span><span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb45-308"><a href="#cb45-308" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb45-309"><a href="#cb45-309" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-310"><a href="#cb45-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-313"><a href="#cb45-313" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-314"><a href="#cb45-314" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-315"><a href="#cb45-315" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-316"><a href="#cb45-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-317"><a href="#cb45-317" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">PATCH: Only send what changes</span></span>
+<span id="cb45-318"><a href="#cb45-318" aria-hidden="true" tabindex="-1"></a>PATCH https<span class="op">:</span><span class="co">//httpbin.io/patch</span></span>
+<span id="cb45-319"><a href="#cb45-319" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb45-320"><a href="#cb45-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-321"><a href="#cb45-321" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb45-322"><a href="#cb45-322" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice@example.com"</span></span>
+<span id="cb45-323"><a href="#cb45-323" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb45-324"><a href="#cb45-324" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-325"><a href="#cb45-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-326"><a href="#cb45-326" aria-hidden="true" tabindex="-1"></a><span class="fu">## DELETE Method</span></span>
+<span id="cb45-327"><a href="#cb45-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-328"><a href="#cb45-328" aria-hidden="true" tabindex="-1"></a>DELETE removes a resource from the server.</span>
+<span id="cb45-329"><a href="#cb45-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-330"><a href="#cb45-330" aria-hidden="true" tabindex="-1"></a><span class="fu">### Basic DELETE Request</span></span>
+<span id="cb45-331"><a href="#cb45-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-334"><a href="#cb45-334" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-335"><a href="#cb45-335" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-336"><a href="#cb45-336" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-337"><a href="#cb45-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-338"><a href="#cb45-338" aria-hidden="true" tabindex="-1"></a>DELETE https<span class="op">:</span><span class="co">//httpbin.io/delete</span></span>
+<span id="cb45-339"><a href="#cb45-339" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-340"><a href="#cb45-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-341"><a href="#cb45-341" aria-hidden="true" tabindex="-1"></a><span class="fu">### DELETE with Specific Resource</span></span>
+<span id="cb45-342"><a href="#cb45-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-345"><a href="#cb45-345" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-346"><a href="#cb45-346" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-347"><a href="#cb45-347" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-348"><a href="#cb45-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-349"><a href="#cb45-349" aria-hidden="true" tabindex="-1"></a>DELETE https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
+<span id="cb45-350"><a href="#cb45-350" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-351"><a href="#cb45-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-352"><a href="#cb45-352" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why DELETE is Idempotent</span></span>
+<span id="cb45-353"><a href="#cb45-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-354"><a href="#cb45-354" aria-hidden="true" tabindex="-1"></a>Deleting the same resource multiple times has the same effect:</span>
+<span id="cb45-355"><a href="#cb45-355" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-356"><a href="#cb45-356" aria-hidden="true" tabindex="-1"></a><span class="in">DELETE /users/123 → User deleted</span></span>
+<span id="cb45-357"><a href="#cb45-357" aria-hidden="true" tabindex="-1"></a><span class="in">DELETE /users/123 → User already gone (same final state)</span></span>
+<span id="cb45-358"><a href="#cb45-358" aria-hidden="true" tabindex="-1"></a><span class="in">DELETE /users/123 → User already gone (same final state)</span></span>
+<span id="cb45-359"><a href="#cb45-359" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-360"><a href="#cb45-360" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-361"><a href="#cb45-361" aria-hidden="true" tabindex="-1"></a>The second and third calls might return 404 (Not Found), but the final state is the same: the resource doesn't exist.</span>
+<span id="cb45-362"><a href="#cb45-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-363"><a href="#cb45-363" aria-hidden="true" tabindex="-1"></a><span class="fu">## HEAD Method</span></span>
+<span id="cb45-364"><a href="#cb45-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-365"><a href="#cb45-365" aria-hidden="true" tabindex="-1"></a>HEAD is identical to GET but returns only the headers, not the body. It's useful for checking if a resource exists or getting metadata.</span>
+<span id="cb45-366"><a href="#cb45-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-367"><a href="#cb45-367" aria-hidden="true" tabindex="-1"></a><span class="fu">### HEAD Request</span></span>
+<span id="cb45-368"><a href="#cb45-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-371"><a href="#cb45-371" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-372"><a href="#cb45-372" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-373"><a href="#cb45-373" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-374"><a href="#cb45-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-375"><a href="#cb45-375" aria-hidden="true" tabindex="-1"></a>HEAD https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb45-376"><a href="#cb45-376" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-377"><a href="#cb45-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-378"><a href="#cb45-378" aria-hidden="true" tabindex="-1"></a>Notice: No response body is returned, only status and headers.</span>
+<span id="cb45-379"><a href="#cb45-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-380"><a href="#cb45-380" aria-hidden="true" tabindex="-1"></a><span class="fu">### Use Cases for HEAD</span></span>
+<span id="cb45-381"><a href="#cb45-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-382"><a href="#cb45-382" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Check if a resource exists (without downloading it)</span>
+<span id="cb45-383"><a href="#cb45-383" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Get the size of a file before downloading (<span class="in">`Content-Length`</span> header)</span>
+<span id="cb45-384"><a href="#cb45-384" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Check last modification time (<span class="in">`Last-Modified`</span> header)</span>
+<span id="cb45-385"><a href="#cb45-385" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Verify link validity</span>
+<span id="cb45-386"><a href="#cb45-386" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-387"><a href="#cb45-387" aria-hidden="true" tabindex="-1"></a><span class="fu">## OPTIONS Method</span></span>
+<span id="cb45-388"><a href="#cb45-388" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-389"><a href="#cb45-389" aria-hidden="true" tabindex="-1"></a>OPTIONS returns the HTTP methods supported by a resource. It's crucial for CORS (Cross-Origin Resource Sharing).</span>
+<span id="cb45-390"><a href="#cb45-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-391"><a href="#cb45-391" aria-hidden="true" tabindex="-1"></a><span class="fu">### OPTIONS Request</span></span>
+<span id="cb45-392"><a href="#cb45-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-395"><a href="#cb45-395" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-396"><a href="#cb45-396" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-397"><a href="#cb45-397" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-398"><a href="#cb45-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-399"><a href="#cb45-399" aria-hidden="true" tabindex="-1"></a>OPTIONS https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb45-400"><a href="#cb45-400" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-401"><a href="#cb45-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-402"><a href="#cb45-402" aria-hidden="true" tabindex="-1"></a>Look for the <span class="in">`Access-Control-Allow-Methods`</span> header in the response, which lists allowed methods.</span>
+<span id="cb45-403"><a href="#cb45-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-404"><a href="#cb45-404" aria-hidden="true" tabindex="-1"></a><span class="fu">### CORS Preflight Request</span></span>
+<span id="cb45-405"><a href="#cb45-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-406"><a href="#cb45-406" aria-hidden="true" tabindex="-1"></a>Browsers send OPTIONS automatically before certain cross-origin requests:</span>
+<span id="cb45-407"><a href="#cb45-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-410"><a href="#cb45-410" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-411"><a href="#cb45-411" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-412"><a href="#cb45-412" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-413"><a href="#cb45-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-414"><a href="#cb45-414" aria-hidden="true" tabindex="-1"></a>OPTIONS https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb45-415"><a href="#cb45-415" aria-hidden="true" tabindex="-1"></a>Access<span class="op">-</span>Control<span class="op">-</span>Request<span class="op">-</span>Method<span class="op">:</span> POST</span>
+<span id="cb45-416"><a href="#cb45-416" aria-hidden="true" tabindex="-1"></a>Access<span class="op">-</span>Control<span class="op">-</span>Request<span class="op">-</span>Headers<span class="op">:</span> Content<span class="op">-</span>Type</span>
+<span id="cb45-417"><a href="#cb45-417" aria-hidden="true" tabindex="-1"></a>Origin<span class="op">:</span> https<span class="op">:</span><span class="co">//example.com</span></span>
+<span id="cb45-418"><a href="#cb45-418" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-419"><a href="#cb45-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-420"><a href="#cb45-420" aria-hidden="true" tabindex="-1"></a><span class="fu">## Less Common Methods</span></span>
+<span id="cb45-421"><a href="#cb45-421" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-422"><a href="#cb45-422" aria-hidden="true" tabindex="-1"></a><span class="fu">### TRACE</span></span>
+<span id="cb45-423"><a href="#cb45-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-424"><a href="#cb45-424" aria-hidden="true" tabindex="-1"></a>TRACE echoes back the received request, useful for debugging:</span>
+<span id="cb45-425"><a href="#cb45-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-428"><a href="#cb45-428" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-429"><a href="#cb45-429" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-430"><a href="#cb45-430" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-431"><a href="#cb45-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-432"><a href="#cb45-432" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Note: httpbin doesn't support TRACE, so this may not work</span></span>
+<span id="cb45-433"><a href="#cb45-433" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb45-434"><a href="#cb45-434" aria-hidden="true" tabindex="-1"></a>X<span class="op">-</span>Custom<span class="op">-</span>Header<span class="op">:</span> debug<span class="op">-</span>trace</span>
+<span id="cb45-435"><a href="#cb45-435" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-436"><a href="#cb45-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-437"><a href="#cb45-437" aria-hidden="true" tabindex="-1"></a><span class="fu">### CONNECT</span></span>
+<span id="cb45-438"><a href="#cb45-438" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-439"><a href="#cb45-439" aria-hidden="true" tabindex="-1"></a>CONNECT establishes a tunnel, typically used for HTTPS through proxies. Not commonly used in APIs.</span>
+<span id="cb45-440"><a href="#cb45-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-441"><a href="#cb45-441" aria-hidden="true" tabindex="-1"></a><span class="fu">## Method Safety and Idempotency Summary</span></span>
+<span id="cb45-442"><a href="#cb45-442" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-443"><a href="#cb45-443" aria-hidden="true" tabindex="-1"></a><span class="fu">### Safe Methods (No Side Effects)</span></span>
+<span id="cb45-444"><a href="#cb45-444" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GET</span>
+<span id="cb45-445"><a href="#cb45-445" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>HEAD</span>
+<span id="cb45-446"><a href="#cb45-446" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>OPTIONS</span>
+<span id="cb45-447"><a href="#cb45-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-448"><a href="#cb45-448" aria-hidden="true" tabindex="-1"></a>Safe methods can be called without worrying about changing server state.</span>
+<span id="cb45-449"><a href="#cb45-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-450"><a href="#cb45-450" aria-hidden="true" tabindex="-1"></a><span class="fu">### Idempotent Methods (Same Result Each Time)</span></span>
+<span id="cb45-451"><a href="#cb45-451" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GET</span>
+<span id="cb45-452"><a href="#cb45-452" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PUT</span>
+<span id="cb45-453"><a href="#cb45-453" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>DELETE</span>
+<span id="cb45-454"><a href="#cb45-454" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>HEAD</span>
+<span id="cb45-455"><a href="#cb45-455" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>OPTIONS</span>
+<span id="cb45-456"><a href="#cb45-456" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-457"><a href="#cb45-457" aria-hidden="true" tabindex="-1"></a>Idempotent methods can be safely retried if there's a network failure.</span>
+<span id="cb45-458"><a href="#cb45-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-459"><a href="#cb45-459" aria-hidden="true" tabindex="-1"></a><span class="fu">### Neither Safe Nor Idempotent</span></span>
+<span id="cb45-460"><a href="#cb45-460" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POST</span>
+<span id="cb45-461"><a href="#cb45-461" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PATCH (typically)</span>
+<span id="cb45-462"><a href="#cb45-462" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-463"><a href="#cb45-463" aria-hidden="true" tabindex="-1"></a>These methods require careful handling and may need special retry logic.</span>
+<span id="cb45-464"><a href="#cb45-464" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-465"><a href="#cb45-465" aria-hidden="true" tabindex="-1"></a><span class="fu">## Best Practices</span></span>
+<span id="cb45-466"><a href="#cb45-466" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-467"><a href="#cb45-467" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Use GET for retrieval**: Never use GET to modify data</span>
+<span id="cb45-468"><a href="#cb45-468" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Use POST for creation**: Create new resources with POST</span>
+<span id="cb45-469"><a href="#cb45-469" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Use PUT for full replacement**: Send complete resource representation</span>
+<span id="cb45-470"><a href="#cb45-470" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Use PATCH for partial updates**: Send only changed fields</span>
+<span id="cb45-471"><a href="#cb45-471" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Use DELETE for removal**: Remove resources with DELETE</span>
+<span id="cb45-472"><a href="#cb45-472" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>**Respect idempotency**: Design APIs where PUT and DELETE are truly idempotent</span>
+<span id="cb45-473"><a href="#cb45-473" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>**Use proper status codes**: Return appropriate codes for each method</span>
+<span id="cb45-474"><a href="#cb45-474" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-475"><a href="#cb45-475" aria-hidden="true" tabindex="-1"></a><span class="fu">## Real-World API Example</span></span>
+<span id="cb45-476"><a href="#cb45-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-477"><a href="#cb45-477" aria-hidden="true" tabindex="-1"></a>Here's a complete CRUD (Create, Read, Update, Delete) example:</span>
+<span id="cb45-478"><a href="#cb45-478" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-481"><a href="#cb45-481" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb45-482"><a href="#cb45-482" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb45-483"><a href="#cb45-483" aria-hidden="true" tabindex="-1"></a>    A[CRUD Operations] --&gt; B[Create]</span>
+<span id="cb45-484"><a href="#cb45-484" aria-hidden="true" tabindex="-1"></a>    A --&gt; C[Read]</span>
+<span id="cb45-485"><a href="#cb45-485" aria-hidden="true" tabindex="-1"></a>    A --&gt; D[Update]</span>
+<span id="cb45-486"><a href="#cb45-486" aria-hidden="true" tabindex="-1"></a>    A --&gt; E[Delete]</span>
+<span id="cb45-487"><a href="#cb45-487" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-488"><a href="#cb45-488" aria-hidden="true" tabindex="-1"></a>    B --&gt; F[POST /users]</span>
+<span id="cb45-489"><a href="#cb45-489" aria-hidden="true" tabindex="-1"></a>    C --&gt; G[GET /users/:id]</span>
+<span id="cb45-490"><a href="#cb45-490" aria-hidden="true" tabindex="-1"></a>    D --&gt; H[PUT /users/:id]</span>
+<span id="cb45-491"><a href="#cb45-491" aria-hidden="true" tabindex="-1"></a>    D --&gt; I[PATCH /users/:id]</span>
+<span id="cb45-492"><a href="#cb45-492" aria-hidden="true" tabindex="-1"></a>    E --&gt; J[DELETE /users/:id]</span>
+<span id="cb45-493"><a href="#cb45-493" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-494"><a href="#cb45-494" aria-hidden="true" tabindex="-1"></a>    F --&gt; K[<span class="dv">201</span> Created]</span>
+<span id="cb45-495"><a href="#cb45-495" aria-hidden="true" tabindex="-1"></a>    G --&gt; L[<span class="dv">200</span> OK]</span>
+<span id="cb45-496"><a href="#cb45-496" aria-hidden="true" tabindex="-1"></a>    H --&gt; M[<span class="dv">200</span> OK]</span>
+<span id="cb45-497"><a href="#cb45-497" aria-hidden="true" tabindex="-1"></a>    I --&gt; M</span>
+<span id="cb45-498"><a href="#cb45-498" aria-hidden="true" tabindex="-1"></a>    J --&gt; N[<span class="dv">204</span> No Content]</span>
+<span id="cb45-499"><a href="#cb45-499" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-500"><a href="#cb45-500" aria-hidden="true" tabindex="-1"></a>    style B fill:<span class="co">#c8e6c9</span></span>
+<span id="cb45-501"><a href="#cb45-501" aria-hidden="true" tabindex="-1"></a>    style C fill:<span class="co">#bbdefb</span></span>
+<span id="cb45-502"><a href="#cb45-502" aria-hidden="true" tabindex="-1"></a>    style D fill:<span class="co">#fff9c4</span></span>
+<span id="cb45-503"><a href="#cb45-503" aria-hidden="true" tabindex="-1"></a>    style E fill:<span class="co">#ffccbc</span></span>
+<span id="cb45-504"><a href="#cb45-504" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-505"><a href="#cb45-505" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-508"><a href="#cb45-508" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-509"><a href="#cb45-509" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-510"><a href="#cb45-510" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-511"><a href="#cb45-511" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-512"><a href="#cb45-512" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Create (POST)</span></span>
+<span id="cb45-513"><a href="#cb45-513" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/anything/users</span></span>
+<span id="cb45-514"><a href="#cb45-514" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb45-515"><a href="#cb45-515" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-516"><a href="#cb45-516" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb45-517"><a href="#cb45-517" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Charlie"</span><span class="op">,</span></span>
+<span id="cb45-518"><a href="#cb45-518" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"charlie@example.com"</span></span>
+<span id="cb45-519"><a href="#cb45-519" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb45-520"><a href="#cb45-520" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-521"><a href="#cb45-521" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-524"><a href="#cb45-524" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-525"><a href="#cb45-525" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-526"><a href="#cb45-526" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-527"><a href="#cb45-527" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-528"><a href="#cb45-528" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Read (GET)</span></span>
+<span id="cb45-529"><a href="#cb45-529" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
+<span id="cb45-530"><a href="#cb45-530" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-531"><a href="#cb45-531" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-534"><a href="#cb45-534" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-535"><a href="#cb45-535" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-536"><a href="#cb45-536" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-537"><a href="#cb45-537" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-538"><a href="#cb45-538" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Update (PUT)</span></span>
+<span id="cb45-539"><a href="#cb45-539" aria-hidden="true" tabindex="-1"></a>PUT https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
+<span id="cb45-540"><a href="#cb45-540" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb45-541"><a href="#cb45-541" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-542"><a href="#cb45-542" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb45-543"><a href="#cb45-543" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Charlie Updated"</span><span class="op">,</span></span>
+<span id="cb45-544"><a href="#cb45-544" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"charlie.new@example.com"</span></span>
+<span id="cb45-545"><a href="#cb45-545" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb45-546"><a href="#cb45-546" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-547"><a href="#cb45-547" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-550"><a href="#cb45-550" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-551"><a href="#cb45-551" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-552"><a href="#cb45-552" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-553"><a href="#cb45-553" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-554"><a href="#cb45-554" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Partial Update (PATCH)</span></span>
+<span id="cb45-555"><a href="#cb45-555" aria-hidden="true" tabindex="-1"></a>PATCH https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
+<span id="cb45-556"><a href="#cb45-556" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb45-557"><a href="#cb45-557" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-558"><a href="#cb45-558" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb45-559"><a href="#cb45-559" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"charlie.newest@example.com"</span></span>
+<span id="cb45-560"><a href="#cb45-560" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb45-561"><a href="#cb45-561" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-562"><a href="#cb45-562" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-565"><a href="#cb45-565" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb45-566"><a href="#cb45-566" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb45-567"><a href="#cb45-567" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb45-568"><a href="#cb45-568" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-569"><a href="#cb45-569" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Delete (DELETE)</span></span>
+<span id="cb45-570"><a href="#cb45-570" aria-hidden="true" tabindex="-1"></a>DELETE https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
+<span id="cb45-571"><a href="#cb45-571" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-572"><a href="#cb45-572" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-573"><a href="#cb45-573" aria-hidden="true" tabindex="-1"></a><span class="fu">## Practice Exercises</span></span>
+<span id="cb45-574"><a href="#cb45-574" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-575"><a href="#cb45-575" aria-hidden="true" tabindex="-1"></a>Try these on your own:</span>
+<span id="cb45-576"><a href="#cb45-576" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-577"><a href="#cb45-577" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Send a POST request with nested JSON data</span>
+<span id="cb45-578"><a href="#cb45-578" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Send a PUT request and then send the same request again - verify it's idempotent</span>
+<span id="cb45-579"><a href="#cb45-579" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Use HEAD to check if <span class="in">`https://httpbin.io/status/200`</span> is accessible</span>
+<span id="cb45-580"><a href="#cb45-580" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Send an OPTIONS request and examine the allowed methods</span>
+<span id="cb45-581"><a href="#cb45-581" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Compare the difference between PUT and PATCH with different payloads</span>
+<span id="cb45-582"><a href="#cb45-582" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-583"><a href="#cb45-583" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key Takeaways</span></span>
+<span id="cb45-584"><a href="#cb45-584" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-585"><a href="#cb45-585" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**GET**: Retrieve data, safe and idempotent</span>
+<span id="cb45-586"><a href="#cb45-586" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**POST**: Create new resources, not idempotent</span>
+<span id="cb45-587"><a href="#cb45-587" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PUT**: Replace entire resource, idempotent</span>
+<span id="cb45-588"><a href="#cb45-588" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PATCH**: Partial update, typically not idempotent</span>
+<span id="cb45-589"><a href="#cb45-589" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**DELETE**: Remove resource, idempotent</span>
+<span id="cb45-590"><a href="#cb45-590" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**HEAD**: Get headers only, safe and idempotent</span>
+<span id="cb45-591"><a href="#cb45-591" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**OPTIONS**: Get allowed methods, used in CORS</span>
+<span id="cb45-592"><a href="#cb45-592" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-593"><a href="#cb45-593" aria-hidden="true" tabindex="-1"></a><span class="fu">## Next Steps</span></span>
+<span id="cb45-594"><a href="#cb45-594" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-595"><a href="#cb45-595" aria-hidden="true" tabindex="-1"></a>Now that you understand HTTP methods, let's explore how headers control request and response behavior in <span class="co">[</span><span class="ot">Chapter 3: HTTP Headers</span><span class="co">](03-http-headers.qmd)</span>.</span>
+<span id="cb45-596"><a href="#cb45-596" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-597"><a href="#cb45-597" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb45-598"><a href="#cb45-598" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-599"><a href="#cb45-599" aria-hidden="true" tabindex="-1"></a><span class="fu">## RFC References</span></span>
+<span id="cb45-600"><a href="#cb45-600" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-601"><a href="#cb45-601" aria-hidden="true" tabindex="-1"></a>This chapter covers concepts from the following RFCs:</span>
+<span id="cb45-602"><a href="#cb45-602" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-603"><a href="#cb45-603" aria-hidden="true" tabindex="-1"></a>::: {.callout-note icon=false}</span>
+<span id="cb45-604"><a href="#cb45-604" aria-hidden="true" tabindex="-1"></a><span class="fu">### HTTP Methods Specification</span></span>
+<span id="cb45-605"><a href="#cb45-605" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-606"><a href="#cb45-606" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)** - HTTP Semantics</span>
+<span id="cb45-607"><a href="#cb45-607" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 9: <span class="co">[</span><span class="ot">Methods</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9)</span></span>
+<span id="cb45-608"><a href="#cb45-608" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 9.1: <span class="co">[</span><span class="ot">Overview</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.1)</span></span>
+<span id="cb45-609"><a href="#cb45-609" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 9.2: <span class="co">[</span><span class="ot">Common Method Properties</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2)</span></span>
+<span id="cb45-610"><a href="#cb45-610" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.2.1: <span class="co">[</span><span class="ot">Safe Methods</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.1)</span></span>
+<span id="cb45-611"><a href="#cb45-611" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.2.2: <span class="co">[</span><span class="ot">Idempotent Methods</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2)</span></span>
+<span id="cb45-612"><a href="#cb45-612" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 9.3: <span class="co">[</span><span class="ot">Method Definitions</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.3)</span></span>
+<span id="cb45-613"><a href="#cb45-613" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.1: <span class="co">[</span><span class="ot">GET</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#GET)</span></span>
+<span id="cb45-614"><a href="#cb45-614" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.2: <span class="co">[</span><span class="ot">HEAD</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#HEAD)</span></span>
+<span id="cb45-615"><a href="#cb45-615" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.3: <span class="co">[</span><span class="ot">POST</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#POST)</span></span>
+<span id="cb45-616"><a href="#cb45-616" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.4: <span class="co">[</span><span class="ot">PUT</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#PUT)</span></span>
+<span id="cb45-617"><a href="#cb45-617" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.5: <span class="co">[</span><span class="ot">DELETE</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#DELETE)</span></span>
+<span id="cb45-618"><a href="#cb45-618" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.6: <span class="co">[</span><span class="ot">CONNECT</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#CONNECT)</span></span>
+<span id="cb45-619"><a href="#cb45-619" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.7: <span class="co">[</span><span class="ot">OPTIONS</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#OPTIONS)</span></span>
+<span id="cb45-620"><a href="#cb45-620" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.8: <span class="co">[</span><span class="ot">TRACE</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#TRACE)</span></span>
+<span id="cb45-621"><a href="#cb45-621" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-622"><a href="#cb45-622" aria-hidden="true" tabindex="-1"></a><span class="fu">### PATCH Method</span></span>
+<span id="cb45-623"><a href="#cb45-623" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-624"><a href="#cb45-624" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 5789](https://www.rfc-editor.org/rfc/rfc5789.html)** - PATCH Method for HTTP</span>
+<span id="cb45-625"><a href="#cb45-625" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
