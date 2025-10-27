@@ -35,6 +35,17 @@ jobs:
       - name: Install Python dependencies
         run: uv sync
 
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Clean up previous publish worktrees
+        run: |
+          if [ -d .quarto ]; then
+            find .quarto -type d -name "quarto-publish-worktree-*" -exec rm -rf {} + 2>/dev/null || true
+          fi
+
       - name: Render and Publish
         run: uv run quarto publish gh-pages --no-prompt
         env:
