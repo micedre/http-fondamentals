@@ -1,0 +1,2139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Chapter 5: Request &amp; Response Bodies – HTTP Fundamentals Training</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-38685b6e60ad7588714dbe24fc7031b2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/hurl-highlight.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    // Register Hurl language
+    if (window.hljsDefineHurl) {
+      hljs.registerLanguage('hurl', window.hljsDefineHurl);
+      console.log('Hurl language registered');
+    } else {
+      console.error('hljsDefineHurl not found');
+    }
+
+    // Find all Hurl code blocks - Quarto renders as <pre class="hurl cell-code"><code>
+    const hurlBlocks = document.querySelectorAll('pre.hurl code, pre.cell-code code');
+    console.log('Found Hurl blocks:', hurlBlocks.length);
+
+    hurlBlocks.forEach((block) => {
+      try {
+        // Highlight with Hurl language
+        const result = hljs.highlight(block.textContent, {language: 'hurl'});
+        block.innerHTML = result.value;
+        block.classList.add('hljs');
+        console.log('Highlighted block');
+      } catch (e) {
+        console.error('Error highlighting:', e);
+      }
+    });
+  });
+</script>
+
+
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">HTTP Fundamentals Training</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-chapters" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Chapters</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-chapters">    
+        <li>
+    <a class="dropdown-item" href="../chapters/01-http-basics.html">
+ <span class="dropdown-text">1. HTTP Basics</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/02-http-methods.html">
+ <span class="dropdown-text">2. HTTP Methods</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/03-http-headers.html">
+ <span class="dropdown-text">3. HTTP Headers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/04-status-codes.html">
+ <span class="dropdown-text">4. Status Codes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/05-request-response.html">
+ <span class="dropdown-text">5. Request &amp; Response</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/06-authentication.html">
+ <span class="dropdown-text">6. Authentication</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/07-advanced.html">
+ <span class="dropdown-text">7. Advanced Topics</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/05-request-response.html">Working with HTTP</a></li><li class="breadcrumb-item"><a href="../chapters/05-request-response.html">5. Request &amp; Response</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="../index.html" class="sidebar-logo-link">
+      </a>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Core Concepts</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01-http-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. HTTP Basics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02-http-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. HTTP Methods</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03-http-headers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. HTTP Headers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04-status-codes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Status Codes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Working with HTTP</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/05-request-response.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">5. Request &amp; Response</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/06-authentication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Authentication</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/07-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Advanced Topics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction-to-http-bodies" id="toc-introduction-to-http-bodies" class="nav-link active" data-scroll-target="#introduction-to-http-bodies">Introduction to HTTP Bodies</a>
+  <ul class="collapse">
+  <li><a href="#body-usage-by-method" id="toc-body-usage-by-method" class="nav-link" data-scroll-target="#body-usage-by-method">Body Usage by Method</a></li>
+  <li><a href="#content-type-header" id="toc-content-type-header" class="nav-link" data-scroll-target="#content-type-header">Content-Type Header</a></li>
+  <li><a href="#json-applicationjson" id="toc-json-applicationjson" class="nav-link" data-scroll-target="#json-applicationjson">JSON (application/json)</a>
+  <ul class="collapse">
+  <li><a href="#simple-json-request" id="toc-simple-json-request" class="nav-link" data-scroll-target="#simple-json-request">Simple JSON Request</a></li>
+  <li><a href="#nested-json-objects" id="toc-nested-json-objects" class="nav-link" data-scroll-target="#nested-json-objects">Nested JSON Objects</a></li>
+  <li><a href="#json-with-arrays" id="toc-json-with-arrays" class="nav-link" data-scroll-target="#json-with-arrays">JSON with Arrays</a></li>
+  <li><a href="#json-data-types" id="toc-json-data-types" class="nav-link" data-scroll-target="#json-data-types">JSON Data Types</a></li>
+  <li><a href="#receiving-json-responses" id="toc-receiving-json-responses" class="nav-link" data-scroll-target="#receiving-json-responses">Receiving JSON Responses</a></li>
+  </ul></li>
+  <li><a href="#form-data" id="toc-form-data" class="nav-link" data-scroll-target="#form-data">Form Data</a>
+  <ul class="collapse">
+  <li><a href="#applicationx-www-form-urlencoded" id="toc-applicationx-www-form-urlencoded" class="nav-link" data-scroll-target="#applicationx-www-form-urlencoded">application/x-www-form-urlencoded</a></li>
+  <li><a href="#form-data-with-special-characters" id="toc-form-data-with-special-characters" class="nav-link" data-scroll-target="#form-data-with-special-characters">Form Data with Special Characters</a></li>
+  <li><a href="#complete-form-example" id="toc-complete-form-example" class="nav-link" data-scroll-target="#complete-form-example">Complete Form Example</a></li>
+  </ul></li>
+  <li><a href="#multipart-form-data" id="toc-multipart-form-data" class="nav-link" data-scroll-target="#multipart-form-data">Multipart Form Data</a>
+  <ul class="collapse">
+  <li><a href="#basic-multipart-form" id="toc-basic-multipart-form" class="nav-link" data-scroll-target="#basic-multipart-form">Basic Multipart Form</a></li>
+  <li><a href="#multipart-with-file-upload" id="toc-multipart-with-file-upload" class="nav-link" data-scroll-target="#multipart-with-file-upload">Multipart with File Upload</a></li>
+  </ul></li>
+  <li><a href="#plain-text" id="toc-plain-text" class="nav-link" data-scroll-target="#plain-text">Plain Text</a>
+  <ul class="collapse">
+  <li><a href="#html-response" id="toc-html-response" class="nav-link" data-scroll-target="#html-response">HTML Response</a></li>
+  <li><a href="#xml-data" id="toc-xml-data" class="nav-link" data-scroll-target="#xml-data">XML Data</a></li>
+  </ul></li>
+  <li><a href="#binary-data" id="toc-binary-data" class="nav-link" data-scroll-target="#binary-data">Binary Data</a>
+  <ul class="collapse">
+  <li><a href="#receiving-binary-data" id="toc-receiving-binary-data" class="nav-link" data-scroll-target="#receiving-binary-data">Receiving Binary Data</a></li>
+  </ul></li>
+  <li><a href="#images" id="toc-images" class="nav-link" data-scroll-target="#images">Images</a>
+  <ul class="collapse">
+  <li><a href="#requesting-images" id="toc-requesting-images" class="nav-link" data-scroll-target="#requesting-images">Requesting Images</a></li>
+  </ul></li>
+  <li><a href="#content-negotiation" id="toc-content-negotiation" class="nav-link" data-scroll-target="#content-negotiation">Content Negotiation</a>
+  <ul class="collapse">
+  <li><a href="#simple-accept-header" id="toc-simple-accept-header" class="nav-link" data-scroll-target="#simple-accept-header">Simple Accept Header</a></li>
+  </ul></li>
+  <li><a href="#transfer-encoding" id="toc-transfer-encoding" class="nav-link" data-scroll-target="#transfer-encoding">Transfer Encoding</a>
+  <ul class="collapse">
+  <li><a href="#streaming-responses" id="toc-streaming-responses" class="nav-link" data-scroll-target="#streaming-responses">Streaming Responses</a></li>
+  </ul></li>
+  <li><a href="#request-body-best-practices" id="toc-request-body-best-practices" class="nav-link" data-scroll-target="#request-body-best-practices">Request Body Best Practices</a>
+  <ul class="collapse">
+  <li><a href="#validate-content" id="toc-validate-content" class="nav-link" data-scroll-target="#validate-content">Validate Content</a></li>
+  <li><a href="#explicit-content-length" id="toc-explicit-content-length" class="nav-link" data-scroll-target="#explicit-content-length">Explicit Content-Length</a></li>
+  </ul></li>
+  <li><a href="#response-body-patterns" id="toc-response-body-patterns" class="nav-link" data-scroll-target="#response-body-patterns">Response Body Patterns</a>
+  <ul class="collapse">
+  <li><a href="#success-response-with-body" id="toc-success-response-with-body" class="nav-link" data-scroll-target="#success-response-with-body">Success Response with Body</a></li>
+  <li><a href="#no-content-response" id="toc-no-content-response" class="nav-link" data-scroll-target="#no-content-response">No Content Response</a></li>
+  </ul></li>
+  <li><a href="#common-response-structures" id="toc-common-response-structures" class="nav-link" data-scroll-target="#common-response-structures">Common Response Structures</a>
+  <ul class="collapse">
+  <li><a href="#envelope-pattern" id="toc-envelope-pattern" class="nav-link" data-scroll-target="#envelope-pattern">Envelope Pattern</a></li>
+  <li><a href="#pagination-response" id="toc-pagination-response" class="nav-link" data-scroll-target="#pagination-response">Pagination Response</a></li>
+  <li><a href="#error-response" id="toc-error-response" class="nav-link" data-scroll-target="#error-response">Error Response</a></li>
+  </ul></li>
+  <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices">Best Practices</a>
+  <ul class="collapse">
+  <li><a href="#for-request-bodies" id="toc-for-request-bodies" class="nav-link" data-scroll-target="#for-request-bodies">For Request Bodies</a></li>
+  <li><a href="#for-response-bodies" id="toc-for-response-bodies" class="nav-link" data-scroll-target="#for-response-bodies">For Response Bodies</a></li>
+  </ul></li>
+  <li><a href="#comparison-examples" id="toc-comparison-examples" class="nav-link" data-scroll-target="#comparison-examples">Comparison Examples</a>
+  <ul class="collapse">
+  <li><a href="#json-vs-form-data" id="toc-json-vs-form-data" class="nav-link" data-scroll-target="#json-vs-form-data">JSON vs Form Data</a></li>
+  <li><a href="#comparing-parsing" id="toc-comparing-parsing" class="nav-link" data-scroll-target="#comparing-parsing">Comparing Parsing</a></li>
+  <li><a href="#complete-request-response" id="toc-complete-request-response" class="nav-link" data-scroll-target="#complete-request-response">Complete Request-Response</a></li>
+  <li><a href="#character-encoding" id="toc-character-encoding" class="nav-link" data-scroll-target="#character-encoding">Character Encoding</a></li>
+  </ul></li>
+  <li><a href="#rfc-references" id="toc-rfc-references" class="nav-link" data-scroll-target="#rfc-references">RFC References</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/05-request-response.html">Working with HTTP</a></li><li class="breadcrumb-item"><a href="../chapters/05-request-response.html">5. Request &amp; Response</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Chapter 5: Request &amp; Response Bodies</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Working with Different Content Types and Payloads</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction-to-http-bodies" class="level1">
+<h1>Introduction to HTTP Bodies</h1>
+<p>The HTTP body contains the actual data being sent between client and server. Not all requests and responses have bodies, but when they do, the <code>Content-Type</code> header specifies the format.</p>
+<section id="body-usage-by-method" class="level2">
+<h2 class="anchored" data-anchor-id="body-usage-by-method">Body Usage by Method</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Request Body</th>
+<th>Response Body</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GET</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>PUT</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>PATCH</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>DELETE</td>
+<td>Rare</td>
+<td>Optional</td>
+</tr>
+<tr class="even">
+<td>HEAD</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>OPTIONS</td>
+<td>Optional</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="content-type-header" class="level2">
+<h2 class="anchored" data-anchor-id="content-type-header">Content-Type Header</h2>
+<p>The <code>Content-Type</code> header specifies the media type of the body:</p>
+<pre><code>Content-Type: type/subtype; parameter=value</code></pre>
+<p>Examples: - <code>application/json</code> - <code>text/html; charset=utf-8</code> - <code>multipart/form-data; boundary=----WebKitFormBoundary</code></p>
+</section>
+<section id="json-applicationjson" class="level2">
+<h2 class="anchored" data-anchor-id="json-applicationjson">JSON (application/json)</h2>
+<p>JSON is the most common format for modern APIs.</p>
+<section id="simple-json-request" class="level3">
+<h3 class="anchored" data-anchor-id="simple-json-request">Simple JSON Request</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "name": "Alice",
+  "email": "alice@example.com",
+  "age": 30
+}</code></pre>
+</section>
+<section id="nested-json-objects" class="level3">
+<h3 class="anchored" data-anchor-id="nested-json-objects">Nested JSON Objects</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "user": {
+    "id": 123,
+    "name": "Bob",
+    "profile": {
+      "bio": "Developer",
+      "location": "Paris"
+    }
+  },
+  "preferences": {
+    "theme": "dark",
+    "language": "en"
+  }
+}</code></pre>
+</section>
+<section id="json-with-arrays" class="level3">
+<h3 class="anchored" data-anchor-id="json-with-arrays">JSON with Arrays</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "users": [
+    {"id": 1, "name": "Alice"},
+    {"id": 2, "name": "Bob"},
+    {"id": 3, "name": "Charlie"}
+  ],
+  "tags": ["http", "training", "api"]
+}</code></pre>
+</section>
+<section id="json-data-types" class="level3">
+<h3 class="anchored" data-anchor-id="json-data-types">JSON Data Types</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "string": "text value",
+  "number": 42,
+  "float": 3.14,
+  "boolean": true,
+  "null_value": null,
+  "array": [1, 2, 3],
+  "object": {"nested": "value"}
+}</code></pre>
+</section>
+<section id="receiving-json-responses" class="level3">
+<h3 class="anchored" data-anchor-id="receiving-json-responses">Receiving JSON Responses</h3>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/json
+Accept: application/json</code></pre>
+</section>
+</section>
+<section id="form-data" class="level2">
+<h2 class="anchored" data-anchor-id="form-data">Form Data</h2>
+<p>Traditional HTML form submission format.</p>
+<section id="applicationx-www-form-urlencoded" class="level3">
+<h3 class="anchored" data-anchor-id="applicationx-www-form-urlencoded">application/x-www-form-urlencoded</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+[FormParams]
+username: alice
+password: secret123
+remember: true</code></pre>
+</section>
+<section id="form-data-with-special-characters" class="level3">
+<h3 class="anchored" data-anchor-id="form-data-with-special-characters">Form Data with Special Characters</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+[FormParams]
+name: Alice Smith
+email: alice+test@example.com
+message: Hello World!</code></pre>
+<p>Hurl automatically URL-encodes special characters in form parameters.</p>
+</section>
+<section id="complete-form-example" class="level3">
+<h3 class="anchored" data-anchor-id="complete-form-example">Complete Form Example</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+[FormParams]
+username: admin
+password: P@ssw0rd!
+action: login
+redirect: /dashboard</code></pre>
+</section>
+</section>
+<section id="multipart-form-data" class="level2">
+<h2 class="anchored" data-anchor-id="multipart-form-data">Multipart Form Data</h2>
+<p>Used for file uploads and forms with mixed content types.</p>
+<section id="basic-multipart-form" class="level3">
+<h3 class="anchored" data-anchor-id="basic-multipart-form">Basic Multipart Form</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+[MultipartFormData]
+username: alice
+email: alice@example.com</code></pre>
+</section>
+<section id="multipart-with-file-upload" class="level3">
+<h3 class="anchored" data-anchor-id="multipart-with-file-upload">Multipart with File Upload</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+[MultipartFormData]
+description: My profile picture</code></pre>
+<p>Note: Hurl can upload actual files using <code>file,&lt;filepath&gt;</code> syntax, but for this example we’re just sending text data.</p>
+</section>
+</section>
+<section id="plain-text" class="level2">
+<h2 class="anchored" data-anchor-id="plain-text">Plain Text</h2>
+<p>Simple unformatted text.</p>
+<pre class="{hurl}"><code>POST https://httpbin.io/post
+Content-Type: text/plain
+
+```
+This is plain text content.
+It can span multiple lines.
+No special formatting or structure.
+```</code></pre>
+<section id="html-response" class="level3">
+<h3 class="anchored" data-anchor-id="html-response">HTML Response</h3>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/html
+Accept: text/html</code></pre>
+</section>
+<section id="xml-data" class="level3">
+<h3 class="anchored" data-anchor-id="xml-data">XML Data</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+Content-Type: application/xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;user&gt;
+  &lt;id&gt;123&lt;/id&gt;
+  &lt;name&gt;Alice&lt;/name&gt;
+  &lt;email&gt;alice@example.com&lt;/email&gt;
+  &lt;roles&gt;
+    &lt;role&gt;admin&lt;/role&gt;
+    &lt;role&gt;user&lt;/role&gt;
+  &lt;/roles&gt;
+&lt;/user&gt;</code></pre>
+</section>
+</section>
+<section id="binary-data" class="level2">
+<h2 class="anchored" data-anchor-id="binary-data">Binary Data</h2>
+<p>For raw binary data:</p>
+<pre class="{hurl}"><code>
+POST https://httpbin.io/post
+Content-Type: application/octet-stream
+
+```
+Raw binary data here...
+```</code></pre>
+<section id="receiving-binary-data" class="level3">
+<h3 class="anchored" data-anchor-id="receiving-binary-data">Receiving Binary Data</h3>
+<pre class="{hurl}"><code>%%verbose
+%%output=bytes.bin
+GET https://httpbin.io/bytes/100</code></pre>
+</section>
+</section>
+<section id="images" class="level2">
+<h2 class="anchored" data-anchor-id="images">Images</h2>
+<section id="requesting-images" class="level3">
+<h3 class="anchored" data-anchor-id="requesting-images">Requesting Images</h3>
+<pre class="{hurl}"><code>%%verbose
+%%output=tmpjgfdslkf.jpeg
+GET https://httpbin.io/image/jpeg
+Accept: image/jpeg</code></pre>
+<p><img src="tmpjgfdslkf.jpeg" class="img-fluid"></p>
+</section>
+</section>
+<section id="content-negotiation" class="level2">
+<h2 class="anchored" data-anchor-id="content-negotiation">Content Negotiation</h2>
+<section id="simple-accept-header" class="level3">
+<h3 class="anchored" data-anchor-id="simple-accept-header">Simple Accept Header</h3>
+<pre class="{hurl}"><code>
+GET https://httpbin.io/get
+Accept: application/json</code></pre>
+<pre class="{hurl}"><code>
+GET https://httpbin.io/get
+Accept: application/json, application/xml;q=0.9, text/plain;q=0.8</code></pre>
+<p>This says: 1. Prefer JSON (quality 1.0, default) 2. XML is acceptable (quality 0.9) 3. Plain text is least preferred (quality 0.8)</p>
+</section>
+</section>
+<section id="transfer-encoding" class="level2">
+<h2 class="anchored" data-anchor-id="transfer-encoding">Transfer Encoding</h2>
+<p>For streaming or unknown content length:</p>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+Transfer-Encoding: chunked
+Content-Type: text/plain
+
+```
+This is chunked data...
+```</code></pre>
+<section id="streaming-responses" class="level3">
+<h3 class="anchored" data-anchor-id="streaming-responses">Streaming Responses</h3>
+<pre class="{hurl}"><code>
+GET https://httpbin.io/stream/5</code></pre>
+<p>This returns 5 JSON objects as a stream.</p>
+</section>
+</section>
+<section id="request-body-best-practices" class="level2">
+<h2 class="anchored" data-anchor-id="request-body-best-practices">Request Body Best Practices</h2>
+<section id="validate-content" class="level3">
+<h3 class="anchored" data-anchor-id="validate-content">Validate Content</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "valid": "json",
+  "properly": "formatted"
+}</code></pre>
+</section>
+<section id="explicit-content-length" class="level3">
+<h3 class="anchored" data-anchor-id="explicit-content-length">Explicit Content-Length</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+Content-Length: 45
+
+{
+  "message": "Body with explicit length"
+}</code></pre>
+</section>
+</section>
+<section id="response-body-patterns" class="level2">
+<h2 class="anchored" data-anchor-id="response-body-patterns">Response Body Patterns</h2>
+<section id="success-response-with-body" class="level3">
+<h3 class="anchored" data-anchor-id="success-response-with-body">Success Response with Body</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "action": "create",
+  "data": {
+    "name": "New Resource"
+  }
+}</code></pre>
+</section>
+<section id="no-content-response" class="level3">
+<h3 class="anchored" data-anchor-id="no-content-response">No Content Response</h3>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/status/204</code></pre>
+<p>Status 204 typically has no body.</p>
+</section>
+</section>
+<section id="common-response-structures" class="level2">
+<h2 class="anchored" data-anchor-id="common-response-structures">Common Response Structures</h2>
+<section id="envelope-pattern" class="level3">
+<h3 class="anchored" data-anchor-id="envelope-pattern">Envelope Pattern</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"data"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"id"</span><span class="fu">:</span> <span class="dv">123</span><span class="fu">,</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Alice"</span><span class="fu">,</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"email"</span><span class="fu">:</span> <span class="st">"alice@example.com"</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"meta"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"timestamp"</span><span class="fu">:</span> <span class="st">"2024-01-15T10:30:00Z"</span><span class="fu">,</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"version"</span><span class="fu">:</span> <span class="st">"1.0"</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="pagination-response" class="level3">
+<h3 class="anchored" data-anchor-id="pagination-response">Pagination Response</h3>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/get?page=2&amp;per_page=20</code></pre>
+<p>Typical pagination response structure:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"data"</span><span class="fu">:</span> <span class="ot">[</span><span class="er">...</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"pagination"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"page"</span><span class="fu">:</span> <span class="dv">2</span><span class="fu">,</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"per_page"</span><span class="fu">:</span> <span class="dv">20</span><span class="fu">,</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"total"</span><span class="fu">:</span> <span class="dv">100</span><span class="fu">,</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"total_pages"</span><span class="fu">:</span> <span class="dv">5</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="error-response" class="level3">
+<h3 class="anchored" data-anchor-id="error-response">Error Response</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"error"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"code"</span><span class="fu">:</span> <span class="st">"VALIDATION_ERROR"</span><span class="fu">,</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"message"</span><span class="fu">:</span> <span class="st">"Invalid input"</span><span class="fu">,</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"details"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">{</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"field"</span><span class="fu">:</span> <span class="st">"email"</span><span class="fu">,</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"error"</span><span class="fu">:</span> <span class="st">"Invalid format"</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="best-practices" class="level2">
+<h2 class="anchored" data-anchor-id="best-practices">Best Practices</h2>
+<section id="for-request-bodies" class="level3">
+<h3 class="anchored" data-anchor-id="for-request-bodies">For Request Bodies</h3>
+<ol type="1">
+<li><strong>Use JSON for APIs</strong>: Modern standard, widely supported</li>
+<li><strong>Set Content-Type</strong>: Always specify the content type</li>
+<li><strong>Validate before sending</strong>: Ensure valid format</li>
+<li><strong>Keep reasonable size</strong>: Don’t send huge payloads</li>
+<li><strong>Use compression</strong>: Enable gzip for large bodies</li>
+</ol>
+</section>
+<section id="for-response-bodies" class="level3">
+<h3 class="anchored" data-anchor-id="for-response-bodies">For Response Bodies</h3>
+<ol type="1">
+<li><strong>Consistent format</strong>: Use the same structure across endpoints</li>
+<li><strong>Include metadata</strong>: Timestamps, versions, pagination</li>
+<li><strong>Meaningful errors</strong>: Provide detailed error information</li>
+<li><strong>Proper status codes</strong>: Match body content with status code</li>
+<li><strong>Use compression</strong>: Reduce bandwidth with gzip/brotli</li>
+</ol>
+</section>
+</section>
+<section id="comparison-examples" class="level2">
+<h2 class="anchored" data-anchor-id="comparison-examples">Comparison Examples</h2>
+<section id="json-vs-form-data" class="level3">
+<h3 class="anchored" data-anchor-id="json-vs-form-data">JSON vs Form Data</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/anything
+Content-Type: application/json
+
+{
+  "test": "json",
+  "number": 123
+}</code></pre>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/anything
+[FormParams]
+test: form
+number: 456</code></pre>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/anything
+Content-Type: text/plain
+
+```
+Plain text content
+```</code></pre>
+</section>
+<section id="comparing-parsing" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-parsing">Comparing Parsing</h3>
+<p>Notice how httpbin.io shows different parsing in <code>json</code>, <code>form</code>, and <code>data</code> fields based on Content-Type.</p>
+</section>
+<section id="complete-request-response" class="level3">
+<h3 class="anchored" data-anchor-id="complete-request-response">Complete Request-Response</h3>
+<pre class="{hurl}"><code>
+
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+Accept: application/json
+
+{
+  "sending": "json",
+  "expecting": "json back"
+}</code></pre>
+</section>
+<section id="character-encoding" class="level3">
+<h3 class="anchored" data-anchor-id="character-encoding">Character Encoding</h3>
+<pre class="{hurl}"><code>
+
+
+POST https://httpbin.io/post
+Content-Type: application/json; charset=utf-8
+
+{
+  "message": "Hello World! 你好世界! Bonjour le monde!"
+}</code></pre>
+<p>Try these on your own:</p>
+<ol type="1">
+<li>Send a deeply nested JSON object (3+ levels)</li>
+<li>Send form data with special characters (properly encoded)</li>
+<li>Request compressed content and verify the Content-Encoding</li>
+<li>Send the same data as JSON and form data - compare responses</li>
+<li>Use Accept header with multiple types and priorities</li>
+</ol>
+<ul>
+<li><strong>Content-Type</strong>: Specifies the format of the request/response body</li>
+<li><strong>JSON</strong>: Most common format for modern APIs</li>
+<li><strong>Form data</strong>: Two types - urlencoded (simple) and multipart (with files)</li>
+<li><strong>Accept header</strong>: Tells server what format you want</li>
+<li><strong>Compression</strong>: Use Accept-Encoding to reduce bandwidth</li>
+<li><strong>Validation</strong>: Always validate content format matches Content-Type</li>
+<li><strong>Consistency</strong>: Maintain consistent response structure across API</li>
+</ul>
+<p>Now that you understand request and response bodies, let’s explore how to secure HTTP requests in <a href="../chapters/06-authentication.html">Chapter 6: Authentication</a>.</p>
+<hr>
+</section>
+</section>
+<section id="rfc-references" class="level2">
+<h2 class="anchored" data-anchor-id="rfc-references">RFC References</h2>
+<p>This chapter covers concepts from the following RFCs:</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Message Bodies and Representations
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong><a href="https://www.rfc-editor.org/rfc/rfc9110.html">RFC 9110</a></strong> - HTTP Semantics
+<ul>
+<li>Section 6.4: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-6.4">Message Body</a></li>
+<li>Section 8: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-8">Representations</a></li>
+<li>Section 8.3: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#field.content-type">Content-Type</a></li>
+<li>Section 8.4: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-8.4">Content Encoding</a></li>
+<li>Section 8.5: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length">Content-Length</a></li>
+</ul></li>
+</ul>
+<section id="transfer-encoding-1" class="level3">
+<h3 class="anchored" data-anchor-id="transfer-encoding-1">Transfer Encoding</h3>
+<ul>
+<li><strong><a href="https://www.rfc-editor.org/rfc/rfc9112.html">RFC 9112</a></strong> - HTTP/1.1
+<ul>
+<li>Section 6: <a href="https://www.rfc-editor.org/rfc/rfc9112.html#section-6">Message Body</a></li>
+<li>Section 7.1: <a href="https://www.rfc-editor.org/rfc/rfc9112.html#chunked.encoding">Chunked Transfer Encoding</a></li>
+</ul></li>
+</ul>
+</section>
+<section id="content-formats" class="level3">
+<h3 class="anchored" data-anchor-id="content-formats">Content Formats</h3>
+<ul>
+<li><strong><a href="https://www.rfc-editor.org/rfc/rfc8259.html">RFC 8259</a></strong> - JSON Data Interchange Format</li>
+<li><strong><a href="https://www.rfc-editor.org/rfc/rfc7578.html">RFC 7578</a></strong> - Multipart Form Data</li>
+<li><strong><a href="https://www.rfc-editor.org/rfc/rfc4648.html">RFC 4648</a></strong> - Base64 Encoding</li>
+</ul>
+</section>
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/micedre\.github\.io\/http-fondamentals\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Chapter 5: Request &amp; Response Bodies"</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Working with Different Content Types and Payloads"</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="fu"># Introduction to HTTP Bodies</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>The HTTP body contains the actual data being sent between client and server. Not all requests and responses have bodies, but when they do, the <span class="in">`Content-Type`</span> header specifies the format.</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## Body Usage by Method</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Method <span class="pp">|</span> Request Body <span class="pp">|</span> Response Body <span class="pp">|</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a><span class="pp">|--------|--------------|---------------|</span></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> GET    <span class="pp">|</span> No           <span class="pp">|</span> Yes           <span class="pp">|</span></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> POST   <span class="pp">|</span> Yes          <span class="pp">|</span> Yes           <span class="pp">|</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> PUT    <span class="pp">|</span> Yes          <span class="pp">|</span> Yes           <span class="pp">|</span></span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> PATCH  <span class="pp">|</span> Yes          <span class="pp">|</span> Yes           <span class="pp">|</span></span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> DELETE <span class="pp">|</span> Rare         <span class="pp">|</span> Optional      <span class="pp">|</span></span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> HEAD   <span class="pp">|</span> No           <span class="pp">|</span> No            <span class="pp">|</span></span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> OPTIONS<span class="pp">|</span> Optional     <span class="pp">|</span> Yes           <span class="pp">|</span></span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## Content-Type Header</span></span>
+<span id="cb35-29"><a href="#cb35-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-30"><a href="#cb35-30" aria-hidden="true" tabindex="-1"></a>The <span class="in">`Content-Type`</span> header specifies the media type of the body:</span>
+<span id="cb35-31"><a href="#cb35-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-32"><a href="#cb35-32" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-33"><a href="#cb35-33" aria-hidden="true" tabindex="-1"></a><span class="in">Content-Type: type/subtype; parameter=value</span></span>
+<span id="cb35-34"><a href="#cb35-34" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-35"><a href="#cb35-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-36"><a href="#cb35-36" aria-hidden="true" tabindex="-1"></a>Examples:</span>
+<span id="cb35-37"><a href="#cb35-37" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`application/json`</span></span>
+<span id="cb35-38"><a href="#cb35-38" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`text/html; charset=utf-8`</span></span>
+<span id="cb35-39"><a href="#cb35-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`multipart/form-data; boundary=----WebKitFormBoundary`</span></span>
+<span id="cb35-40"><a href="#cb35-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-41"><a href="#cb35-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-42"><a href="#cb35-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-43"><a href="#cb35-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-44"><a href="#cb35-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## JSON (application/json)</span></span>
+<span id="cb35-45"><a href="#cb35-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-46"><a href="#cb35-46" aria-hidden="true" tabindex="-1"></a>JSON is the most common format for modern APIs.</span>
+<span id="cb35-47"><a href="#cb35-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-48"><a href="#cb35-48" aria-hidden="true" tabindex="-1"></a><span class="fu">### Simple JSON Request</span></span>
+<span id="cb35-49"><a href="#cb35-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-50"><a href="#cb35-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-51"><a href="#cb35-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-52"><a href="#cb35-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-53"><a href="#cb35-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-56"><a href="#cb35-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-57"><a href="#cb35-57" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-58"><a href="#cb35-58" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb35-59"><a href="#cb35-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-60"><a href="#cb35-60" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb35-61"><a href="#cb35-61" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Alice"</span><span class="op">,</span></span>
+<span id="cb35-62"><a href="#cb35-62" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice@example.com"</span><span class="op">,</span></span>
+<span id="cb35-63"><a href="#cb35-63" aria-hidden="true" tabindex="-1"></a>  <span class="st">"age"</span><span class="op">:</span> <span class="dv">30</span></span>
+<span id="cb35-64"><a href="#cb35-64" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb35-65"><a href="#cb35-65" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-66"><a href="#cb35-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-67"><a href="#cb35-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-68"><a href="#cb35-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-69"><a href="#cb35-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-70"><a href="#cb35-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-71"><a href="#cb35-71" aria-hidden="true" tabindex="-1"></a><span class="fu">### Nested JSON Objects</span></span>
+<span id="cb35-72"><a href="#cb35-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-75"><a href="#cb35-75" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-76"><a href="#cb35-76" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-77"><a href="#cb35-77" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb35-78"><a href="#cb35-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-79"><a href="#cb35-79" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb35-80"><a href="#cb35-80" aria-hidden="true" tabindex="-1"></a>  <span class="st">"user"</span><span class="op">:</span> <span class="op">{</span></span>
+<span id="cb35-81"><a href="#cb35-81" aria-hidden="true" tabindex="-1"></a>    <span class="st">"id"</span><span class="op">:</span> <span class="dv">123</span><span class="op">,</span></span>
+<span id="cb35-82"><a href="#cb35-82" aria-hidden="true" tabindex="-1"></a>    <span class="st">"name"</span><span class="op">:</span> <span class="st">"Bob"</span><span class="op">,</span></span>
+<span id="cb35-83"><a href="#cb35-83" aria-hidden="true" tabindex="-1"></a>    <span class="st">"profile"</span><span class="op">:</span> <span class="op">{</span></span>
+<span id="cb35-84"><a href="#cb35-84" aria-hidden="true" tabindex="-1"></a>      <span class="st">"bio"</span><span class="op">:</span> <span class="st">"Developer"</span><span class="op">,</span></span>
+<span id="cb35-85"><a href="#cb35-85" aria-hidden="true" tabindex="-1"></a>      <span class="st">"location"</span><span class="op">:</span> <span class="st">"Paris"</span></span>
+<span id="cb35-86"><a href="#cb35-86" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb35-87"><a href="#cb35-87" aria-hidden="true" tabindex="-1"></a>  <span class="op">},</span></span>
+<span id="cb35-88"><a href="#cb35-88" aria-hidden="true" tabindex="-1"></a>  <span class="st">"preferences"</span><span class="op">:</span> <span class="op">{</span></span>
+<span id="cb35-89"><a href="#cb35-89" aria-hidden="true" tabindex="-1"></a>    <span class="st">"theme"</span><span class="op">:</span> <span class="st">"dark"</span><span class="op">,</span></span>
+<span id="cb35-90"><a href="#cb35-90" aria-hidden="true" tabindex="-1"></a>    <span class="st">"language"</span><span class="op">:</span> <span class="st">"en"</span></span>
+<span id="cb35-91"><a href="#cb35-91" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb35-92"><a href="#cb35-92" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb35-93"><a href="#cb35-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-94"><a href="#cb35-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-95"><a href="#cb35-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-96"><a href="#cb35-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-97"><a href="#cb35-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-98"><a href="#cb35-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-99"><a href="#cb35-99" aria-hidden="true" tabindex="-1"></a><span class="fu">### JSON with Arrays</span></span>
+<span id="cb35-100"><a href="#cb35-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-103"><a href="#cb35-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-104"><a href="#cb35-104" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-105"><a href="#cb35-105" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb35-106"><a href="#cb35-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-107"><a href="#cb35-107" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb35-108"><a href="#cb35-108" aria-hidden="true" tabindex="-1"></a>  <span class="st">"users"</span><span class="op">:</span> <span class="op">[</span></span>
+<span id="cb35-109"><a href="#cb35-109" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span><span class="st">"id"</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="st">"name"</span><span class="op">:</span> <span class="st">"Alice"</span><span class="op">},</span></span>
+<span id="cb35-110"><a href="#cb35-110" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span><span class="st">"id"</span><span class="op">:</span> <span class="dv">2</span><span class="op">,</span> <span class="st">"name"</span><span class="op">:</span> <span class="st">"Bob"</span><span class="op">},</span></span>
+<span id="cb35-111"><a href="#cb35-111" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span><span class="st">"id"</span><span class="op">:</span> <span class="dv">3</span><span class="op">,</span> <span class="st">"name"</span><span class="op">:</span> <span class="st">"Charlie"</span><span class="op">}</span></span>
+<span id="cb35-112"><a href="#cb35-112" aria-hidden="true" tabindex="-1"></a>  <span class="op">],</span></span>
+<span id="cb35-113"><a href="#cb35-113" aria-hidden="true" tabindex="-1"></a>  <span class="st">"tags"</span><span class="op">:</span> <span class="op">[</span><span class="st">"http"</span><span class="op">,</span> <span class="st">"training"</span><span class="op">,</span> <span class="st">"api"</span><span class="op">]</span></span>
+<span id="cb35-114"><a href="#cb35-114" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb35-115"><a href="#cb35-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-116"><a href="#cb35-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-117"><a href="#cb35-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-118"><a href="#cb35-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-119"><a href="#cb35-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-120"><a href="#cb35-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-121"><a href="#cb35-121" aria-hidden="true" tabindex="-1"></a><span class="fu">### JSON Data Types</span></span>
+<span id="cb35-122"><a href="#cb35-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-125"><a href="#cb35-125" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-126"><a href="#cb35-126" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-127"><a href="#cb35-127" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb35-128"><a href="#cb35-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-129"><a href="#cb35-129" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb35-130"><a href="#cb35-130" aria-hidden="true" tabindex="-1"></a>  <span class="st">"string"</span><span class="op">:</span> <span class="st">"text value"</span><span class="op">,</span></span>
+<span id="cb35-131"><a href="#cb35-131" aria-hidden="true" tabindex="-1"></a>  <span class="st">"number"</span><span class="op">:</span> <span class="dv">42</span><span class="op">,</span></span>
+<span id="cb35-132"><a href="#cb35-132" aria-hidden="true" tabindex="-1"></a>  <span class="st">"float"</span><span class="op">:</span> <span class="fl">3.14</span><span class="op">,</span></span>
+<span id="cb35-133"><a href="#cb35-133" aria-hidden="true" tabindex="-1"></a>  <span class="st">"boolean"</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb35-134"><a href="#cb35-134" aria-hidden="true" tabindex="-1"></a>  <span class="st">"null_value"</span><span class="op">:</span> null<span class="op">,</span></span>
+<span id="cb35-135"><a href="#cb35-135" aria-hidden="true" tabindex="-1"></a>  <span class="st">"array"</span><span class="op">:</span> <span class="op">[</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">],</span></span>
+<span id="cb35-136"><a href="#cb35-136" aria-hidden="true" tabindex="-1"></a>  <span class="st">"object"</span><span class="op">:</span> <span class="op">{</span><span class="st">"nested"</span><span class="op">:</span> <span class="st">"value"</span><span class="op">}</span></span>
+<span id="cb35-137"><a href="#cb35-137" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb35-138"><a href="#cb35-138" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-139"><a href="#cb35-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-140"><a href="#cb35-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-141"><a href="#cb35-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-142"><a href="#cb35-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-143"><a href="#cb35-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-144"><a href="#cb35-144" aria-hidden="true" tabindex="-1"></a><span class="fu">### Receiving JSON Responses</span></span>
+<span id="cb35-145"><a href="#cb35-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-148"><a href="#cb35-148" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-149"><a href="#cb35-149" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/json</span></span>
+<span id="cb35-150"><a href="#cb35-150" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb35-151"><a href="#cb35-151" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-152"><a href="#cb35-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-153"><a href="#cb35-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-154"><a href="#cb35-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-155"><a href="#cb35-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-156"><a href="#cb35-156" aria-hidden="true" tabindex="-1"></a><span class="fu">## Form Data</span></span>
+<span id="cb35-157"><a href="#cb35-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-158"><a href="#cb35-158" aria-hidden="true" tabindex="-1"></a>Traditional HTML form submission format.</span>
+<span id="cb35-159"><a href="#cb35-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-160"><a href="#cb35-160" aria-hidden="true" tabindex="-1"></a><span class="fu">### application/x-www-form-urlencoded</span></span>
+<span id="cb35-161"><a href="#cb35-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-162"><a href="#cb35-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-163"><a href="#cb35-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-164"><a href="#cb35-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-165"><a href="#cb35-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-168"><a href="#cb35-168" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-169"><a href="#cb35-169" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-170"><a href="#cb35-170" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>FormParams<span class="op">]</span></span>
+<span id="cb35-171"><a href="#cb35-171" aria-hidden="true" tabindex="-1"></a>username<span class="op">:</span> alice</span>
+<span id="cb35-172"><a href="#cb35-172" aria-hidden="true" tabindex="-1"></a>password<span class="op">:</span> secret123</span>
+<span id="cb35-173"><a href="#cb35-173" aria-hidden="true" tabindex="-1"></a>remember<span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb35-174"><a href="#cb35-174" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-175"><a href="#cb35-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-176"><a href="#cb35-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-177"><a href="#cb35-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-178"><a href="#cb35-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-179"><a href="#cb35-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-180"><a href="#cb35-180" aria-hidden="true" tabindex="-1"></a><span class="fu">### Form Data with Special Characters</span></span>
+<span id="cb35-181"><a href="#cb35-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-184"><a href="#cb35-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-185"><a href="#cb35-185" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-186"><a href="#cb35-186" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>FormParams<span class="op">]</span></span>
+<span id="cb35-187"><a href="#cb35-187" aria-hidden="true" tabindex="-1"></a>name<span class="op">:</span> Alice Smith</span>
+<span id="cb35-188"><a href="#cb35-188" aria-hidden="true" tabindex="-1"></a>email<span class="op">:</span> alice<span class="op">+</span>test@example<span class="op">.</span>com</span>
+<span id="cb35-189"><a href="#cb35-189" aria-hidden="true" tabindex="-1"></a>message<span class="op">:</span> Hello World<span class="op">!</span></span>
+<span id="cb35-190"><a href="#cb35-190" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-191"><a href="#cb35-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-192"><a href="#cb35-192" aria-hidden="true" tabindex="-1"></a>Hurl automatically URL-encodes special characters in form parameters.</span>
+<span id="cb35-193"><a href="#cb35-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-194"><a href="#cb35-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-195"><a href="#cb35-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-196"><a href="#cb35-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-197"><a href="#cb35-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-198"><a href="#cb35-198" aria-hidden="true" tabindex="-1"></a><span class="fu">### Complete Form Example</span></span>
+<span id="cb35-199"><a href="#cb35-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-202"><a href="#cb35-202" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-203"><a href="#cb35-203" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-204"><a href="#cb35-204" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>FormParams<span class="op">]</span></span>
+<span id="cb35-205"><a href="#cb35-205" aria-hidden="true" tabindex="-1"></a>username<span class="op">:</span> admin</span>
+<span id="cb35-206"><a href="#cb35-206" aria-hidden="true" tabindex="-1"></a>password<span class="op">:</span> P@ssw0rd<span class="op">!</span></span>
+<span id="cb35-207"><a href="#cb35-207" aria-hidden="true" tabindex="-1"></a>action<span class="op">:</span> login</span>
+<span id="cb35-208"><a href="#cb35-208" aria-hidden="true" tabindex="-1"></a>redirect<span class="op">:</span> <span class="op">/</span>dashboard</span>
+<span id="cb35-209"><a href="#cb35-209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-210"><a href="#cb35-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-211"><a href="#cb35-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-212"><a href="#cb35-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-213"><a href="#cb35-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-214"><a href="#cb35-214" aria-hidden="true" tabindex="-1"></a><span class="fu">## Multipart Form Data</span></span>
+<span id="cb35-215"><a href="#cb35-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-216"><a href="#cb35-216" aria-hidden="true" tabindex="-1"></a>Used for file uploads and forms with mixed content types.</span>
+<span id="cb35-217"><a href="#cb35-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-218"><a href="#cb35-218" aria-hidden="true" tabindex="-1"></a><span class="fu">### Basic Multipart Form</span></span>
+<span id="cb35-219"><a href="#cb35-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-220"><a href="#cb35-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-221"><a href="#cb35-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-222"><a href="#cb35-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-223"><a href="#cb35-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-226"><a href="#cb35-226" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-227"><a href="#cb35-227" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-228"><a href="#cb35-228" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>MultipartFormData<span class="op">]</span></span>
+<span id="cb35-229"><a href="#cb35-229" aria-hidden="true" tabindex="-1"></a>username<span class="op">:</span> alice</span>
+<span id="cb35-230"><a href="#cb35-230" aria-hidden="true" tabindex="-1"></a>email<span class="op">:</span> alice@example<span class="op">.</span>com</span>
+<span id="cb35-231"><a href="#cb35-231" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-232"><a href="#cb35-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-233"><a href="#cb35-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-234"><a href="#cb35-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-235"><a href="#cb35-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-236"><a href="#cb35-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-237"><a href="#cb35-237" aria-hidden="true" tabindex="-1"></a><span class="fu">### Multipart with File Upload</span></span>
+<span id="cb35-238"><a href="#cb35-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-241"><a href="#cb35-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-242"><a href="#cb35-242" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-243"><a href="#cb35-243" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>MultipartFormData<span class="op">]</span></span>
+<span id="cb35-244"><a href="#cb35-244" aria-hidden="true" tabindex="-1"></a>description<span class="op">:</span> My profile picture</span>
+<span id="cb35-245"><a href="#cb35-245" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-246"><a href="#cb35-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-247"><a href="#cb35-247" aria-hidden="true" tabindex="-1"></a>Note: Hurl can upload actual files using <span class="in">`file,&lt;filepath&gt;`</span> syntax, but for this example we're just sending text data.</span>
+<span id="cb35-248"><a href="#cb35-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-249"><a href="#cb35-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-250"><a href="#cb35-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-251"><a href="#cb35-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-252"><a href="#cb35-252" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plain Text</span></span>
+<span id="cb35-253"><a href="#cb35-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-254"><a href="#cb35-254" aria-hidden="true" tabindex="-1"></a>Simple unformatted text.</span>
+<span id="cb35-255"><a href="#cb35-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-256"><a href="#cb35-256" aria-hidden="true" tabindex="-1"></a><span class="in">````{hurl}</span></span>
+<span id="cb35-257"><a href="#cb35-257" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-258"><a href="#cb35-258" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> text<span class="op">/</span>plain</span>
+<span id="cb35-259"><a href="#cb35-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-260"><a href="#cb35-260" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb35-261"><a href="#cb35-261" aria-hidden="true" tabindex="-1"></a>This is plain text content<span class="op">.</span></span>
+<span id="cb35-262"><a href="#cb35-262" aria-hidden="true" tabindex="-1"></a>It can span multiple lines<span class="op">.</span></span>
+<span id="cb35-263"><a href="#cb35-263" aria-hidden="true" tabindex="-1"></a>No special formatting or structure<span class="op">.</span></span>
+<span id="cb35-264"><a href="#cb35-264" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb35-265"><a href="#cb35-265" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
+<span id="cb35-266"><a href="#cb35-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-267"><a href="#cb35-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-268"><a href="#cb35-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-269"><a href="#cb35-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-270"><a href="#cb35-270" aria-hidden="true" tabindex="-1"></a><span class="fu">### HTML Response</span></span>
+<span id="cb35-271"><a href="#cb35-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-274"><a href="#cb35-274" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-275"><a href="#cb35-275" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/html</span></span>
+<span id="cb35-276"><a href="#cb35-276" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">:</span> text<span class="op">/</span>html</span>
+<span id="cb35-277"><a href="#cb35-277" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-278"><a href="#cb35-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-279"><a href="#cb35-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-280"><a href="#cb35-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-281"><a href="#cb35-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-282"><a href="#cb35-282" aria-hidden="true" tabindex="-1"></a><span class="fu">### XML Data</span></span>
+<span id="cb35-283"><a href="#cb35-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-286"><a href="#cb35-286" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-287"><a href="#cb35-287" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-288"><a href="#cb35-288" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>xml</span>
+<span id="cb35-289"><a href="#cb35-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-290"><a href="#cb35-290" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;?</span>xml version<span class="op">=</span><span class="st">"1.0"</span> encoding<span class="op">=</span><span class="st">"UTF-8"</span><span class="op">?&gt;</span></span>
+<span id="cb35-291"><a href="#cb35-291" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>user<span class="op">&gt;</span></span>
+<span id="cb35-292"><a href="#cb35-292" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span>id<span class="op">&gt;</span><span class="dv">123</span><span class="op">&lt;/</span>id<span class="op">&gt;</span></span>
+<span id="cb35-293"><a href="#cb35-293" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span>name<span class="op">&gt;</span>Alice<span class="op">&lt;/</span>name<span class="op">&gt;</span></span>
+<span id="cb35-294"><a href="#cb35-294" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span>email<span class="op">&gt;</span>alice@example<span class="op">.</span>com<span class="op">&lt;/</span>email<span class="op">&gt;</span></span>
+<span id="cb35-295"><a href="#cb35-295" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span>roles<span class="op">&gt;</span></span>
+<span id="cb35-296"><a href="#cb35-296" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>role<span class="op">&gt;</span>admin<span class="op">&lt;/</span>role<span class="op">&gt;</span></span>
+<span id="cb35-297"><a href="#cb35-297" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>role<span class="op">&gt;</span>user<span class="op">&lt;/</span>role<span class="op">&gt;</span></span>
+<span id="cb35-298"><a href="#cb35-298" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;/</span>roles<span class="op">&gt;</span></span>
+<span id="cb35-299"><a href="#cb35-299" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;/</span>user<span class="op">&gt;</span></span>
+<span id="cb35-300"><a href="#cb35-300" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-301"><a href="#cb35-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-302"><a href="#cb35-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-303"><a href="#cb35-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-304"><a href="#cb35-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-305"><a href="#cb35-305" aria-hidden="true" tabindex="-1"></a><span class="fu">## Binary Data</span></span>
+<span id="cb35-306"><a href="#cb35-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-307"><a href="#cb35-307" aria-hidden="true" tabindex="-1"></a>For raw binary data:</span>
+<span id="cb35-308"><a href="#cb35-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-309"><a href="#cb35-309" aria-hidden="true" tabindex="-1"></a><span class="in">````{hurl}</span></span>
+<span id="cb35-310"><a href="#cb35-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-311"><a href="#cb35-311" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-312"><a href="#cb35-312" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>octet<span class="op">-</span>stream</span>
+<span id="cb35-313"><a href="#cb35-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-314"><a href="#cb35-314" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb35-315"><a href="#cb35-315" aria-hidden="true" tabindex="-1"></a>Raw binary data here<span class="op">...</span></span>
+<span id="cb35-316"><a href="#cb35-316" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb35-317"><a href="#cb35-317" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
+<span id="cb35-318"><a href="#cb35-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-319"><a href="#cb35-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-320"><a href="#cb35-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-321"><a href="#cb35-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-322"><a href="#cb35-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-323"><a href="#cb35-323" aria-hidden="true" tabindex="-1"></a><span class="fu">### Receiving Binary Data</span></span>
+<span id="cb35-324"><a href="#cb35-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-327"><a href="#cb35-327" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-328"><a href="#cb35-328" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>verbose</span>
+<span id="cb35-329"><a href="#cb35-329" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>output<span class="op">=</span>bytes<span class="op">.</span>bin</span>
+<span id="cb35-330"><a href="#cb35-330" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/bytes/100</span></span>
+<span id="cb35-331"><a href="#cb35-331" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-332"><a href="#cb35-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-333"><a href="#cb35-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-334"><a href="#cb35-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-335"><a href="#cb35-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-336"><a href="#cb35-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-337"><a href="#cb35-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-338"><a href="#cb35-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-339"><a href="#cb35-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-340"><a href="#cb35-340" aria-hidden="true" tabindex="-1"></a><span class="fu">## Images</span></span>
+<span id="cb35-341"><a href="#cb35-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-342"><a href="#cb35-342" aria-hidden="true" tabindex="-1"></a><span class="fu">### Requesting Images</span></span>
+<span id="cb35-343"><a href="#cb35-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-346"><a href="#cb35-346" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-347"><a href="#cb35-347" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>verbose</span>
+<span id="cb35-348"><a href="#cb35-348" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>output<span class="op">=</span>tmpjgfdslkf<span class="op">.</span>jpeg</span>
+<span id="cb35-349"><a href="#cb35-349" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/image/jpeg</span></span>
+<span id="cb35-350"><a href="#cb35-350" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">:</span> image<span class="op">/</span>jpeg</span>
+<span id="cb35-351"><a href="#cb35-351" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-352"><a href="#cb35-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-353"><a href="#cb35-353" aria-hidden="true" tabindex="-1"></a><span class="al">![](tmpjgfdslkf.jpeg)</span></span>
+<span id="cb35-354"><a href="#cb35-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-355"><a href="#cb35-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-356"><a href="#cb35-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-357"><a href="#cb35-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-358"><a href="#cb35-358" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-359"><a href="#cb35-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-360"><a href="#cb35-360" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-361"><a href="#cb35-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-362"><a href="#cb35-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-363"><a href="#cb35-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-364"><a href="#cb35-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-365"><a href="#cb35-365" aria-hidden="true" tabindex="-1"></a><span class="fu">## Content Negotiation</span></span>
+<span id="cb35-366"><a href="#cb35-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-367"><a href="#cb35-367" aria-hidden="true" tabindex="-1"></a><span class="fu">### Simple Accept Header</span></span>
+<span id="cb35-368"><a href="#cb35-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-371"><a href="#cb35-371" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-372"><a href="#cb35-372" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb35-373"><a href="#cb35-373" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb35-374"><a href="#cb35-374" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-375"><a href="#cb35-375" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-376"><a href="#cb35-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-377"><a href="#cb35-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-378"><a href="#cb35-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-379"><a href="#cb35-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-382"><a href="#cb35-382" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-383"><a href="#cb35-383" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb35-384"><a href="#cb35-384" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">:</span> application<span class="op">/</span>json<span class="op">,</span> application<span class="op">/</span>xml<span class="op">;</span>q<span class="op">=</span><span class="fl">0.9</span><span class="op">,</span> text<span class="op">/</span>plain<span class="op">;</span>q<span class="op">=</span><span class="fl">0.8</span></span>
+<span id="cb35-385"><a href="#cb35-385" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-386"><a href="#cb35-386" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-387"><a href="#cb35-387" aria-hidden="true" tabindex="-1"></a>This says:</span>
+<span id="cb35-388"><a href="#cb35-388" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Prefer JSON (quality 1.0, default)</span>
+<span id="cb35-389"><a href="#cb35-389" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>XML is acceptable (quality 0.9)</span>
+<span id="cb35-390"><a href="#cb35-390" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Plain text is least preferred (quality 0.8)</span>
+<span id="cb35-391"><a href="#cb35-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-392"><a href="#cb35-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-393"><a href="#cb35-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-394"><a href="#cb35-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-395"><a href="#cb35-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-396"><a href="#cb35-396" aria-hidden="true" tabindex="-1"></a><span class="fu">## Transfer Encoding</span></span>
+<span id="cb35-397"><a href="#cb35-397" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-398"><a href="#cb35-398" aria-hidden="true" tabindex="-1"></a>For streaming or unknown content length:</span>
+<span id="cb35-399"><a href="#cb35-399" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-400"><a href="#cb35-400" aria-hidden="true" tabindex="-1"></a><span class="in">````{hurl}</span></span>
+<span id="cb35-401"><a href="#cb35-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-402"><a href="#cb35-402" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-403"><a href="#cb35-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-404"><a href="#cb35-404" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-405"><a href="#cb35-405" aria-hidden="true" tabindex="-1"></a>Transfer<span class="op">-</span>Encoding<span class="op">:</span> chunked</span>
+<span id="cb35-406"><a href="#cb35-406" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> text<span class="op">/</span>plain</span>
+<span id="cb35-407"><a href="#cb35-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-408"><a href="#cb35-408" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb35-409"><a href="#cb35-409" aria-hidden="true" tabindex="-1"></a>This is chunked data<span class="op">...</span></span>
+<span id="cb35-410"><a href="#cb35-410" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb35-411"><a href="#cb35-411" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
+<span id="cb35-412"><a href="#cb35-412" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-413"><a href="#cb35-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-414"><a href="#cb35-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-415"><a href="#cb35-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-416"><a href="#cb35-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-417"><a href="#cb35-417" aria-hidden="true" tabindex="-1"></a><span class="fu">### Streaming Responses</span></span>
+<span id="cb35-418"><a href="#cb35-418" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-421"><a href="#cb35-421" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-422"><a href="#cb35-422" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/stream/5</span></span>
+<span id="cb35-423"><a href="#cb35-423" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-424"><a href="#cb35-424" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-425"><a href="#cb35-425" aria-hidden="true" tabindex="-1"></a>This returns 5 JSON objects as a stream.</span>
+<span id="cb35-426"><a href="#cb35-426" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-427"><a href="#cb35-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-428"><a href="#cb35-428" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-429"><a href="#cb35-429" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-430"><a href="#cb35-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-431"><a href="#cb35-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-432"><a href="#cb35-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-433"><a href="#cb35-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-434"><a href="#cb35-434" aria-hidden="true" tabindex="-1"></a><span class="fu">## Request Body Best Practices</span></span>
+<span id="cb35-435"><a href="#cb35-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-436"><a href="#cb35-436" aria-hidden="true" tabindex="-1"></a><span class="fu">### Validate Content</span></span>
+<span id="cb35-437"><a href="#cb35-437" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-440"><a href="#cb35-440" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-441"><a href="#cb35-441" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-442"><a href="#cb35-442" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb35-443"><a href="#cb35-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-444"><a href="#cb35-444" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb35-445"><a href="#cb35-445" aria-hidden="true" tabindex="-1"></a>  <span class="st">"valid"</span><span class="op">:</span> <span class="st">"json"</span><span class="op">,</span></span>
+<span id="cb35-446"><a href="#cb35-446" aria-hidden="true" tabindex="-1"></a>  <span class="st">"properly"</span><span class="op">:</span> <span class="st">"formatted"</span></span>
+<span id="cb35-447"><a href="#cb35-447" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb35-448"><a href="#cb35-448" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-449"><a href="#cb35-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-450"><a href="#cb35-450" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-451"><a href="#cb35-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-452"><a href="#cb35-452" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-453"><a href="#cb35-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-454"><a href="#cb35-454" aria-hidden="true" tabindex="-1"></a><span class="fu">### Explicit Content-Length</span></span>
+<span id="cb35-455"><a href="#cb35-455" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-458"><a href="#cb35-458" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-459"><a href="#cb35-459" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-460"><a href="#cb35-460" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb35-461"><a href="#cb35-461" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Length<span class="op">:</span> <span class="dv">45</span></span>
+<span id="cb35-462"><a href="#cb35-462" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-463"><a href="#cb35-463" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb35-464"><a href="#cb35-464" aria-hidden="true" tabindex="-1"></a>  <span class="st">"message"</span><span class="op">:</span> <span class="st">"Body with explicit length"</span></span>
+<span id="cb35-465"><a href="#cb35-465" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb35-466"><a href="#cb35-466" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-467"><a href="#cb35-467" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-468"><a href="#cb35-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-469"><a href="#cb35-469" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-470"><a href="#cb35-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-471"><a href="#cb35-471" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-472"><a href="#cb35-472" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-473"><a href="#cb35-473" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-474"><a href="#cb35-474" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-475"><a href="#cb35-475" aria-hidden="true" tabindex="-1"></a><span class="fu">## Response Body Patterns</span></span>
+<span id="cb35-476"><a href="#cb35-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-477"><a href="#cb35-477" aria-hidden="true" tabindex="-1"></a><span class="fu">### Success Response with Body</span></span>
+<span id="cb35-478"><a href="#cb35-478" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-481"><a href="#cb35-481" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-482"><a href="#cb35-482" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-483"><a href="#cb35-483" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb35-484"><a href="#cb35-484" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-485"><a href="#cb35-485" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb35-486"><a href="#cb35-486" aria-hidden="true" tabindex="-1"></a>  <span class="st">"action"</span><span class="op">:</span> <span class="st">"create"</span><span class="op">,</span></span>
+<span id="cb35-487"><a href="#cb35-487" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data"</span><span class="op">:</span> <span class="op">{</span></span>
+<span id="cb35-488"><a href="#cb35-488" aria-hidden="true" tabindex="-1"></a>    <span class="st">"name"</span><span class="op">:</span> <span class="st">"New Resource"</span></span>
+<span id="cb35-489"><a href="#cb35-489" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb35-490"><a href="#cb35-490" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb35-491"><a href="#cb35-491" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-492"><a href="#cb35-492" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-493"><a href="#cb35-493" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-494"><a href="#cb35-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-495"><a href="#cb35-495" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-496"><a href="#cb35-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-497"><a href="#cb35-497" aria-hidden="true" tabindex="-1"></a><span class="fu">### No Content Response</span></span>
+<span id="cb35-498"><a href="#cb35-498" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-501"><a href="#cb35-501" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-502"><a href="#cb35-502" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/status/204</span></span>
+<span id="cb35-503"><a href="#cb35-503" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-504"><a href="#cb35-504" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-505"><a href="#cb35-505" aria-hidden="true" tabindex="-1"></a>Status 204 typically has no body.</span>
+<span id="cb35-506"><a href="#cb35-506" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-507"><a href="#cb35-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-508"><a href="#cb35-508" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-509"><a href="#cb35-509" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-510"><a href="#cb35-510" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-511"><a href="#cb35-511" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-512"><a href="#cb35-512" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-513"><a href="#cb35-513" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-514"><a href="#cb35-514" aria-hidden="true" tabindex="-1"></a><span class="fu">## Common Response Structures</span></span>
+<span id="cb35-515"><a href="#cb35-515" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-516"><a href="#cb35-516" aria-hidden="true" tabindex="-1"></a><span class="fu">### Envelope Pattern</span></span>
+<span id="cb35-517"><a href="#cb35-517" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-518"><a href="#cb35-518" aria-hidden="true" tabindex="-1"></a><span class="in">```json</span></span>
+<span id="cb35-519"><a href="#cb35-519" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb35-520"><a href="#cb35-520" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data"</span><span class="op">:</span> {</span>
+<span id="cb35-521"><a href="#cb35-521" aria-hidden="true" tabindex="-1"></a>    <span class="st">"id"</span><span class="op">:</span> <span class="dv">123</span><span class="op">,</span></span>
+<span id="cb35-522"><a href="#cb35-522" aria-hidden="true" tabindex="-1"></a>    <span class="st">"name"</span><span class="op">:</span> <span class="st">"Alice"</span><span class="op">,</span></span>
+<span id="cb35-523"><a href="#cb35-523" aria-hidden="true" tabindex="-1"></a>    <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice@example.com"</span></span>
+<span id="cb35-524"><a href="#cb35-524" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb35-525"><a href="#cb35-525" aria-hidden="true" tabindex="-1"></a>  <span class="st">"meta"</span><span class="op">:</span> {</span>
+<span id="cb35-526"><a href="#cb35-526" aria-hidden="true" tabindex="-1"></a>    <span class="st">"timestamp"</span><span class="op">:</span> <span class="st">"2024-01-15T10:30:00Z"</span><span class="op">,</span></span>
+<span id="cb35-527"><a href="#cb35-527" aria-hidden="true" tabindex="-1"></a>    <span class="st">"version"</span><span class="op">:</span> <span class="st">"1.0"</span></span>
+<span id="cb35-528"><a href="#cb35-528" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb35-529"><a href="#cb35-529" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-530"><a href="#cb35-530" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-531"><a href="#cb35-531" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-532"><a href="#cb35-532" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-533"><a href="#cb35-533" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-534"><a href="#cb35-534" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-535"><a href="#cb35-535" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-536"><a href="#cb35-536" aria-hidden="true" tabindex="-1"></a><span class="fu">### Pagination Response</span></span>
+<span id="cb35-537"><a href="#cb35-537" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-540"><a href="#cb35-540" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-541"><a href="#cb35-541" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get?page=2&amp;per_page=20</span></span>
+<span id="cb35-542"><a href="#cb35-542" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-543"><a href="#cb35-543" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-544"><a href="#cb35-544" aria-hidden="true" tabindex="-1"></a>Typical pagination response structure:</span>
+<span id="cb35-545"><a href="#cb35-545" aria-hidden="true" tabindex="-1"></a><span class="in">```json</span></span>
+<span id="cb35-546"><a href="#cb35-546" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb35-547"><a href="#cb35-547" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data"</span><span class="op">:</span> [<span class="op">...</span>]<span class="op">,</span></span>
+<span id="cb35-548"><a href="#cb35-548" aria-hidden="true" tabindex="-1"></a>  <span class="st">"pagination"</span><span class="op">:</span> {</span>
+<span id="cb35-549"><a href="#cb35-549" aria-hidden="true" tabindex="-1"></a>    <span class="st">"page"</span><span class="op">:</span> <span class="dv">2</span><span class="op">,</span></span>
+<span id="cb35-550"><a href="#cb35-550" aria-hidden="true" tabindex="-1"></a>    <span class="st">"per_page"</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb35-551"><a href="#cb35-551" aria-hidden="true" tabindex="-1"></a>    <span class="st">"total"</span><span class="op">:</span> <span class="dv">100</span><span class="op">,</span></span>
+<span id="cb35-552"><a href="#cb35-552" aria-hidden="true" tabindex="-1"></a>    <span class="st">"total_pages"</span><span class="op">:</span> <span class="dv">5</span></span>
+<span id="cb35-553"><a href="#cb35-553" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb35-554"><a href="#cb35-554" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-555"><a href="#cb35-555" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-556"><a href="#cb35-556" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-557"><a href="#cb35-557" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-558"><a href="#cb35-558" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-559"><a href="#cb35-559" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-560"><a href="#cb35-560" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-561"><a href="#cb35-561" aria-hidden="true" tabindex="-1"></a><span class="fu">### Error Response</span></span>
+<span id="cb35-562"><a href="#cb35-562" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-563"><a href="#cb35-563" aria-hidden="true" tabindex="-1"></a><span class="in">```json</span></span>
+<span id="cb35-564"><a href="#cb35-564" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb35-565"><a href="#cb35-565" aria-hidden="true" tabindex="-1"></a>  <span class="st">"error"</span><span class="op">:</span> {</span>
+<span id="cb35-566"><a href="#cb35-566" aria-hidden="true" tabindex="-1"></a>    <span class="st">"code"</span><span class="op">:</span> <span class="st">"VALIDATION_ERROR"</span><span class="op">,</span></span>
+<span id="cb35-567"><a href="#cb35-567" aria-hidden="true" tabindex="-1"></a>    <span class="st">"message"</span><span class="op">:</span> <span class="st">"Invalid input"</span><span class="op">,</span></span>
+<span id="cb35-568"><a href="#cb35-568" aria-hidden="true" tabindex="-1"></a>    <span class="st">"details"</span><span class="op">:</span> [</span>
+<span id="cb35-569"><a href="#cb35-569" aria-hidden="true" tabindex="-1"></a>      {</span>
+<span id="cb35-570"><a href="#cb35-570" aria-hidden="true" tabindex="-1"></a>        <span class="st">"field"</span><span class="op">:</span> <span class="st">"email"</span><span class="op">,</span></span>
+<span id="cb35-571"><a href="#cb35-571" aria-hidden="true" tabindex="-1"></a>        <span class="st">"error"</span><span class="op">:</span> <span class="st">"Invalid format"</span></span>
+<span id="cb35-572"><a href="#cb35-572" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb35-573"><a href="#cb35-573" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb35-574"><a href="#cb35-574" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb35-575"><a href="#cb35-575" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-576"><a href="#cb35-576" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-577"><a href="#cb35-577" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-578"><a href="#cb35-578" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-579"><a href="#cb35-579" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-580"><a href="#cb35-580" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-581"><a href="#cb35-581" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-582"><a href="#cb35-582" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-583"><a href="#cb35-583" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-584"><a href="#cb35-584" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-585"><a href="#cb35-585" aria-hidden="true" tabindex="-1"></a><span class="fu">## Best Practices</span></span>
+<span id="cb35-586"><a href="#cb35-586" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-587"><a href="#cb35-587" aria-hidden="true" tabindex="-1"></a><span class="fu">### For Request Bodies</span></span>
+<span id="cb35-588"><a href="#cb35-588" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-589"><a href="#cb35-589" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Use JSON for APIs**: Modern standard, widely supported</span>
+<span id="cb35-590"><a href="#cb35-590" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Set Content-Type**: Always specify the content type</span>
+<span id="cb35-591"><a href="#cb35-591" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Validate before sending**: Ensure valid format</span>
+<span id="cb35-592"><a href="#cb35-592" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Keep reasonable size**: Don't send huge payloads</span>
+<span id="cb35-593"><a href="#cb35-593" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Use compression**: Enable gzip for large bodies</span>
+<span id="cb35-594"><a href="#cb35-594" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-595"><a href="#cb35-595" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-596"><a href="#cb35-596" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-597"><a href="#cb35-597" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-598"><a href="#cb35-598" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-599"><a href="#cb35-599" aria-hidden="true" tabindex="-1"></a><span class="fu">### For Response Bodies</span></span>
+<span id="cb35-600"><a href="#cb35-600" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-601"><a href="#cb35-601" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Consistent format**: Use the same structure across endpoints</span>
+<span id="cb35-602"><a href="#cb35-602" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Include metadata**: Timestamps, versions, pagination</span>
+<span id="cb35-603"><a href="#cb35-603" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Meaningful errors**: Provide detailed error information</span>
+<span id="cb35-604"><a href="#cb35-604" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Proper status codes**: Match body content with status code</span>
+<span id="cb35-605"><a href="#cb35-605" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Use compression**: Reduce bandwidth with gzip/brotli</span>
+<span id="cb35-606"><a href="#cb35-606" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-607"><a href="#cb35-607" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-608"><a href="#cb35-608" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-609"><a href="#cb35-609" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-610"><a href="#cb35-610" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-611"><a href="#cb35-611" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-612"><a href="#cb35-612" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-613"><a href="#cb35-613" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-614"><a href="#cb35-614" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparison Examples</span></span>
+<span id="cb35-615"><a href="#cb35-615" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-616"><a href="#cb35-616" aria-hidden="true" tabindex="-1"></a><span class="fu">### JSON vs Form Data</span></span>
+<span id="cb35-617"><a href="#cb35-617" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-620"><a href="#cb35-620" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-621"><a href="#cb35-621" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/anything</span></span>
+<span id="cb35-622"><a href="#cb35-622" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb35-623"><a href="#cb35-623" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-624"><a href="#cb35-624" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb35-625"><a href="#cb35-625" aria-hidden="true" tabindex="-1"></a>  <span class="st">"test"</span><span class="op">:</span> <span class="st">"json"</span><span class="op">,</span></span>
+<span id="cb35-626"><a href="#cb35-626" aria-hidden="true" tabindex="-1"></a>  <span class="st">"number"</span><span class="op">:</span> <span class="dv">123</span></span>
+<span id="cb35-627"><a href="#cb35-627" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb35-628"><a href="#cb35-628" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-629"><a href="#cb35-629" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-630"><a href="#cb35-630" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-631"><a href="#cb35-631" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-632"><a href="#cb35-632" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-633"><a href="#cb35-633" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-636"><a href="#cb35-636" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-637"><a href="#cb35-637" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/anything</span></span>
+<span id="cb35-638"><a href="#cb35-638" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>FormParams<span class="op">]</span></span>
+<span id="cb35-639"><a href="#cb35-639" aria-hidden="true" tabindex="-1"></a>test<span class="op">:</span> form</span>
+<span id="cb35-640"><a href="#cb35-640" aria-hidden="true" tabindex="-1"></a>number<span class="op">:</span> <span class="dv">456</span></span>
+<span id="cb35-641"><a href="#cb35-641" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-642"><a href="#cb35-642" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-643"><a href="#cb35-643" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-644"><a href="#cb35-644" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-645"><a href="#cb35-645" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-646"><a href="#cb35-646" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-647"><a href="#cb35-647" aria-hidden="true" tabindex="-1"></a><span class="in">````{hurl}</span></span>
+<span id="cb35-648"><a href="#cb35-648" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-649"><a href="#cb35-649" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-650"><a href="#cb35-650" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-651"><a href="#cb35-651" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/anything</span></span>
+<span id="cb35-652"><a href="#cb35-652" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> text<span class="op">/</span>plain</span>
+<span id="cb35-653"><a href="#cb35-653" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-654"><a href="#cb35-654" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb35-655"><a href="#cb35-655" aria-hidden="true" tabindex="-1"></a>Plain text content</span>
+<span id="cb35-656"><a href="#cb35-656" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb35-657"><a href="#cb35-657" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
+<span id="cb35-658"><a href="#cb35-658" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-659"><a href="#cb35-659" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-660"><a href="#cb35-660" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-661"><a href="#cb35-661" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-662"><a href="#cb35-662" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-663"><a href="#cb35-663" aria-hidden="true" tabindex="-1"></a><span class="fu">### Comparing Parsing</span></span>
+<span id="cb35-664"><a href="#cb35-664" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-665"><a href="#cb35-665" aria-hidden="true" tabindex="-1"></a>Notice how httpbin.io shows different parsing in <span class="in">`json`</span>, <span class="in">`form`</span>, and <span class="in">`data`</span> fields based on Content-Type.</span>
+<span id="cb35-666"><a href="#cb35-666" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-667"><a href="#cb35-667" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-668"><a href="#cb35-668" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-669"><a href="#cb35-669" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-670"><a href="#cb35-670" aria-hidden="true" tabindex="-1"></a><span class="fu">### Complete Request-Response</span></span>
+<span id="cb35-671"><a href="#cb35-671" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-674"><a href="#cb35-674" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-675"><a href="#cb35-675" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-676"><a href="#cb35-676" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb35-677"><a href="#cb35-677" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb35-678"><a href="#cb35-678" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-679"><a href="#cb35-679" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb35-680"><a href="#cb35-680" aria-hidden="true" tabindex="-1"></a>  <span class="st">"sending"</span><span class="op">:</span> <span class="st">"json"</span><span class="op">,</span></span>
+<span id="cb35-681"><a href="#cb35-681" aria-hidden="true" tabindex="-1"></a>  <span class="st">"expecting"</span><span class="op">:</span> <span class="st">"json back"</span></span>
+<span id="cb35-682"><a href="#cb35-682" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb35-683"><a href="#cb35-683" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-684"><a href="#cb35-684" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-685"><a href="#cb35-685" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-686"><a href="#cb35-686" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-687"><a href="#cb35-687" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-688"><a href="#cb35-688" aria-hidden="true" tabindex="-1"></a><span class="fu">### Character Encoding</span></span>
+<span id="cb35-689"><a href="#cb35-689" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-692"><a href="#cb35-692" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb35-693"><a href="#cb35-693" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb35-694"><a href="#cb35-694" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json<span class="op">;</span> charset<span class="op">=</span>utf<span class="op">-</span><span class="dv">8</span></span>
+<span id="cb35-695"><a href="#cb35-695" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-696"><a href="#cb35-696" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb35-697"><a href="#cb35-697" aria-hidden="true" tabindex="-1"></a>  <span class="st">"message"</span><span class="op">:</span> <span class="st">"Hello World! 你好世界! Bonjour le monde!"</span></span>
+<span id="cb35-698"><a href="#cb35-698" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb35-699"><a href="#cb35-699" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb35-700"><a href="#cb35-700" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-701"><a href="#cb35-701" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-702"><a href="#cb35-702" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-703"><a href="#cb35-703" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-704"><a href="#cb35-704" aria-hidden="true" tabindex="-1"></a>Try these on your own:</span>
+<span id="cb35-705"><a href="#cb35-705" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-706"><a href="#cb35-706" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Send a deeply nested JSON object (3+ levels)</span>
+<span id="cb35-707"><a href="#cb35-707" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Send form data with special characters (properly encoded)</span>
+<span id="cb35-708"><a href="#cb35-708" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Request compressed content and verify the Content-Encoding</span>
+<span id="cb35-709"><a href="#cb35-709" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Send the same data as JSON and form data - compare responses</span>
+<span id="cb35-710"><a href="#cb35-710" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Use Accept header with multiple types and priorities</span>
+<span id="cb35-711"><a href="#cb35-711" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-712"><a href="#cb35-712" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-713"><a href="#cb35-713" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-714"><a href="#cb35-714" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-715"><a href="#cb35-715" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Content-Type**: Specifies the format of the request/response body</span>
+<span id="cb35-716"><a href="#cb35-716" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**JSON**: Most common format for modern APIs</span>
+<span id="cb35-717"><a href="#cb35-717" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Form data**: Two types - urlencoded (simple) and multipart (with files)</span>
+<span id="cb35-718"><a href="#cb35-718" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Accept header**: Tells server what format you want</span>
+<span id="cb35-719"><a href="#cb35-719" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Compression**: Use Accept-Encoding to reduce bandwidth</span>
+<span id="cb35-720"><a href="#cb35-720" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Validation**: Always validate content format matches Content-Type</span>
+<span id="cb35-721"><a href="#cb35-721" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Consistency**: Maintain consistent response structure across API</span>
+<span id="cb35-722"><a href="#cb35-722" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-723"><a href="#cb35-723" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-724"><a href="#cb35-724" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-725"><a href="#cb35-725" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-726"><a href="#cb35-726" aria-hidden="true" tabindex="-1"></a>Now that you understand request and response bodies, let's explore how to secure HTTP requests in <span class="co">[</span><span class="ot">Chapter 6: Authentication</span><span class="co">](06-authentication.qmd)</span>.</span>
+<span id="cb35-727"><a href="#cb35-727" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-728"><a href="#cb35-728" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb35-729"><a href="#cb35-729" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-730"><a href="#cb35-730" aria-hidden="true" tabindex="-1"></a><span class="fu">## RFC References</span></span>
+<span id="cb35-731"><a href="#cb35-731" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-732"><a href="#cb35-732" aria-hidden="true" tabindex="-1"></a>This chapter covers concepts from the following RFCs:</span>
+<span id="cb35-733"><a href="#cb35-733" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-734"><a href="#cb35-734" aria-hidden="true" tabindex="-1"></a>::: {.callout-note icon=false}</span>
+<span id="cb35-735"><a href="#cb35-735" aria-hidden="true" tabindex="-1"></a><span class="fu">### Message Bodies and Representations</span></span>
+<span id="cb35-736"><a href="#cb35-736" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-737"><a href="#cb35-737" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)** - HTTP Semantics</span>
+<span id="cb35-738"><a href="#cb35-738" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 6.4: <span class="co">[</span><span class="ot">Message Body</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-6.4)</span></span>
+<span id="cb35-739"><a href="#cb35-739" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 8: <span class="co">[</span><span class="ot">Representations</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-8)</span></span>
+<span id="cb35-740"><a href="#cb35-740" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 8.3: <span class="co">[</span><span class="ot">Content-Type</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#field.content-type)</span></span>
+<span id="cb35-741"><a href="#cb35-741" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 8.4: <span class="co">[</span><span class="ot">Content Encoding</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-8.4)</span></span>
+<span id="cb35-742"><a href="#cb35-742" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 8.5: <span class="co">[</span><span class="ot">Content-Length</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length)</span></span>
+<span id="cb35-743"><a href="#cb35-743" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-744"><a href="#cb35-744" aria-hidden="true" tabindex="-1"></a><span class="fu">### Transfer Encoding</span></span>
+<span id="cb35-745"><a href="#cb35-745" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-746"><a href="#cb35-746" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 9112](https://www.rfc-editor.org/rfc/rfc9112.html)** - HTTP/1.1</span>
+<span id="cb35-747"><a href="#cb35-747" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 6: <span class="co">[</span><span class="ot">Message Body</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9112.html#section-6)</span></span>
+<span id="cb35-748"><a href="#cb35-748" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 7.1: <span class="co">[</span><span class="ot">Chunked Transfer Encoding</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9112.html#chunked.encoding)</span></span>
+<span id="cb35-749"><a href="#cb35-749" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-750"><a href="#cb35-750" aria-hidden="true" tabindex="-1"></a><span class="fu">### Content Formats</span></span>
+<span id="cb35-751"><a href="#cb35-751" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-752"><a href="#cb35-752" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 8259](https://www.rfc-editor.org/rfc/rfc8259.html)** - JSON Data Interchange Format</span>
+<span id="cb35-753"><a href="#cb35-753" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 7578](https://www.rfc-editor.org/rfc/rfc7578.html)** - Multipart Form Data</span>
+<span id="cb35-754"><a href="#cb35-754" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 4648](https://www.rfc-editor.org/rfc/rfc4648.html)** - Base64 Encoding</span>
+<span id="cb35-755"><a href="#cb35-755" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

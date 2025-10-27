@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Chapter 2: HTTP Methods – HTTP Fundamentals Training</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-38685b6e60ad7588714dbe24fc7031b2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/hurl-highlight.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    // Register Hurl language
+    if (window.hljsDefineHurl) {
+      hljs.registerLanguage('hurl', window.hljsDefineHurl);
+      console.log('Hurl language registered');
+    } else {
+      console.error('hljsDefineHurl not found');
+    }
+
+    // Find all Hurl code blocks - Quarto renders as <pre class="hurl cell-code"><code>
+    const hurlBlocks = document.querySelectorAll('pre.hurl code, pre.cell-code code');
+    console.log('Found Hurl blocks:', hurlBlocks.length);
+
+    hurlBlocks.forEach((block) => {
+      try {
+        // Highlight with Hurl language
+        const result = hljs.highlight(block.textContent, {language: 'hurl'});
+        block.innerHTML = result.value;
+        block.classList.add('hljs');
+        console.log('Highlighted block');
+      } catch (e) {
+        console.error('Error highlighting:', e);
+      }
+    });
+  });
+</script>
+
+
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">HTTP Fundamentals Training</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-chapters" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Chapters</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-chapters">    
+        <li>
+    <a class="dropdown-item" href="../chapters/01-http-basics.html">
+ <span class="dropdown-text">1. HTTP Basics</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/02-http-methods.html">
+ <span class="dropdown-text">2. HTTP Methods</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/03-http-headers.html">
+ <span class="dropdown-text">3. HTTP Headers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/04-status-codes.html">
+ <span class="dropdown-text">4. Status Codes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/05-request-response.html">
+ <span class="dropdown-text">5. Request &amp; Response</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/06-authentication.html">
+ <span class="dropdown-text">6. Authentication</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/07-advanced.html">
+ <span class="dropdown-text">7. Advanced Topics</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/01-http-basics.html">Core Concepts</a></li><li class="breadcrumb-item"><a href="../chapters/02-http-methods.html">2. HTTP Methods</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="../index.html" class="sidebar-logo-link">
+      </a>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Core Concepts</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01-http-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. HTTP Basics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02-http-methods.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">2. HTTP Methods</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03-http-headers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. HTTP Headers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04-status-codes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Status Codes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Working with HTTP</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/05-request-response.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Request &amp; Response</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/06-authentication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Authentication</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/07-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Advanced Topics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#http-methods-overview" id="toc-http-methods-overview" class="nav-link active" data-scroll-target="#http-methods-overview">HTTP Methods Overview</a>
+  <ul class="collapse">
+  <li><a href="#the-main-http-methods" id="toc-the-main-http-methods" class="nav-link" data-scroll-target="#the-main-http-methods">The Main HTTP Methods</a>
+  <ul class="collapse">
+  <li><a href="#key-concepts" id="toc-key-concepts" class="nav-link" data-scroll-target="#key-concepts">Key Concepts</a></li>
+  </ul></li>
+  <li><a href="#get-method" id="toc-get-method" class="nav-link" data-scroll-target="#get-method">GET Method</a>
+  <ul class="collapse">
+  <li><a href="#basic-get-request" id="toc-basic-get-request" class="nav-link" data-scroll-target="#basic-get-request">Basic GET Request</a></li>
+  <li><a href="#get-with-query-parameters" id="toc-get-with-query-parameters" class="nav-link" data-scroll-target="#get-with-query-parameters">GET with Query Parameters</a></li>
+  <li><a href="#get-with-path-parameters" id="toc-get-with-path-parameters" class="nav-link" data-scroll-target="#get-with-path-parameters">GET with Path Parameters</a></li>
+  <li><a href="#why-get-is-safe-and-idempotent" id="toc-why-get-is-safe-and-idempotent" class="nav-link" data-scroll-target="#why-get-is-safe-and-idempotent">Why GET is Safe and Idempotent</a></li>
+  </ul></li>
+  <li><a href="#post-method" id="toc-post-method" class="nav-link" data-scroll-target="#post-method">POST Method</a>
+  <ul class="collapse">
+  <li><a href="#post-with-json-data" id="toc-post-with-json-data" class="nav-link" data-scroll-target="#post-with-json-data">POST with JSON Data</a></li>
+  <li><a href="#post-with-form-data" id="toc-post-with-form-data" class="nav-link" data-scroll-target="#post-with-form-data">POST with Form Data</a></li>
+  <li><a href="#post-with-multiple-fields" id="toc-post-with-multiple-fields" class="nav-link" data-scroll-target="#post-with-multiple-fields">POST with Multiple Fields</a></li>
+  <li><a href="#why-post-is-not-idempotent" id="toc-why-post-is-not-idempotent" class="nav-link" data-scroll-target="#why-post-is-not-idempotent">Why POST is Not Idempotent</a></li>
+  </ul></li>
+  <li><a href="#put-method" id="toc-put-method" class="nav-link" data-scroll-target="#put-method">PUT Method</a>
+  <ul class="collapse">
+  <li><a href="#put-to-update-resource" id="toc-put-to-update-resource" class="nav-link" data-scroll-target="#put-to-update-resource">PUT to Update Resource</a></li>
+  <li><a href="#why-put-is-idempotent" id="toc-why-put-is-idempotent" class="nav-link" data-scroll-target="#why-put-is-idempotent">Why PUT is Idempotent</a></li>
+  <li><a href="#put-vs-post" id="toc-put-vs-post" class="nav-link" data-scroll-target="#put-vs-post">PUT vs POST</a></li>
+  </ul></li>
+  <li><a href="#patch-method" id="toc-patch-method" class="nav-link" data-scroll-target="#patch-method">PATCH Method</a>
+  <ul class="collapse">
+  <li><a href="#patch-for-partial-update" id="toc-patch-for-partial-update" class="nav-link" data-scroll-target="#patch-for-partial-update">PATCH for Partial Update</a></li>
+  <li><a href="#patch-with-json-patch-format" id="toc-patch-with-json-patch-format" class="nav-link" data-scroll-target="#patch-with-json-patch-format">PATCH with JSON Patch Format</a></li>
+  <li><a href="#put-vs-patch" id="toc-put-vs-patch" class="nav-link" data-scroll-target="#put-vs-patch">PUT vs PATCH</a></li>
+  </ul></li>
+  <li><a href="#delete-method" id="toc-delete-method" class="nav-link" data-scroll-target="#delete-method">DELETE Method</a>
+  <ul class="collapse">
+  <li><a href="#basic-delete-request" id="toc-basic-delete-request" class="nav-link" data-scroll-target="#basic-delete-request">Basic DELETE Request</a></li>
+  <li><a href="#delete-with-specific-resource" id="toc-delete-with-specific-resource" class="nav-link" data-scroll-target="#delete-with-specific-resource">DELETE with Specific Resource</a></li>
+  <li><a href="#why-delete-is-idempotent" id="toc-why-delete-is-idempotent" class="nav-link" data-scroll-target="#why-delete-is-idempotent">Why DELETE is Idempotent</a></li>
+  </ul></li>
+  <li><a href="#head-method" id="toc-head-method" class="nav-link" data-scroll-target="#head-method">HEAD Method</a>
+  <ul class="collapse">
+  <li><a href="#head-request" id="toc-head-request" class="nav-link" data-scroll-target="#head-request">HEAD Request</a></li>
+  <li><a href="#use-cases-for-head" id="toc-use-cases-for-head" class="nav-link" data-scroll-target="#use-cases-for-head">Use Cases for HEAD</a></li>
+  </ul></li>
+  <li><a href="#options-method" id="toc-options-method" class="nav-link" data-scroll-target="#options-method">OPTIONS Method</a>
+  <ul class="collapse">
+  <li><a href="#options-request" id="toc-options-request" class="nav-link" data-scroll-target="#options-request">OPTIONS Request</a></li>
+  <li><a href="#cors-preflight-request" id="toc-cors-preflight-request" class="nav-link" data-scroll-target="#cors-preflight-request">CORS Preflight Request</a></li>
+  </ul></li>
+  <li><a href="#less-common-methods" id="toc-less-common-methods" class="nav-link" data-scroll-target="#less-common-methods">Less Common Methods</a>
+  <ul class="collapse">
+  <li><a href="#trace" id="toc-trace" class="nav-link" data-scroll-target="#trace">TRACE</a></li>
+  <li><a href="#connect" id="toc-connect" class="nav-link" data-scroll-target="#connect">CONNECT</a></li>
+  </ul></li>
+  <li><a href="#method-safety-and-idempotency-summary" id="toc-method-safety-and-idempotency-summary" class="nav-link" data-scroll-target="#method-safety-and-idempotency-summary">Method Safety and Idempotency Summary</a>
+  <ul class="collapse">
+  <li><a href="#safe-methods-no-side-effects" id="toc-safe-methods-no-side-effects" class="nav-link" data-scroll-target="#safe-methods-no-side-effects">Safe Methods (No Side Effects)</a></li>
+  <li><a href="#idempotent-methods-same-result-each-time" id="toc-idempotent-methods-same-result-each-time" class="nav-link" data-scroll-target="#idempotent-methods-same-result-each-time">Idempotent Methods (Same Result Each Time)</a></li>
+  <li><a href="#neither-safe-nor-idempotent" id="toc-neither-safe-nor-idempotent" class="nav-link" data-scroll-target="#neither-safe-nor-idempotent">Neither Safe Nor Idempotent</a></li>
+  </ul></li>
+  <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices">Best Practices</a></li>
+  <li><a href="#real-world-api-example" id="toc-real-world-api-example" class="nav-link" data-scroll-target="#real-world-api-example">Real-World API Example</a></li>
+  <li><a href="#practice-exercises" id="toc-practice-exercises" class="nav-link" data-scroll-target="#practice-exercises">Practice Exercises</a></li>
+  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways">Key Takeaways</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
+  <li><a href="#rfc-references" id="toc-rfc-references" class="nav-link" data-scroll-target="#rfc-references">RFC References</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/01-http-basics.html">Core Concepts</a></li><li class="breadcrumb-item"><a href="../chapters/02-http-methods.html">2. HTTP Methods</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Chapter 2: HTTP Methods</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Understanding REST Verbs and Their Semantics</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="http-methods-overview" class="level1">
+<h1>HTTP Methods Overview</h1>
+<p>HTTP methods (also called verbs) define the action to be performed on a resource. Each method has specific semantics and use cases.</p>
+<section id="the-main-http-methods" class="level2">
+<h2 class="anchored" data-anchor-id="the-main-http-methods">The Main HTTP Methods</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Purpose</th>
+<th>Safe</th>
+<th>Idempotent</th>
+<th>Has Body</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GET</td>
+<td>Retrieve resource</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td>Create resource</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>PUT</td>
+<td>Replace resource</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>PATCH</td>
+<td>Modify resource</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>DELETE</td>
+<td>Remove resource</td>
+<td>No</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>HEAD</td>
+<td>Get headers only</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>OPTIONS</td>
+<td>Get allowed methods</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    A[HTTP Methods] --&gt; B[Safe Methods]
+    A --&gt; C[Unsafe Methods]
+
+    B --&gt; D[GET]
+    B --&gt; E[HEAD]
+    B --&gt; F[OPTIONS]
+
+    C --&gt; G[POST]
+    C --&gt; H[PUT]
+    C --&gt; I[PATCH]
+    C --&gt; J[DELETE]
+
+    K[Idempotent] --&gt; D
+    K --&gt; E
+    K --&gt; F
+    K --&gt; H
+    K --&gt; J
+
+    L[Not Idempotent] --&gt; G
+    L --&gt; I
+
+    style B fill:#c8e6c9
+    style C fill:#ffccbc
+    style K fill:#bbdefb
+    style L fill:#fff9c4
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="key-concepts" class="level3">
+<h3 class="anchored" data-anchor-id="key-concepts">Key Concepts</h3>
+<ul>
+<li><strong>Safe</strong>: The method doesn’t modify server state</li>
+<li><strong>Idempotent</strong>: Multiple identical requests have the same effect as a single request</li>
+<li><strong>Has Body</strong>: Whether the request can include a message body</li>
+</ul>
+</section>
+</section>
+<section id="get-method" class="level2">
+<h2 class="anchored" data-anchor-id="get-method">GET Method</h2>
+<p>GET retrieves data from the server. It should not modify any resources.</p>
+<section id="basic-get-request" class="level3">
+<h3 class="anchored" data-anchor-id="basic-get-request">Basic GET Request</h3>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+GET https://httpbin.io/get</code></pre>
+</section>
+<section id="get-with-query-parameters" class="level3">
+<h3 class="anchored" data-anchor-id="get-with-query-parameters">GET with Query Parameters</h3>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+GET https://httpbin.io/get?user=alice&amp;role=admin&amp;status=active</code></pre>
+</section>
+<section id="get-with-path-parameters" class="level3">
+<h3 class="anchored" data-anchor-id="get-with-path-parameters">GET with Path Parameters</h3>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+GET https://httpbin.io/anything/users/123</code></pre>
+</section>
+<section id="why-get-is-safe-and-idempotent" class="level3">
+<h3 class="anchored" data-anchor-id="why-get-is-safe-and-idempotent">Why GET is Safe and Idempotent</h3>
+<ul>
+<li><strong>Safe</strong>: Reading data doesn’t change it</li>
+<li><strong>Idempotent</strong>: Calling GET 100 times returns the same result (assuming no external changes)</li>
+</ul>
+</section>
+</section>
+<section id="post-method" class="level2">
+<h2 class="anchored" data-anchor-id="post-method">POST Method</h2>
+<p>POST submits data to create a new resource. It’s commonly used for form submissions and API calls.</p>
+<section id="post-with-json-data" class="level3">
+<h3 class="anchored" data-anchor-id="post-with-json-data">POST with JSON Data</h3>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "name": "Alice",
+  "email": "alice@example.com",
+  "role": "developer"
+}</code></pre>
+</section>
+<section id="post-with-form-data" class="level3">
+<h3 class="anchored" data-anchor-id="post-with-form-data">POST with Form Data</h3>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+POST https://httpbin.io/post
+[FormParams]
+username: alice
+password: secret123
+remember: true</code></pre>
+</section>
+<section id="post-with-multiple-fields" class="level3">
+<h3 class="anchored" data-anchor-id="post-with-multiple-fields">POST with Multiple Fields</h3>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+POST https://httpbin.io/post
+Content-Type: application/json
+
+{
+  "user": {
+    "name": "Bob",
+    "age": 30
+  },
+  "preferences": {
+    "theme": "dark",
+    "notifications": true
+  },
+  "tags": ["developer", "python", "http"]
+}</code></pre>
+</section>
+<section id="why-post-is-not-idempotent" class="level3">
+<h3 class="anchored" data-anchor-id="why-post-is-not-idempotent">Why POST is Not Idempotent</h3>
+<p>Calling POST multiple times creates multiple resources:</p>
+<pre><code>POST /users → Creates user (ID: 1)
+POST /users → Creates user (ID: 2)
+POST /users → Creates user (ID: 3)</code></pre>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant Client
+    participant Server
+    participant DB as Database
+
+    Client-&gt;&gt;Server: POST /users {name: "Alice"}
+    Server-&gt;&gt;DB: INSERT user (ID: 1)
+    DB--&gt;&gt;Server: Created
+    Server--&gt;&gt;Client: 201 Created (ID: 1)
+
+    Client-&gt;&gt;Server: POST /users {name: "Alice"}
+    Server-&gt;&gt;DB: INSERT user (ID: 2)
+    DB--&gt;&gt;Server: Created
+    Server--&gt;&gt;Client: 201 Created (ID: 2)
+
+    Note over Client,DB: Same request creates different resources!
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="put-method" class="level2">
+<h2 class="anchored" data-anchor-id="put-method">PUT Method</h2>
+<p>PUT replaces an entire resource. It requires sending the complete representation.</p>
+<section id="put-to-update-resource" class="level3">
+<h3 class="anchored" data-anchor-id="put-to-update-resource">PUT to Update Resource</h3>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+PUT https://httpbin.io/put
+Content-Type: application/json
+
+{
+  "id": 123,
+  "name": "Alice Updated",
+  "email": "alice.new@example.com",
+  "role": "senior-developer",
+  "active": true
+}</code></pre>
+</section>
+<section id="why-put-is-idempotent" class="level3">
+<h3 class="anchored" data-anchor-id="why-put-is-idempotent">Why PUT is Idempotent</h3>
+<p>Calling PUT multiple times with the same data results in the same final state:</p>
+<pre><code>PUT /users/123 {"name": "Alice"} → User 123 has name "Alice"
+PUT /users/123 {"name": "Alice"} → User 123 has name "Alice" (same result)
+PUT /users/123 {"name": "Alice"} → User 123 has name "Alice" (same result)</code></pre>
+</section>
+<section id="put-vs-post" class="level3">
+<h3 class="anchored" data-anchor-id="put-vs-post">PUT vs POST</h3>
+<ul>
+<li><strong>PUT</strong>: Usually for updates, targets a specific resource (<code>PUT /users/123</code>)</li>
+<li><strong>POST</strong>: Usually for creation, targets a collection (<code>POST /users</code>)</li>
+<li><strong>PUT</strong>: Idempotent (same result each time)</li>
+<li><strong>POST</strong>: Not idempotent (may create multiple resources)</li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph LR
+    A[Client wants to save data] --&gt; B{Know the exact resource URI?}
+
+    B --&gt;|Yes| C[Use PUT]
+    B --&gt;|No| D[Use POST]
+
+    C --&gt; E[PUT /users/123]
+    D --&gt; F[POST /users]
+
+    E --&gt; G[Replace entire resource]
+    F --&gt; H[Server assigns new ID]
+
+    G --&gt; I[Idempotent ✓]
+    H --&gt; J[Not Idempotent ✗]
+
+    style C fill:#a5d6a7
+    style D fill:#ffcc80
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="patch-method" class="level2">
+<h2 class="anchored" data-anchor-id="patch-method">PATCH Method</h2>
+<p>PATCH applies partial modifications to a resource. Unlike PUT, you only send the fields to update.</p>
+<section id="patch-for-partial-update" class="level3">
+<h3 class="anchored" data-anchor-id="patch-for-partial-update">PATCH for Partial Update</h3>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+PATCH https://httpbin.io/patch
+Content-Type: application/json
+
+{
+  "email": "alice.updated@example.com"
+}</code></pre>
+</section>
+<section id="patch-with-json-patch-format" class="level3">
+<h3 class="anchored" data-anchor-id="patch-with-json-patch-format">PATCH with JSON Patch Format</h3>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+PATCH https://httpbin.io/patch
+Content-Type: application/json-patch+json
+
+[
+  { "op": "replace", "path": "/email", "value": "newemail@example.com" },
+  { "op": "add", "path": "/phone", "value": "+1234567890" }
+]</code></pre>
+</section>
+<section id="put-vs-patch" class="level3">
+<h3 class="anchored" data-anchor-id="put-vs-patch">PUT vs PATCH</h3>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+# PUT: Must send complete resource
+PUT https://httpbin.io/put
+Content-Type: application/json
+
+{
+  "name": "Alice",
+  "email": "alice@example.com",
+  "role": "developer",
+  "active": true
+}</code></pre>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+# PATCH: Only send what changes
+PATCH https://httpbin.io/patch
+Content-Type: application/json
+
+{
+  "email": "alice@example.com"
+}</code></pre>
+</section>
+</section>
+<section id="delete-method" class="level2">
+<h2 class="anchored" data-anchor-id="delete-method">DELETE Method</h2>
+<p>DELETE removes a resource from the server.</p>
+<section id="basic-delete-request" class="level3">
+<h3 class="anchored" data-anchor-id="basic-delete-request">Basic DELETE Request</h3>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+DELETE https://httpbin.io/delete</code></pre>
+</section>
+<section id="delete-with-specific-resource" class="level3">
+<h3 class="anchored" data-anchor-id="delete-with-specific-resource">DELETE with Specific Resource</h3>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+DELETE https://httpbin.io/anything/users/123</code></pre>
+</section>
+<section id="why-delete-is-idempotent" class="level3">
+<h3 class="anchored" data-anchor-id="why-delete-is-idempotent">Why DELETE is Idempotent</h3>
+<p>Deleting the same resource multiple times has the same effect:</p>
+<pre><code>DELETE /users/123 → User deleted
+DELETE /users/123 → User already gone (same final state)
+DELETE /users/123 → User already gone (same final state)</code></pre>
+<p>The second and third calls might return 404 (Not Found), but the final state is the same: the resource doesn’t exist.</p>
+</section>
+</section>
+<section id="head-method" class="level2">
+<h2 class="anchored" data-anchor-id="head-method">HEAD Method</h2>
+<p>HEAD is identical to GET but returns only the headers, not the body. It’s useful for checking if a resource exists or getting metadata.</p>
+<section id="head-request" class="level3">
+<h3 class="anchored" data-anchor-id="head-request">HEAD Request</h3>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+HEAD https://httpbin.io/get</code></pre>
+<p>Notice: No response body is returned, only status and headers.</p>
+</section>
+<section id="use-cases-for-head" class="level3">
+<h3 class="anchored" data-anchor-id="use-cases-for-head">Use Cases for HEAD</h3>
+<ul>
+<li>Check if a resource exists (without downloading it)</li>
+<li>Get the size of a file before downloading (<code>Content-Length</code> header)</li>
+<li>Check last modification time (<code>Last-Modified</code> header)</li>
+<li>Verify link validity</li>
+</ul>
+</section>
+</section>
+<section id="options-method" class="level2">
+<h2 class="anchored" data-anchor-id="options-method">OPTIONS Method</h2>
+<p>OPTIONS returns the HTTP methods supported by a resource. It’s crucial for CORS (Cross-Origin Resource Sharing).</p>
+<section id="options-request" class="level3">
+<h3 class="anchored" data-anchor-id="options-request">OPTIONS Request</h3>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+OPTIONS https://httpbin.io/get</code></pre>
+<p>Look for the <code>Access-Control-Allow-Methods</code> header in the response, which lists allowed methods.</p>
+</section>
+<section id="cors-preflight-request" class="level3">
+<h3 class="anchored" data-anchor-id="cors-preflight-request">CORS Preflight Request</h3>
+<p>Browsers send OPTIONS automatically before certain cross-origin requests:</p>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+OPTIONS https://httpbin.io/post
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type
+Origin: https://example.com</code></pre>
+</section>
+</section>
+<section id="less-common-methods" class="level2">
+<h2 class="anchored" data-anchor-id="less-common-methods">Less Common Methods</h2>
+<section id="trace" class="level3">
+<h3 class="anchored" data-anchor-id="trace">TRACE</h3>
+<p>TRACE echoes back the received request, useful for debugging:</p>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+# Note: httpbin doesn't support TRACE, so this may not work
+GET https://httpbin.io/get
+X-Custom-Header: debug-trace</code></pre>
+</section>
+<section id="connect" class="level3">
+<h3 class="anchored" data-anchor-id="connect">CONNECT</h3>
+<p>CONNECT establishes a tunnel, typically used for HTTPS through proxies. Not commonly used in APIs.</p>
+</section>
+</section>
+<section id="method-safety-and-idempotency-summary" class="level2">
+<h2 class="anchored" data-anchor-id="method-safety-and-idempotency-summary">Method Safety and Idempotency Summary</h2>
+<section id="safe-methods-no-side-effects" class="level3">
+<h3 class="anchored" data-anchor-id="safe-methods-no-side-effects">Safe Methods (No Side Effects)</h3>
+<ul>
+<li>GET</li>
+<li>HEAD</li>
+<li>OPTIONS</li>
+</ul>
+<p>Safe methods can be called without worrying about changing server state.</p>
+</section>
+<section id="idempotent-methods-same-result-each-time" class="level3">
+<h3 class="anchored" data-anchor-id="idempotent-methods-same-result-each-time">Idempotent Methods (Same Result Each Time)</h3>
+<ul>
+<li>GET</li>
+<li>PUT</li>
+<li>DELETE</li>
+<li>HEAD</li>
+<li>OPTIONS</li>
+</ul>
+<p>Idempotent methods can be safely retried if there’s a network failure.</p>
+</section>
+<section id="neither-safe-nor-idempotent" class="level3">
+<h3 class="anchored" data-anchor-id="neither-safe-nor-idempotent">Neither Safe Nor Idempotent</h3>
+<ul>
+<li>POST</li>
+<li>PATCH (typically)</li>
+</ul>
+<p>These methods require careful handling and may need special retry logic.</p>
+</section>
+</section>
+<section id="best-practices" class="level2">
+<h2 class="anchored" data-anchor-id="best-practices">Best Practices</h2>
+<ol type="1">
+<li><strong>Use GET for retrieval</strong>: Never use GET to modify data</li>
+<li><strong>Use POST for creation</strong>: Create new resources with POST</li>
+<li><strong>Use PUT for full replacement</strong>: Send complete resource representation</li>
+<li><strong>Use PATCH for partial updates</strong>: Send only changed fields</li>
+<li><strong>Use DELETE for removal</strong>: Remove resources with DELETE</li>
+<li><strong>Respect idempotency</strong>: Design APIs where PUT and DELETE are truly idempotent</li>
+<li><strong>Use proper status codes</strong>: Return appropriate codes for each method</li>
+</ol>
+</section>
+<section id="real-world-api-example" class="level2">
+<h2 class="anchored" data-anchor-id="real-world-api-example">Real-World API Example</h2>
+<p>Here’s a complete CRUD (Create, Read, Update, Delete) example:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[CRUD Operations] --&gt; B[Create]
+    A --&gt; C[Read]
+    A --&gt; D[Update]
+    A --&gt; E[Delete]
+
+    B --&gt; F[POST /users]
+    C --&gt; G[GET /users/:id]
+    D --&gt; H[PUT /users/:id]
+    D --&gt; I[PATCH /users/:id]
+    E --&gt; J[DELETE /users/:id]
+
+    F --&gt; K[201 Created]
+    G --&gt; L[200 OK]
+    H --&gt; M[200 OK]
+    I --&gt; M
+    J --&gt; N[204 No Content]
+
+    style B fill:#c8e6c9
+    style C fill:#bbdefb
+    style D fill:#fff9c4
+    style E fill:#ffccbc
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+# Create (POST)
+POST https://httpbin.io/anything/users
+Content-Type: application/json
+
+{
+  "name": "Charlie",
+  "email": "charlie@example.com"
+}</code></pre>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+# Read (GET)
+GET https://httpbin.io/anything/users/123</code></pre>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+# Update (PUT)
+PUT https://httpbin.io/anything/users/123
+Content-Type: application/json
+
+{
+  "name": "Charlie Updated",
+  "email": "charlie.new@example.com"
+}</code></pre>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+# Partial Update (PATCH)
+PATCH https://httpbin.io/anything/users/123
+Content-Type: application/json
+
+{
+  "email": "charlie.newest@example.com"
+}</code></pre>
+<pre class="{hurl}"><code>#| echo: true
+#| output: true
+
+# Delete (DELETE)
+DELETE https://httpbin.io/anything/users/123</code></pre>
+</section>
+<section id="practice-exercises" class="level2">
+<h2 class="anchored" data-anchor-id="practice-exercises">Practice Exercises</h2>
+<p>Try these on your own:</p>
+<ol type="1">
+<li>Send a POST request with nested JSON data</li>
+<li>Send a PUT request and then send the same request again - verify it’s idempotent</li>
+<li>Use HEAD to check if <code>https://httpbin.io/status/200</code> is accessible</li>
+<li>Send an OPTIONS request and examine the allowed methods</li>
+<li>Compare the difference between PUT and PATCH with different payloads</li>
+</ol>
+</section>
+<section id="key-takeaways" class="level2">
+<h2 class="anchored" data-anchor-id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li><strong>GET</strong>: Retrieve data, safe and idempotent</li>
+<li><strong>POST</strong>: Create new resources, not idempotent</li>
+<li><strong>PUT</strong>: Replace entire resource, idempotent</li>
+<li><strong>PATCH</strong>: Partial update, typically not idempotent</li>
+<li><strong>DELETE</strong>: Remove resource, idempotent</li>
+<li><strong>HEAD</strong>: Get headers only, safe and idempotent</li>
+<li><strong>OPTIONS</strong>: Get allowed methods, used in CORS</li>
+</ul>
+</section>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>
+<p>Now that you understand HTTP methods, let’s explore how headers control request and response behavior in <a href="../chapters/03-http-headers.html">Chapter 3: HTTP Headers</a>.</p>
+<hr>
+</section>
+<section id="rfc-references" class="level2">
+<h2 class="anchored" data-anchor-id="rfc-references">RFC References</h2>
+<p>This chapter covers concepts from the following RFCs:</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>HTTP Methods Specification
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong><a href="https://www.rfc-editor.org/rfc/rfc9110.html">RFC 9110</a></strong> - HTTP Semantics
+<ul>
+<li>Section 9: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-9">Methods</a></li>
+<li>Section 9.1: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-9.1">Overview</a></li>
+<li>Section 9.2: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2">Common Method Properties</a>
+<ul>
+<li>9.2.1: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.1">Safe Methods</a></li>
+<li>9.2.2: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2">Idempotent Methods</a></li>
+</ul></li>
+<li>Section 9.3: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-9.3">Method Definitions</a>
+<ul>
+<li>9.3.1: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#GET">GET</a></li>
+<li>9.3.2: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#HEAD">HEAD</a></li>
+<li>9.3.3: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#POST">POST</a></li>
+<li>9.3.4: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#PUT">PUT</a></li>
+<li>9.3.5: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#DELETE">DELETE</a></li>
+<li>9.3.6: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#CONNECT">CONNECT</a></li>
+<li>9.3.7: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#OPTIONS">OPTIONS</a></li>
+<li>9.3.8: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#TRACE">TRACE</a></li>
+</ul></li>
+</ul></li>
+</ul>
+<section id="patch-method-1" class="level3">
+<h3 class="anchored" data-anchor-id="patch-method-1">PATCH Method</h3>
+<ul>
+<li><strong><a href="https://www.rfc-editor.org/rfc/rfc5789.html">RFC 5789</a></strong> - PATCH Method for HTTP</li>
+</ul>
+</section>
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/micedre\.github\.io\/http-fondamentals\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Chapter 2: HTTP Methods"</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Understanding REST Verbs and Their Semantics"</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu"># HTTP Methods Overview</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>HTTP methods (also called verbs) define the action to be performed on a resource. Each method has specific semantics and use cases.</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Main HTTP Methods</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Method  <span class="pp">|</span> Purpose              <span class="pp">|</span> Safe <span class="pp">|</span> Idempotent <span class="pp">|</span> Has Body <span class="pp">|</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="pp">|---------|---------------------|------|------------|----------|</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> GET     <span class="pp">|</span> Retrieve resource   <span class="pp">|</span> Yes  <span class="pp">|</span> Yes        <span class="pp">|</span> No       <span class="pp">|</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> POST    <span class="pp">|</span> Create resource     <span class="pp">|</span> No   <span class="pp">|</span> No         <span class="pp">|</span> Yes      <span class="pp">|</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> PUT     <span class="pp">|</span> Replace resource    <span class="pp">|</span> No   <span class="pp">|</span> Yes        <span class="pp">|</span> Yes      <span class="pp">|</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> PATCH   <span class="pp">|</span> Modify resource     <span class="pp">|</span> No   <span class="pp">|</span> No         <span class="pp">|</span> Yes      <span class="pp">|</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> DELETE  <span class="pp">|</span> Remove resource     <span class="pp">|</span> No   <span class="pp">|</span> Yes        <span class="pp">|</span> No       <span class="pp">|</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> HEAD    <span class="pp">|</span> Get headers only    <span class="pp">|</span> Yes  <span class="pp">|</span> Yes        <span class="pp">|</span> No       <span class="pp">|</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> OPTIONS <span class="pp">|</span> Get allowed methods <span class="pp">|</span> Yes  <span class="pp">|</span> Yes        <span class="pp">|</span> No       <span class="pp">|</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>graph TD</span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>    A[HTTP Methods] --&gt; B[Safe Methods]</span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>    A --&gt; C[Unsafe Methods]</span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>    B --&gt; D[GET]</span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>    B --&gt; E[HEAD]</span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>    B --&gt; F[OPTIONS]</span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>    C --&gt; G[POST]</span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>    C --&gt; H[PUT]</span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>    C --&gt; I[PATCH]</span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>    C --&gt; J[DELETE]</span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>    K[Idempotent] --&gt; D</span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a>    K --&gt; E</span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a>    K --&gt; F</span>
+<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a>    K --&gt; H</span>
+<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a>    K --&gt; J</span>
+<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a>    L[Not Idempotent] --&gt; G</span>
+<span id="cb26-45"><a href="#cb26-45" aria-hidden="true" tabindex="-1"></a>    L --&gt; I</span>
+<span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a>    style B fill:<span class="co">#c8e6c9</span></span>
+<span id="cb26-48"><a href="#cb26-48" aria-hidden="true" tabindex="-1"></a>    style C fill:<span class="co">#ffccbc</span></span>
+<span id="cb26-49"><a href="#cb26-49" aria-hidden="true" tabindex="-1"></a>    style K fill:<span class="co">#bbdefb</span></span>
+<span id="cb26-50"><a href="#cb26-50" aria-hidden="true" tabindex="-1"></a>    style L fill:<span class="co">#fff9c4</span></span>
+<span id="cb26-51"><a href="#cb26-51" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-52"><a href="#cb26-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-53"><a href="#cb26-53" aria-hidden="true" tabindex="-1"></a><span class="fu">### Key Concepts</span></span>
+<span id="cb26-54"><a href="#cb26-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-55"><a href="#cb26-55" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Safe**: The method doesn't modify server state</span>
+<span id="cb26-56"><a href="#cb26-56" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Idempotent**: Multiple identical requests have the same effect as a single request</span>
+<span id="cb26-57"><a href="#cb26-57" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Has Body**: Whether the request can include a message body</span>
+<span id="cb26-58"><a href="#cb26-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-59"><a href="#cb26-59" aria-hidden="true" tabindex="-1"></a><span class="fu">## GET Method</span></span>
+<span id="cb26-60"><a href="#cb26-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-61"><a href="#cb26-61" aria-hidden="true" tabindex="-1"></a>GET retrieves data from the server. It should not modify any resources.</span>
+<span id="cb26-62"><a href="#cb26-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-63"><a href="#cb26-63" aria-hidden="true" tabindex="-1"></a><span class="fu">### Basic GET Request</span></span>
+<span id="cb26-64"><a href="#cb26-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-67"><a href="#cb26-67" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-68"><a href="#cb26-68" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-69"><a href="#cb26-69" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-70"><a href="#cb26-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-71"><a href="#cb26-71" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb26-72"><a href="#cb26-72" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-73"><a href="#cb26-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-74"><a href="#cb26-74" aria-hidden="true" tabindex="-1"></a><span class="fu">### GET with Query Parameters</span></span>
+<span id="cb26-75"><a href="#cb26-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-78"><a href="#cb26-78" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-79"><a href="#cb26-79" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-80"><a href="#cb26-80" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-81"><a href="#cb26-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-82"><a href="#cb26-82" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get?user=alice&amp;role=admin&amp;status=active</span></span>
+<span id="cb26-83"><a href="#cb26-83" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-84"><a href="#cb26-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-85"><a href="#cb26-85" aria-hidden="true" tabindex="-1"></a><span class="fu">### GET with Path Parameters</span></span>
+<span id="cb26-86"><a href="#cb26-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-89"><a href="#cb26-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-90"><a href="#cb26-90" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-91"><a href="#cb26-91" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-92"><a href="#cb26-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-93"><a href="#cb26-93" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
+<span id="cb26-94"><a href="#cb26-94" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-95"><a href="#cb26-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-96"><a href="#cb26-96" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why GET is Safe and Idempotent</span></span>
+<span id="cb26-97"><a href="#cb26-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-98"><a href="#cb26-98" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Safe**: Reading data doesn't change it</span>
+<span id="cb26-99"><a href="#cb26-99" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Idempotent**: Calling GET 100 times returns the same result (assuming no external changes)</span>
+<span id="cb26-100"><a href="#cb26-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-101"><a href="#cb26-101" aria-hidden="true" tabindex="-1"></a><span class="fu">## POST Method</span></span>
+<span id="cb26-102"><a href="#cb26-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-103"><a href="#cb26-103" aria-hidden="true" tabindex="-1"></a>POST submits data to create a new resource. It's commonly used for form submissions and API calls.</span>
+<span id="cb26-104"><a href="#cb26-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-105"><a href="#cb26-105" aria-hidden="true" tabindex="-1"></a><span class="fu">### POST with JSON Data</span></span>
+<span id="cb26-106"><a href="#cb26-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-109"><a href="#cb26-109" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-110"><a href="#cb26-110" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-111"><a href="#cb26-111" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-112"><a href="#cb26-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-113"><a href="#cb26-113" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb26-114"><a href="#cb26-114" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb26-115"><a href="#cb26-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-116"><a href="#cb26-116" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb26-117"><a href="#cb26-117" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Alice"</span><span class="op">,</span></span>
+<span id="cb26-118"><a href="#cb26-118" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice@example.com"</span><span class="op">,</span></span>
+<span id="cb26-119"><a href="#cb26-119" aria-hidden="true" tabindex="-1"></a>  <span class="st">"role"</span><span class="op">:</span> <span class="st">"developer"</span></span>
+<span id="cb26-120"><a href="#cb26-120" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-121"><a href="#cb26-121" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-122"><a href="#cb26-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-123"><a href="#cb26-123" aria-hidden="true" tabindex="-1"></a><span class="fu">### POST with Form Data</span></span>
+<span id="cb26-124"><a href="#cb26-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-127"><a href="#cb26-127" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-128"><a href="#cb26-128" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-129"><a href="#cb26-129" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-130"><a href="#cb26-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-131"><a href="#cb26-131" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb26-132"><a href="#cb26-132" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>FormParams<span class="op">]</span></span>
+<span id="cb26-133"><a href="#cb26-133" aria-hidden="true" tabindex="-1"></a>username<span class="op">:</span> alice</span>
+<span id="cb26-134"><a href="#cb26-134" aria-hidden="true" tabindex="-1"></a>password<span class="op">:</span> secret123</span>
+<span id="cb26-135"><a href="#cb26-135" aria-hidden="true" tabindex="-1"></a>remember<span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb26-136"><a href="#cb26-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-137"><a href="#cb26-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-138"><a href="#cb26-138" aria-hidden="true" tabindex="-1"></a><span class="fu">### POST with Multiple Fields</span></span>
+<span id="cb26-139"><a href="#cb26-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-142"><a href="#cb26-142" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-143"><a href="#cb26-143" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-144"><a href="#cb26-144" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-145"><a href="#cb26-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-146"><a href="#cb26-146" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb26-147"><a href="#cb26-147" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb26-148"><a href="#cb26-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-149"><a href="#cb26-149" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb26-150"><a href="#cb26-150" aria-hidden="true" tabindex="-1"></a>  <span class="st">"user"</span><span class="op">:</span> <span class="op">{</span></span>
+<span id="cb26-151"><a href="#cb26-151" aria-hidden="true" tabindex="-1"></a>    <span class="st">"name"</span><span class="op">:</span> <span class="st">"Bob"</span><span class="op">,</span></span>
+<span id="cb26-152"><a href="#cb26-152" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age"</span><span class="op">:</span> <span class="dv">30</span></span>
+<span id="cb26-153"><a href="#cb26-153" aria-hidden="true" tabindex="-1"></a>  <span class="op">},</span></span>
+<span id="cb26-154"><a href="#cb26-154" aria-hidden="true" tabindex="-1"></a>  <span class="st">"preferences"</span><span class="op">:</span> <span class="op">{</span></span>
+<span id="cb26-155"><a href="#cb26-155" aria-hidden="true" tabindex="-1"></a>    <span class="st">"theme"</span><span class="op">:</span> <span class="st">"dark"</span><span class="op">,</span></span>
+<span id="cb26-156"><a href="#cb26-156" aria-hidden="true" tabindex="-1"></a>    <span class="st">"notifications"</span><span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb26-157"><a href="#cb26-157" aria-hidden="true" tabindex="-1"></a>  <span class="op">},</span></span>
+<span id="cb26-158"><a href="#cb26-158" aria-hidden="true" tabindex="-1"></a>  <span class="st">"tags"</span><span class="op">:</span> <span class="op">[</span><span class="st">"developer"</span><span class="op">,</span> <span class="st">"python"</span><span class="op">,</span> <span class="st">"http"</span><span class="op">]</span></span>
+<span id="cb26-159"><a href="#cb26-159" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-160"><a href="#cb26-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-161"><a href="#cb26-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-162"><a href="#cb26-162" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why POST is Not Idempotent</span></span>
+<span id="cb26-163"><a href="#cb26-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-164"><a href="#cb26-164" aria-hidden="true" tabindex="-1"></a>Calling POST multiple times creates multiple resources:</span>
+<span id="cb26-165"><a href="#cb26-165" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-166"><a href="#cb26-166" aria-hidden="true" tabindex="-1"></a><span class="in">POST /users → Creates user (ID: 1)</span></span>
+<span id="cb26-167"><a href="#cb26-167" aria-hidden="true" tabindex="-1"></a><span class="in">POST /users → Creates user (ID: 2)</span></span>
+<span id="cb26-168"><a href="#cb26-168" aria-hidden="true" tabindex="-1"></a><span class="in">POST /users → Creates user (ID: 3)</span></span>
+<span id="cb26-169"><a href="#cb26-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-170"><a href="#cb26-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-173"><a href="#cb26-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb26-174"><a href="#cb26-174" aria-hidden="true" tabindex="-1"></a>sequenceDiagram</span>
+<span id="cb26-175"><a href="#cb26-175" aria-hidden="true" tabindex="-1"></a>    participant Client</span>
+<span id="cb26-176"><a href="#cb26-176" aria-hidden="true" tabindex="-1"></a>    participant Server</span>
+<span id="cb26-177"><a href="#cb26-177" aria-hidden="true" tabindex="-1"></a>    participant DB as Database</span>
+<span id="cb26-178"><a href="#cb26-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-179"><a href="#cb26-179" aria-hidden="true" tabindex="-1"></a>    Client-&gt;&gt;Server: POST /users {name: <span class="ot">"</span><span class="st">Alice</span><span class="ot">"</span>}</span>
+<span id="cb26-180"><a href="#cb26-180" aria-hidden="true" tabindex="-1"></a>    Server-&gt;&gt;DB: INSERT user (ID: <span class="dv">1</span>)</span>
+<span id="cb26-181"><a href="#cb26-181" aria-hidden="true" tabindex="-1"></a>    DB--&gt;&gt;Server: Created</span>
+<span id="cb26-182"><a href="#cb26-182" aria-hidden="true" tabindex="-1"></a>    Server--&gt;&gt;Client: <span class="dv">201</span> Created (ID: <span class="dv">1</span>)</span>
+<span id="cb26-183"><a href="#cb26-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-184"><a href="#cb26-184" aria-hidden="true" tabindex="-1"></a>    Client-&gt;&gt;Server: POST /users {name: <span class="ot">"</span><span class="st">Alice</span><span class="ot">"</span>}</span>
+<span id="cb26-185"><a href="#cb26-185" aria-hidden="true" tabindex="-1"></a>    Server-&gt;&gt;DB: INSERT user (ID: <span class="dv">2</span>)</span>
+<span id="cb26-186"><a href="#cb26-186" aria-hidden="true" tabindex="-1"></a>    DB--&gt;&gt;Server: Created</span>
+<span id="cb26-187"><a href="#cb26-187" aria-hidden="true" tabindex="-1"></a>    Server--&gt;&gt;Client: <span class="dv">201</span> Created (ID: <span class="dv">2</span>)</span>
+<span id="cb26-188"><a href="#cb26-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-189"><a href="#cb26-189" aria-hidden="true" tabindex="-1"></a>    Note over Client,DB: Same request creates different resources!</span>
+<span id="cb26-190"><a href="#cb26-190" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-191"><a href="#cb26-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-192"><a href="#cb26-192" aria-hidden="true" tabindex="-1"></a><span class="fu">## PUT Method</span></span>
+<span id="cb26-193"><a href="#cb26-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-194"><a href="#cb26-194" aria-hidden="true" tabindex="-1"></a>PUT replaces an entire resource. It requires sending the complete representation.</span>
+<span id="cb26-195"><a href="#cb26-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-196"><a href="#cb26-196" aria-hidden="true" tabindex="-1"></a><span class="fu">### PUT to Update Resource</span></span>
+<span id="cb26-197"><a href="#cb26-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-200"><a href="#cb26-200" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-201"><a href="#cb26-201" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-202"><a href="#cb26-202" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-203"><a href="#cb26-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-204"><a href="#cb26-204" aria-hidden="true" tabindex="-1"></a>PUT https<span class="op">:</span><span class="co">//httpbin.io/put</span></span>
+<span id="cb26-205"><a href="#cb26-205" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb26-206"><a href="#cb26-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-207"><a href="#cb26-207" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb26-208"><a href="#cb26-208" aria-hidden="true" tabindex="-1"></a>  <span class="st">"id"</span><span class="op">:</span> <span class="dv">123</span><span class="op">,</span></span>
+<span id="cb26-209"><a href="#cb26-209" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Alice Updated"</span><span class="op">,</span></span>
+<span id="cb26-210"><a href="#cb26-210" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice.new@example.com"</span><span class="op">,</span></span>
+<span id="cb26-211"><a href="#cb26-211" aria-hidden="true" tabindex="-1"></a>  <span class="st">"role"</span><span class="op">:</span> <span class="st">"senior-developer"</span><span class="op">,</span></span>
+<span id="cb26-212"><a href="#cb26-212" aria-hidden="true" tabindex="-1"></a>  <span class="st">"active"</span><span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb26-213"><a href="#cb26-213" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-214"><a href="#cb26-214" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-215"><a href="#cb26-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-216"><a href="#cb26-216" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why PUT is Idempotent</span></span>
+<span id="cb26-217"><a href="#cb26-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-218"><a href="#cb26-218" aria-hidden="true" tabindex="-1"></a>Calling PUT multiple times with the same data results in the same final state:</span>
+<span id="cb26-219"><a href="#cb26-219" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-220"><a href="#cb26-220" aria-hidden="true" tabindex="-1"></a><span class="in">PUT /users/123 {"name": "Alice"} → User 123 has name "Alice"</span></span>
+<span id="cb26-221"><a href="#cb26-221" aria-hidden="true" tabindex="-1"></a><span class="in">PUT /users/123 {"name": "Alice"} → User 123 has name "Alice" (same result)</span></span>
+<span id="cb26-222"><a href="#cb26-222" aria-hidden="true" tabindex="-1"></a><span class="in">PUT /users/123 {"name": "Alice"} → User 123 has name "Alice" (same result)</span></span>
+<span id="cb26-223"><a href="#cb26-223" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-224"><a href="#cb26-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-225"><a href="#cb26-225" aria-hidden="true" tabindex="-1"></a><span class="fu">### PUT vs POST</span></span>
+<span id="cb26-226"><a href="#cb26-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-227"><a href="#cb26-227" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PUT**: Usually for updates, targets a specific resource (<span class="in">`PUT /users/123`</span>)</span>
+<span id="cb26-228"><a href="#cb26-228" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**POST**: Usually for creation, targets a collection (<span class="in">`POST /users`</span>)</span>
+<span id="cb26-229"><a href="#cb26-229" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PUT**: Idempotent (same result each time)</span>
+<span id="cb26-230"><a href="#cb26-230" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**POST**: Not idempotent (may create multiple resources)</span>
+<span id="cb26-231"><a href="#cb26-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-234"><a href="#cb26-234" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb26-235"><a href="#cb26-235" aria-hidden="true" tabindex="-1"></a>graph LR</span>
+<span id="cb26-236"><a href="#cb26-236" aria-hidden="true" tabindex="-1"></a>    A[Client wants to save data] --&gt; B{Know the exact resource URI?}</span>
+<span id="cb26-237"><a href="#cb26-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-238"><a href="#cb26-238" aria-hidden="true" tabindex="-1"></a>    B --&gt;|Yes| C[Use PUT]</span>
+<span id="cb26-239"><a href="#cb26-239" aria-hidden="true" tabindex="-1"></a>    B --&gt;|No| D[Use POST]</span>
+<span id="cb26-240"><a href="#cb26-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-241"><a href="#cb26-241" aria-hidden="true" tabindex="-1"></a>    C --&gt; E[PUT /users/<span class="dv">123</span>]</span>
+<span id="cb26-242"><a href="#cb26-242" aria-hidden="true" tabindex="-1"></a>    D --&gt; F[POST /users]</span>
+<span id="cb26-243"><a href="#cb26-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-244"><a href="#cb26-244" aria-hidden="true" tabindex="-1"></a>    E --&gt; G[Replace entire resource]</span>
+<span id="cb26-245"><a href="#cb26-245" aria-hidden="true" tabindex="-1"></a>    F --&gt; H[Server assigns new ID]</span>
+<span id="cb26-246"><a href="#cb26-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-247"><a href="#cb26-247" aria-hidden="true" tabindex="-1"></a>    G --&gt; I[Idempotent ✓]</span>
+<span id="cb26-248"><a href="#cb26-248" aria-hidden="true" tabindex="-1"></a>    H --&gt; J[Not Idempotent ✗]</span>
+<span id="cb26-249"><a href="#cb26-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-250"><a href="#cb26-250" aria-hidden="true" tabindex="-1"></a>    style C fill:<span class="co">#a5d6a7</span></span>
+<span id="cb26-251"><a href="#cb26-251" aria-hidden="true" tabindex="-1"></a>    style D fill:<span class="co">#ffcc80</span></span>
+<span id="cb26-252"><a href="#cb26-252" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-253"><a href="#cb26-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-254"><a href="#cb26-254" aria-hidden="true" tabindex="-1"></a><span class="fu">## PATCH Method</span></span>
+<span id="cb26-255"><a href="#cb26-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-256"><a href="#cb26-256" aria-hidden="true" tabindex="-1"></a>PATCH applies partial modifications to a resource. Unlike PUT, you only send the fields to update.</span>
+<span id="cb26-257"><a href="#cb26-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-258"><a href="#cb26-258" aria-hidden="true" tabindex="-1"></a><span class="fu">### PATCH for Partial Update</span></span>
+<span id="cb26-259"><a href="#cb26-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-262"><a href="#cb26-262" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-263"><a href="#cb26-263" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-264"><a href="#cb26-264" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-265"><a href="#cb26-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-266"><a href="#cb26-266" aria-hidden="true" tabindex="-1"></a>PATCH https<span class="op">:</span><span class="co">//httpbin.io/patch</span></span>
+<span id="cb26-267"><a href="#cb26-267" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb26-268"><a href="#cb26-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-269"><a href="#cb26-269" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb26-270"><a href="#cb26-270" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice.updated@example.com"</span></span>
+<span id="cb26-271"><a href="#cb26-271" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-272"><a href="#cb26-272" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-273"><a href="#cb26-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-274"><a href="#cb26-274" aria-hidden="true" tabindex="-1"></a><span class="fu">### PATCH with JSON Patch Format</span></span>
+<span id="cb26-275"><a href="#cb26-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-278"><a href="#cb26-278" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-279"><a href="#cb26-279" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-280"><a href="#cb26-280" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-281"><a href="#cb26-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-282"><a href="#cb26-282" aria-hidden="true" tabindex="-1"></a>PATCH https<span class="op">:</span><span class="co">//httpbin.io/patch</span></span>
+<span id="cb26-283"><a href="#cb26-283" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json<span class="op">-</span>patch<span class="op">+</span>json</span>
+<span id="cb26-284"><a href="#cb26-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-285"><a href="#cb26-285" aria-hidden="true" tabindex="-1"></a><span class="op">[</span></span>
+<span id="cb26-286"><a href="#cb26-286" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> <span class="st">"op"</span><span class="op">:</span> <span class="st">"replace"</span><span class="op">,</span> <span class="st">"path"</span><span class="op">:</span> <span class="st">"/email"</span><span class="op">,</span> <span class="st">"value"</span><span class="op">:</span> <span class="st">"newemail@example.com"</span> <span class="op">},</span></span>
+<span id="cb26-287"><a href="#cb26-287" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> <span class="st">"op"</span><span class="op">:</span> <span class="st">"add"</span><span class="op">,</span> <span class="st">"path"</span><span class="op">:</span> <span class="st">"/phone"</span><span class="op">,</span> <span class="st">"value"</span><span class="op">:</span> <span class="st">"+1234567890"</span> <span class="op">}</span></span>
+<span id="cb26-288"><a href="#cb26-288" aria-hidden="true" tabindex="-1"></a><span class="op">]</span></span>
+<span id="cb26-289"><a href="#cb26-289" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-290"><a href="#cb26-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-291"><a href="#cb26-291" aria-hidden="true" tabindex="-1"></a><span class="fu">### PUT vs PATCH</span></span>
+<span id="cb26-292"><a href="#cb26-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-295"><a href="#cb26-295" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-296"><a href="#cb26-296" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-297"><a href="#cb26-297" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-298"><a href="#cb26-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-299"><a href="#cb26-299" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">PUT: Must send complete resource</span></span>
+<span id="cb26-300"><a href="#cb26-300" aria-hidden="true" tabindex="-1"></a>PUT https<span class="op">:</span><span class="co">//httpbin.io/put</span></span>
+<span id="cb26-301"><a href="#cb26-301" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb26-302"><a href="#cb26-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-303"><a href="#cb26-303" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb26-304"><a href="#cb26-304" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Alice"</span><span class="op">,</span></span>
+<span id="cb26-305"><a href="#cb26-305" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice@example.com"</span><span class="op">,</span></span>
+<span id="cb26-306"><a href="#cb26-306" aria-hidden="true" tabindex="-1"></a>  <span class="st">"role"</span><span class="op">:</span> <span class="st">"developer"</span><span class="op">,</span></span>
+<span id="cb26-307"><a href="#cb26-307" aria-hidden="true" tabindex="-1"></a>  <span class="st">"active"</span><span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb26-308"><a href="#cb26-308" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-309"><a href="#cb26-309" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-310"><a href="#cb26-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-313"><a href="#cb26-313" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-314"><a href="#cb26-314" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-315"><a href="#cb26-315" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-316"><a href="#cb26-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-317"><a href="#cb26-317" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">PATCH: Only send what changes</span></span>
+<span id="cb26-318"><a href="#cb26-318" aria-hidden="true" tabindex="-1"></a>PATCH https<span class="op">:</span><span class="co">//httpbin.io/patch</span></span>
+<span id="cb26-319"><a href="#cb26-319" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb26-320"><a href="#cb26-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-321"><a href="#cb26-321" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb26-322"><a href="#cb26-322" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"alice@example.com"</span></span>
+<span id="cb26-323"><a href="#cb26-323" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-324"><a href="#cb26-324" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-325"><a href="#cb26-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-326"><a href="#cb26-326" aria-hidden="true" tabindex="-1"></a><span class="fu">## DELETE Method</span></span>
+<span id="cb26-327"><a href="#cb26-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-328"><a href="#cb26-328" aria-hidden="true" tabindex="-1"></a>DELETE removes a resource from the server.</span>
+<span id="cb26-329"><a href="#cb26-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-330"><a href="#cb26-330" aria-hidden="true" tabindex="-1"></a><span class="fu">### Basic DELETE Request</span></span>
+<span id="cb26-331"><a href="#cb26-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-334"><a href="#cb26-334" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-335"><a href="#cb26-335" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-336"><a href="#cb26-336" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-337"><a href="#cb26-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-338"><a href="#cb26-338" aria-hidden="true" tabindex="-1"></a>DELETE https<span class="op">:</span><span class="co">//httpbin.io/delete</span></span>
+<span id="cb26-339"><a href="#cb26-339" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-340"><a href="#cb26-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-341"><a href="#cb26-341" aria-hidden="true" tabindex="-1"></a><span class="fu">### DELETE with Specific Resource</span></span>
+<span id="cb26-342"><a href="#cb26-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-345"><a href="#cb26-345" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-346"><a href="#cb26-346" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-347"><a href="#cb26-347" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-348"><a href="#cb26-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-349"><a href="#cb26-349" aria-hidden="true" tabindex="-1"></a>DELETE https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
+<span id="cb26-350"><a href="#cb26-350" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-351"><a href="#cb26-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-352"><a href="#cb26-352" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why DELETE is Idempotent</span></span>
+<span id="cb26-353"><a href="#cb26-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-354"><a href="#cb26-354" aria-hidden="true" tabindex="-1"></a>Deleting the same resource multiple times has the same effect:</span>
+<span id="cb26-355"><a href="#cb26-355" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-356"><a href="#cb26-356" aria-hidden="true" tabindex="-1"></a><span class="in">DELETE /users/123 → User deleted</span></span>
+<span id="cb26-357"><a href="#cb26-357" aria-hidden="true" tabindex="-1"></a><span class="in">DELETE /users/123 → User already gone (same final state)</span></span>
+<span id="cb26-358"><a href="#cb26-358" aria-hidden="true" tabindex="-1"></a><span class="in">DELETE /users/123 → User already gone (same final state)</span></span>
+<span id="cb26-359"><a href="#cb26-359" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-360"><a href="#cb26-360" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-361"><a href="#cb26-361" aria-hidden="true" tabindex="-1"></a>The second and third calls might return 404 (Not Found), but the final state is the same: the resource doesn't exist.</span>
+<span id="cb26-362"><a href="#cb26-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-363"><a href="#cb26-363" aria-hidden="true" tabindex="-1"></a><span class="fu">## HEAD Method</span></span>
+<span id="cb26-364"><a href="#cb26-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-365"><a href="#cb26-365" aria-hidden="true" tabindex="-1"></a>HEAD is identical to GET but returns only the headers, not the body. It's useful for checking if a resource exists or getting metadata.</span>
+<span id="cb26-366"><a href="#cb26-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-367"><a href="#cb26-367" aria-hidden="true" tabindex="-1"></a><span class="fu">### HEAD Request</span></span>
+<span id="cb26-368"><a href="#cb26-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-371"><a href="#cb26-371" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-372"><a href="#cb26-372" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-373"><a href="#cb26-373" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-374"><a href="#cb26-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-375"><a href="#cb26-375" aria-hidden="true" tabindex="-1"></a>HEAD https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb26-376"><a href="#cb26-376" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-377"><a href="#cb26-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-378"><a href="#cb26-378" aria-hidden="true" tabindex="-1"></a>Notice: No response body is returned, only status and headers.</span>
+<span id="cb26-379"><a href="#cb26-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-380"><a href="#cb26-380" aria-hidden="true" tabindex="-1"></a><span class="fu">### Use Cases for HEAD</span></span>
+<span id="cb26-381"><a href="#cb26-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-382"><a href="#cb26-382" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Check if a resource exists (without downloading it)</span>
+<span id="cb26-383"><a href="#cb26-383" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Get the size of a file before downloading (<span class="in">`Content-Length`</span> header)</span>
+<span id="cb26-384"><a href="#cb26-384" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Check last modification time (<span class="in">`Last-Modified`</span> header)</span>
+<span id="cb26-385"><a href="#cb26-385" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Verify link validity</span>
+<span id="cb26-386"><a href="#cb26-386" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-387"><a href="#cb26-387" aria-hidden="true" tabindex="-1"></a><span class="fu">## OPTIONS Method</span></span>
+<span id="cb26-388"><a href="#cb26-388" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-389"><a href="#cb26-389" aria-hidden="true" tabindex="-1"></a>OPTIONS returns the HTTP methods supported by a resource. It's crucial for CORS (Cross-Origin Resource Sharing).</span>
+<span id="cb26-390"><a href="#cb26-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-391"><a href="#cb26-391" aria-hidden="true" tabindex="-1"></a><span class="fu">### OPTIONS Request</span></span>
+<span id="cb26-392"><a href="#cb26-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-395"><a href="#cb26-395" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-396"><a href="#cb26-396" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-397"><a href="#cb26-397" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-398"><a href="#cb26-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-399"><a href="#cb26-399" aria-hidden="true" tabindex="-1"></a>OPTIONS https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb26-400"><a href="#cb26-400" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-401"><a href="#cb26-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-402"><a href="#cb26-402" aria-hidden="true" tabindex="-1"></a>Look for the <span class="in">`Access-Control-Allow-Methods`</span> header in the response, which lists allowed methods.</span>
+<span id="cb26-403"><a href="#cb26-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-404"><a href="#cb26-404" aria-hidden="true" tabindex="-1"></a><span class="fu">### CORS Preflight Request</span></span>
+<span id="cb26-405"><a href="#cb26-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-406"><a href="#cb26-406" aria-hidden="true" tabindex="-1"></a>Browsers send OPTIONS automatically before certain cross-origin requests:</span>
+<span id="cb26-407"><a href="#cb26-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-410"><a href="#cb26-410" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-411"><a href="#cb26-411" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-412"><a href="#cb26-412" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-413"><a href="#cb26-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-414"><a href="#cb26-414" aria-hidden="true" tabindex="-1"></a>OPTIONS https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb26-415"><a href="#cb26-415" aria-hidden="true" tabindex="-1"></a>Access<span class="op">-</span>Control<span class="op">-</span>Request<span class="op">-</span>Method<span class="op">:</span> POST</span>
+<span id="cb26-416"><a href="#cb26-416" aria-hidden="true" tabindex="-1"></a>Access<span class="op">-</span>Control<span class="op">-</span>Request<span class="op">-</span>Headers<span class="op">:</span> Content<span class="op">-</span>Type</span>
+<span id="cb26-417"><a href="#cb26-417" aria-hidden="true" tabindex="-1"></a>Origin<span class="op">:</span> https<span class="op">:</span><span class="co">//example.com</span></span>
+<span id="cb26-418"><a href="#cb26-418" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-419"><a href="#cb26-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-420"><a href="#cb26-420" aria-hidden="true" tabindex="-1"></a><span class="fu">## Less Common Methods</span></span>
+<span id="cb26-421"><a href="#cb26-421" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-422"><a href="#cb26-422" aria-hidden="true" tabindex="-1"></a><span class="fu">### TRACE</span></span>
+<span id="cb26-423"><a href="#cb26-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-424"><a href="#cb26-424" aria-hidden="true" tabindex="-1"></a>TRACE echoes back the received request, useful for debugging:</span>
+<span id="cb26-425"><a href="#cb26-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-428"><a href="#cb26-428" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-429"><a href="#cb26-429" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-430"><a href="#cb26-430" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-431"><a href="#cb26-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-432"><a href="#cb26-432" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Note: httpbin doesn't support TRACE, so this may not work</span></span>
+<span id="cb26-433"><a href="#cb26-433" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb26-434"><a href="#cb26-434" aria-hidden="true" tabindex="-1"></a>X<span class="op">-</span>Custom<span class="op">-</span>Header<span class="op">:</span> debug<span class="op">-</span>trace</span>
+<span id="cb26-435"><a href="#cb26-435" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-436"><a href="#cb26-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-437"><a href="#cb26-437" aria-hidden="true" tabindex="-1"></a><span class="fu">### CONNECT</span></span>
+<span id="cb26-438"><a href="#cb26-438" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-439"><a href="#cb26-439" aria-hidden="true" tabindex="-1"></a>CONNECT establishes a tunnel, typically used for HTTPS through proxies. Not commonly used in APIs.</span>
+<span id="cb26-440"><a href="#cb26-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-441"><a href="#cb26-441" aria-hidden="true" tabindex="-1"></a><span class="fu">## Method Safety and Idempotency Summary</span></span>
+<span id="cb26-442"><a href="#cb26-442" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-443"><a href="#cb26-443" aria-hidden="true" tabindex="-1"></a><span class="fu">### Safe Methods (No Side Effects)</span></span>
+<span id="cb26-444"><a href="#cb26-444" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GET</span>
+<span id="cb26-445"><a href="#cb26-445" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>HEAD</span>
+<span id="cb26-446"><a href="#cb26-446" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>OPTIONS</span>
+<span id="cb26-447"><a href="#cb26-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-448"><a href="#cb26-448" aria-hidden="true" tabindex="-1"></a>Safe methods can be called without worrying about changing server state.</span>
+<span id="cb26-449"><a href="#cb26-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-450"><a href="#cb26-450" aria-hidden="true" tabindex="-1"></a><span class="fu">### Idempotent Methods (Same Result Each Time)</span></span>
+<span id="cb26-451"><a href="#cb26-451" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GET</span>
+<span id="cb26-452"><a href="#cb26-452" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PUT</span>
+<span id="cb26-453"><a href="#cb26-453" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>DELETE</span>
+<span id="cb26-454"><a href="#cb26-454" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>HEAD</span>
+<span id="cb26-455"><a href="#cb26-455" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>OPTIONS</span>
+<span id="cb26-456"><a href="#cb26-456" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-457"><a href="#cb26-457" aria-hidden="true" tabindex="-1"></a>Idempotent methods can be safely retried if there's a network failure.</span>
+<span id="cb26-458"><a href="#cb26-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-459"><a href="#cb26-459" aria-hidden="true" tabindex="-1"></a><span class="fu">### Neither Safe Nor Idempotent</span></span>
+<span id="cb26-460"><a href="#cb26-460" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POST</span>
+<span id="cb26-461"><a href="#cb26-461" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PATCH (typically)</span>
+<span id="cb26-462"><a href="#cb26-462" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-463"><a href="#cb26-463" aria-hidden="true" tabindex="-1"></a>These methods require careful handling and may need special retry logic.</span>
+<span id="cb26-464"><a href="#cb26-464" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-465"><a href="#cb26-465" aria-hidden="true" tabindex="-1"></a><span class="fu">## Best Practices</span></span>
+<span id="cb26-466"><a href="#cb26-466" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-467"><a href="#cb26-467" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Use GET for retrieval**: Never use GET to modify data</span>
+<span id="cb26-468"><a href="#cb26-468" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Use POST for creation**: Create new resources with POST</span>
+<span id="cb26-469"><a href="#cb26-469" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Use PUT for full replacement**: Send complete resource representation</span>
+<span id="cb26-470"><a href="#cb26-470" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Use PATCH for partial updates**: Send only changed fields</span>
+<span id="cb26-471"><a href="#cb26-471" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Use DELETE for removal**: Remove resources with DELETE</span>
+<span id="cb26-472"><a href="#cb26-472" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>**Respect idempotency**: Design APIs where PUT and DELETE are truly idempotent</span>
+<span id="cb26-473"><a href="#cb26-473" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>**Use proper status codes**: Return appropriate codes for each method</span>
+<span id="cb26-474"><a href="#cb26-474" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-475"><a href="#cb26-475" aria-hidden="true" tabindex="-1"></a><span class="fu">## Real-World API Example</span></span>
+<span id="cb26-476"><a href="#cb26-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-477"><a href="#cb26-477" aria-hidden="true" tabindex="-1"></a>Here's a complete CRUD (Create, Read, Update, Delete) example:</span>
+<span id="cb26-478"><a href="#cb26-478" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-481"><a href="#cb26-481" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb26-482"><a href="#cb26-482" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb26-483"><a href="#cb26-483" aria-hidden="true" tabindex="-1"></a>    A[CRUD Operations] --&gt; B[Create]</span>
+<span id="cb26-484"><a href="#cb26-484" aria-hidden="true" tabindex="-1"></a>    A --&gt; C[Read]</span>
+<span id="cb26-485"><a href="#cb26-485" aria-hidden="true" tabindex="-1"></a>    A --&gt; D[Update]</span>
+<span id="cb26-486"><a href="#cb26-486" aria-hidden="true" tabindex="-1"></a>    A --&gt; E[Delete]</span>
+<span id="cb26-487"><a href="#cb26-487" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-488"><a href="#cb26-488" aria-hidden="true" tabindex="-1"></a>    B --&gt; F[POST /users]</span>
+<span id="cb26-489"><a href="#cb26-489" aria-hidden="true" tabindex="-1"></a>    C --&gt; G[GET /users/:id]</span>
+<span id="cb26-490"><a href="#cb26-490" aria-hidden="true" tabindex="-1"></a>    D --&gt; H[PUT /users/:id]</span>
+<span id="cb26-491"><a href="#cb26-491" aria-hidden="true" tabindex="-1"></a>    D --&gt; I[PATCH /users/:id]</span>
+<span id="cb26-492"><a href="#cb26-492" aria-hidden="true" tabindex="-1"></a>    E --&gt; J[DELETE /users/:id]</span>
+<span id="cb26-493"><a href="#cb26-493" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-494"><a href="#cb26-494" aria-hidden="true" tabindex="-1"></a>    F --&gt; K[<span class="dv">201</span> Created]</span>
+<span id="cb26-495"><a href="#cb26-495" aria-hidden="true" tabindex="-1"></a>    G --&gt; L[<span class="dv">200</span> OK]</span>
+<span id="cb26-496"><a href="#cb26-496" aria-hidden="true" tabindex="-1"></a>    H --&gt; M[<span class="dv">200</span> OK]</span>
+<span id="cb26-497"><a href="#cb26-497" aria-hidden="true" tabindex="-1"></a>    I --&gt; M</span>
+<span id="cb26-498"><a href="#cb26-498" aria-hidden="true" tabindex="-1"></a>    J --&gt; N[<span class="dv">204</span> No Content]</span>
+<span id="cb26-499"><a href="#cb26-499" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-500"><a href="#cb26-500" aria-hidden="true" tabindex="-1"></a>    style B fill:<span class="co">#c8e6c9</span></span>
+<span id="cb26-501"><a href="#cb26-501" aria-hidden="true" tabindex="-1"></a>    style C fill:<span class="co">#bbdefb</span></span>
+<span id="cb26-502"><a href="#cb26-502" aria-hidden="true" tabindex="-1"></a>    style D fill:<span class="co">#fff9c4</span></span>
+<span id="cb26-503"><a href="#cb26-503" aria-hidden="true" tabindex="-1"></a>    style E fill:<span class="co">#ffccbc</span></span>
+<span id="cb26-504"><a href="#cb26-504" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-505"><a href="#cb26-505" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-508"><a href="#cb26-508" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-509"><a href="#cb26-509" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-510"><a href="#cb26-510" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-511"><a href="#cb26-511" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-512"><a href="#cb26-512" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Create (POST)</span></span>
+<span id="cb26-513"><a href="#cb26-513" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/anything/users</span></span>
+<span id="cb26-514"><a href="#cb26-514" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb26-515"><a href="#cb26-515" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-516"><a href="#cb26-516" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb26-517"><a href="#cb26-517" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Charlie"</span><span class="op">,</span></span>
+<span id="cb26-518"><a href="#cb26-518" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"charlie@example.com"</span></span>
+<span id="cb26-519"><a href="#cb26-519" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-520"><a href="#cb26-520" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-521"><a href="#cb26-521" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-524"><a href="#cb26-524" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-525"><a href="#cb26-525" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-526"><a href="#cb26-526" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-527"><a href="#cb26-527" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-528"><a href="#cb26-528" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Read (GET)</span></span>
+<span id="cb26-529"><a href="#cb26-529" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
+<span id="cb26-530"><a href="#cb26-530" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-531"><a href="#cb26-531" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-534"><a href="#cb26-534" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-535"><a href="#cb26-535" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-536"><a href="#cb26-536" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-537"><a href="#cb26-537" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-538"><a href="#cb26-538" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Update (PUT)</span></span>
+<span id="cb26-539"><a href="#cb26-539" aria-hidden="true" tabindex="-1"></a>PUT https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
+<span id="cb26-540"><a href="#cb26-540" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb26-541"><a href="#cb26-541" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-542"><a href="#cb26-542" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb26-543"><a href="#cb26-543" aria-hidden="true" tabindex="-1"></a>  <span class="st">"name"</span><span class="op">:</span> <span class="st">"Charlie Updated"</span><span class="op">,</span></span>
+<span id="cb26-544"><a href="#cb26-544" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"charlie.new@example.com"</span></span>
+<span id="cb26-545"><a href="#cb26-545" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-546"><a href="#cb26-546" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-547"><a href="#cb26-547" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-550"><a href="#cb26-550" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-551"><a href="#cb26-551" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-552"><a href="#cb26-552" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-553"><a href="#cb26-553" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-554"><a href="#cb26-554" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Partial Update (PATCH)</span></span>
+<span id="cb26-555"><a href="#cb26-555" aria-hidden="true" tabindex="-1"></a>PATCH https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
+<span id="cb26-556"><a href="#cb26-556" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb26-557"><a href="#cb26-557" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-558"><a href="#cb26-558" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb26-559"><a href="#cb26-559" aria-hidden="true" tabindex="-1"></a>  <span class="st">"email"</span><span class="op">:</span> <span class="st">"charlie.newest@example.com"</span></span>
+<span id="cb26-560"><a href="#cb26-560" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-561"><a href="#cb26-561" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-562"><a href="#cb26-562" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-565"><a href="#cb26-565" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb26-566"><a href="#cb26-566" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| echo: true</span></span>
+<span id="cb26-567"><a href="#cb26-567" aria-hidden="true" tabindex="-1"></a><span class="pp">#</span><span class="er">| output: true</span></span>
+<span id="cb26-568"><a href="#cb26-568" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-569"><a href="#cb26-569" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">Delete (DELETE)</span></span>
+<span id="cb26-570"><a href="#cb26-570" aria-hidden="true" tabindex="-1"></a>DELETE https<span class="op">:</span><span class="co">//httpbin.io/anything/users/123</span></span>
+<span id="cb26-571"><a href="#cb26-571" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-572"><a href="#cb26-572" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-573"><a href="#cb26-573" aria-hidden="true" tabindex="-1"></a><span class="fu">## Practice Exercises</span></span>
+<span id="cb26-574"><a href="#cb26-574" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-575"><a href="#cb26-575" aria-hidden="true" tabindex="-1"></a>Try these on your own:</span>
+<span id="cb26-576"><a href="#cb26-576" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-577"><a href="#cb26-577" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Send a POST request with nested JSON data</span>
+<span id="cb26-578"><a href="#cb26-578" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Send a PUT request and then send the same request again - verify it's idempotent</span>
+<span id="cb26-579"><a href="#cb26-579" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Use HEAD to check if <span class="in">`https://httpbin.io/status/200`</span> is accessible</span>
+<span id="cb26-580"><a href="#cb26-580" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Send an OPTIONS request and examine the allowed methods</span>
+<span id="cb26-581"><a href="#cb26-581" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Compare the difference between PUT and PATCH with different payloads</span>
+<span id="cb26-582"><a href="#cb26-582" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-583"><a href="#cb26-583" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key Takeaways</span></span>
+<span id="cb26-584"><a href="#cb26-584" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-585"><a href="#cb26-585" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**GET**: Retrieve data, safe and idempotent</span>
+<span id="cb26-586"><a href="#cb26-586" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**POST**: Create new resources, not idempotent</span>
+<span id="cb26-587"><a href="#cb26-587" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PUT**: Replace entire resource, idempotent</span>
+<span id="cb26-588"><a href="#cb26-588" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PATCH**: Partial update, typically not idempotent</span>
+<span id="cb26-589"><a href="#cb26-589" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**DELETE**: Remove resource, idempotent</span>
+<span id="cb26-590"><a href="#cb26-590" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**HEAD**: Get headers only, safe and idempotent</span>
+<span id="cb26-591"><a href="#cb26-591" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**OPTIONS**: Get allowed methods, used in CORS</span>
+<span id="cb26-592"><a href="#cb26-592" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-593"><a href="#cb26-593" aria-hidden="true" tabindex="-1"></a><span class="fu">## Next Steps</span></span>
+<span id="cb26-594"><a href="#cb26-594" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-595"><a href="#cb26-595" aria-hidden="true" tabindex="-1"></a>Now that you understand HTTP methods, let's explore how headers control request and response behavior in <span class="co">[</span><span class="ot">Chapter 3: HTTP Headers</span><span class="co">](03-http-headers.qmd)</span>.</span>
+<span id="cb26-596"><a href="#cb26-596" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-597"><a href="#cb26-597" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb26-598"><a href="#cb26-598" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-599"><a href="#cb26-599" aria-hidden="true" tabindex="-1"></a><span class="fu">## RFC References</span></span>
+<span id="cb26-600"><a href="#cb26-600" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-601"><a href="#cb26-601" aria-hidden="true" tabindex="-1"></a>This chapter covers concepts from the following RFCs:</span>
+<span id="cb26-602"><a href="#cb26-602" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-603"><a href="#cb26-603" aria-hidden="true" tabindex="-1"></a>::: {.callout-note icon=false}</span>
+<span id="cb26-604"><a href="#cb26-604" aria-hidden="true" tabindex="-1"></a><span class="fu">### HTTP Methods Specification</span></span>
+<span id="cb26-605"><a href="#cb26-605" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-606"><a href="#cb26-606" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)** - HTTP Semantics</span>
+<span id="cb26-607"><a href="#cb26-607" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 9: <span class="co">[</span><span class="ot">Methods</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9)</span></span>
+<span id="cb26-608"><a href="#cb26-608" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 9.1: <span class="co">[</span><span class="ot">Overview</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.1)</span></span>
+<span id="cb26-609"><a href="#cb26-609" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 9.2: <span class="co">[</span><span class="ot">Common Method Properties</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2)</span></span>
+<span id="cb26-610"><a href="#cb26-610" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.2.1: <span class="co">[</span><span class="ot">Safe Methods</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.1)</span></span>
+<span id="cb26-611"><a href="#cb26-611" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.2.2: <span class="co">[</span><span class="ot">Idempotent Methods</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2)</span></span>
+<span id="cb26-612"><a href="#cb26-612" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 9.3: <span class="co">[</span><span class="ot">Method Definitions</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.3)</span></span>
+<span id="cb26-613"><a href="#cb26-613" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.1: <span class="co">[</span><span class="ot">GET</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#GET)</span></span>
+<span id="cb26-614"><a href="#cb26-614" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.2: <span class="co">[</span><span class="ot">HEAD</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#HEAD)</span></span>
+<span id="cb26-615"><a href="#cb26-615" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.3: <span class="co">[</span><span class="ot">POST</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#POST)</span></span>
+<span id="cb26-616"><a href="#cb26-616" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.4: <span class="co">[</span><span class="ot">PUT</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#PUT)</span></span>
+<span id="cb26-617"><a href="#cb26-617" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.5: <span class="co">[</span><span class="ot">DELETE</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#DELETE)</span></span>
+<span id="cb26-618"><a href="#cb26-618" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.6: <span class="co">[</span><span class="ot">CONNECT</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#CONNECT)</span></span>
+<span id="cb26-619"><a href="#cb26-619" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.7: <span class="co">[</span><span class="ot">OPTIONS</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#OPTIONS)</span></span>
+<span id="cb26-620"><a href="#cb26-620" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>9.3.8: <span class="co">[</span><span class="ot">TRACE</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#TRACE)</span></span>
+<span id="cb26-621"><a href="#cb26-621" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-622"><a href="#cb26-622" aria-hidden="true" tabindex="-1"></a><span class="fu">### PATCH Method</span></span>
+<span id="cb26-623"><a href="#cb26-623" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-624"><a href="#cb26-624" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 5789](https://www.rfc-editor.org/rfc/rfc5789.html)** - PATCH Method for HTTP</span>
+<span id="cb26-625"><a href="#cb26-625" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

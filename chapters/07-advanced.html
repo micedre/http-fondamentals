@@ -1,0 +1,2594 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Chapter 7: Advanced Topics – HTTP Fundamentals Training</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-38685b6e60ad7588714dbe24fc7031b2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/hurl-highlight.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    // Register Hurl language
+    if (window.hljsDefineHurl) {
+      hljs.registerLanguage('hurl', window.hljsDefineHurl);
+      console.log('Hurl language registered');
+    } else {
+      console.error('hljsDefineHurl not found');
+    }
+
+    // Find all Hurl code blocks - Quarto renders as <pre class="hurl cell-code"><code>
+    const hurlBlocks = document.querySelectorAll('pre.hurl code, pre.cell-code code');
+    console.log('Found Hurl blocks:', hurlBlocks.length);
+
+    hurlBlocks.forEach((block) => {
+      try {
+        // Highlight with Hurl language
+        const result = hljs.highlight(block.textContent, {language: 'hurl'});
+        block.innerHTML = result.value;
+        block.classList.add('hljs');
+        console.log('Highlighted block');
+      } catch (e) {
+        console.error('Error highlighting:', e);
+      }
+    });
+  });
+</script>
+
+
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">HTTP Fundamentals Training</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-chapters" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Chapters</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-chapters">    
+        <li>
+    <a class="dropdown-item" href="../chapters/01-http-basics.html">
+ <span class="dropdown-text">1. HTTP Basics</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/02-http-methods.html">
+ <span class="dropdown-text">2. HTTP Methods</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/03-http-headers.html">
+ <span class="dropdown-text">3. HTTP Headers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/04-status-codes.html">
+ <span class="dropdown-text">4. Status Codes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/05-request-response.html">
+ <span class="dropdown-text">5. Request &amp; Response</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/06-authentication.html">
+ <span class="dropdown-text">6. Authentication</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../chapters/07-advanced.html">
+ <span class="dropdown-text">7. Advanced Topics</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/05-request-response.html">Working with HTTP</a></li><li class="breadcrumb-item"><a href="../chapters/07-advanced.html">7. Advanced Topics</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="../index.html" class="sidebar-logo-link">
+      </a>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Core Concepts</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01-http-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. HTTP Basics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02-http-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. HTTP Methods</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03-http-headers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. HTTP Headers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04-status-codes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Status Codes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Working with HTTP</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/05-request-response.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Request &amp; Response</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/06-authentication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Authentication</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/07-advanced.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">7. Advanced Topics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction-to-advanced-http" id="toc-introduction-to-advanced-http" class="nav-link active" data-scroll-target="#introduction-to-advanced-http">Introduction to Advanced HTTP</a>
+  <ul class="collapse">
+  <li><a href="#cors-cross-origin-resource-sharing" id="toc-cors-cross-origin-resource-sharing" class="nav-link" data-scroll-target="#cors-cross-origin-resource-sharing">CORS (Cross-Origin Resource Sharing)</a>
+  <ul class="collapse">
+  <li><a href="#why-cors-exists" id="toc-why-cors-exists" class="nav-link" data-scroll-target="#why-cors-exists">Why CORS Exists</a></li>
+  <li><a href="#simple-cors-request" id="toc-simple-cors-request" class="nav-link" data-scroll-target="#simple-cors-request">Simple CORS Request</a></li>
+  <li><a href="#cors-preflight-request" id="toc-cors-preflight-request" class="nav-link" data-scroll-target="#cors-preflight-request">CORS Preflight Request</a></li>
+  <li><a href="#cors-headers-in-response" id="toc-cors-headers-in-response" class="nav-link" data-scroll-target="#cors-headers-in-response">CORS Headers in Response</a></li>
+  </ul></li>
+  <li><a href="#cors-with-credentials" id="toc-cors-with-credentials" class="nav-link" data-scroll-target="#cors-with-credentials">CORS with Credentials</a>
+  <ul class="collapse">
+  <li><a href="#cors-configuration-examples" id="toc-cors-configuration-examples" class="nav-link" data-scroll-target="#cors-configuration-examples">CORS Configuration Examples</a></li>
+  </ul></li>
+  <li><a href="#http-caching" id="toc-http-caching" class="nav-link" data-scroll-target="#http-caching">HTTP Caching</a>
+  <ul class="collapse">
+  <li><a href="#cache-control-header" id="toc-cache-control-header" class="nav-link" data-scroll-target="#cache-control-header">Cache-Control Header</a></li>
+  </ul></li>
+  <li><a href="#cache-control-directives" id="toc-cache-control-directives" class="nav-link" data-scroll-target="#cache-control-directives">Cache-Control Directives</a>
+  <ul class="collapse">
+  <li><a href="#caching-examples" id="toc-caching-examples" class="nav-link" data-scroll-target="#caching-examples">Caching Examples</a></li>
+  <li><a href="#etag-and-conditional-requests" id="toc-etag-and-conditional-requests" class="nav-link" data-scroll-target="#etag-and-conditional-requests">ETag and Conditional Requests</a></li>
+  </ul></li>
+  <li><a href="#last-modified-and-if-modified-since" id="toc-last-modified-and-if-modified-since" class="nav-link" data-scroll-target="#last-modified-and-if-modified-since">Last-Modified and If-Modified-Since</a>
+  <ul class="collapse">
+  <li><a href="#vary-header" id="toc-vary-header" class="nav-link" data-scroll-target="#vary-header">Vary Header</a></li>
+  </ul></li>
+  <li><a href="#compression" id="toc-compression" class="nav-link" data-scroll-target="#compression">Compression</a>
+  <ul class="collapse">
+  <li><a href="#gzip-compression" id="toc-gzip-compression" class="nav-link" data-scroll-target="#gzip-compression">Gzip Compression</a></li>
+  <li><a href="#deflate-compression" id="toc-deflate-compression" class="nav-link" data-scroll-target="#deflate-compression">Deflate Compression</a></li>
+  <li><a href="#brotli-compression" id="toc-brotli-compression" class="nav-link" data-scroll-target="#brotli-compression">Brotli Compression</a></li>
+  <li><a href="#multiple-compression-options" id="toc-multiple-compression-options" class="nav-link" data-scroll-target="#multiple-compression-options">Multiple Compression Options</a></li>
+  <li><a href="#when-to-use-compression" id="toc-when-to-use-compression" class="nav-link" data-scroll-target="#when-to-use-compression">When to Use Compression</a></li>
+  </ul></li>
+  <li><a href="#content-negotiation" id="toc-content-negotiation" class="nav-link" data-scroll-target="#content-negotiation">Content Negotiation</a>
+  <ul class="collapse">
+  <li><a href="#accept-header" id="toc-accept-header" class="nav-link" data-scroll-target="#accept-header">Accept Header</a></li>
+  </ul></li>
+  <li><a href="#accept-language" id="toc-accept-language" class="nav-link" data-scroll-target="#accept-language">Accept-Language</a></li>
+  <li><a href="#accept-charset" id="toc-accept-charset" class="nav-link" data-scroll-target="#accept-charset">Accept-Charset</a></li>
+  <li><a href="#accept-encoding" id="toc-accept-encoding" class="nav-link" data-scroll-target="#accept-encoding">Accept-Encoding</a>
+  <ul class="collapse">
+  <li><a href="#complete-content-negotiation" id="toc-complete-content-negotiation" class="nav-link" data-scroll-target="#complete-content-negotiation">Complete Content Negotiation</a></li>
+  </ul></li>
+  <li><a href="#range-requests" id="toc-range-requests" class="nav-link" data-scroll-target="#range-requests">Range Requests</a>
+  <ul class="collapse">
+  <li><a href="#request-byte-range" id="toc-request-byte-range" class="nav-link" data-scroll-target="#request-byte-range">Request Byte Range</a></li>
+  <li><a href="#multiple-ranges" id="toc-multiple-ranges" class="nav-link" data-scroll-target="#multiple-ranges">Multiple Ranges</a></li>
+  </ul></li>
+  <li><a href="#resume-download" id="toc-resume-download" class="nav-link" data-scroll-target="#resume-download">Resume Download</a>
+  <ul class="collapse">
+  <li><a href="#accept-ranges-header" id="toc-accept-ranges-header" class="nav-link" data-scroll-target="#accept-ranges-header">Accept-Ranges Header</a></li>
+  </ul></li>
+  <li><a href="#persistent-connections" id="toc-persistent-connections" class="nav-link" data-scroll-target="#persistent-connections">Persistent Connections</a>
+  <ul class="collapse">
+  <li><a href="#connection-keep-alive" id="toc-connection-keep-alive" class="nav-link" data-scroll-target="#connection-keep-alive">Connection: keep-alive</a></li>
+  </ul></li>
+  <li><a href="#connection-close" id="toc-connection-close" class="nav-link" data-scroll-target="#connection-close">Connection: close</a></li>
+  <li><a href="#keep-alive-settings" id="toc-keep-alive-settings" class="nav-link" data-scroll-target="#keep-alive-settings">Keep-Alive Settings</a></li>
+  <li><a href="#http2-features" id="toc-http2-features" class="nav-link" data-scroll-target="#http2-features">HTTP/2 Features</a>
+  <ul class="collapse">
+  <li><a href="#multiplexing" id="toc-multiplexing" class="nav-link" data-scroll-target="#multiplexing">Multiplexing</a></li>
+  </ul></li>
+  <li><a href="#server-push" id="toc-server-push" class="nav-link" data-scroll-target="#server-push">Server Push</a>
+  <ul class="collapse">
+  <li><a href="#header-compression" id="toc-header-compression" class="nav-link" data-scroll-target="#header-compression">Header Compression</a></li>
+  </ul></li>
+  <li><a href="#binary-protocol" id="toc-binary-protocol" class="nav-link" data-scroll-target="#binary-protocol">Binary Protocol</a>
+  <ul class="collapse">
+  <li><a href="#request-priority" id="toc-request-priority" class="nav-link" data-scroll-target="#request-priority">Request Priority</a></li>
+  <li><a href="#testing-http2" id="toc-testing-http2" class="nav-link" data-scroll-target="#testing-http2">Testing HTTP/2</a></li>
+  </ul></li>
+  <li><a href="#http3-and-quic" id="toc-http3-and-quic" class="nav-link" data-scroll-target="#http3-and-quic">HTTP/3 and QUIC</a></li>
+  <li><a href="#redirects" id="toc-redirects" class="nav-link" data-scroll-target="#redirects">Redirects</a>
+  <ul class="collapse">
+  <li><a href="#types-of-redirects" id="toc-types-of-redirects" class="nav-link" data-scroll-target="#types-of-redirects">Types of Redirects</a></li>
+  </ul></li>
+  <li><a href="#permanent-redirect" id="toc-permanent-redirect" class="nav-link" data-scroll-target="#permanent-redirect">301 Permanent Redirect</a></li>
+  <li><a href="#temporary-redirect" id="toc-temporary-redirect" class="nav-link" data-scroll-target="#temporary-redirect">302 Temporary Redirect</a></li>
+  <li><a href="#temporary-method-preserved" id="toc-temporary-method-preserved" class="nav-link" data-scroll-target="#temporary-method-preserved">307 Temporary (method preserved)</a>
+  <ul class="collapse">
+  <li><a href="#multiple-redirects" id="toc-multiple-redirects" class="nav-link" data-scroll-target="#multiple-redirects">Multiple Redirects</a></li>
+  <li><a href="#absolute-vs-relative-redirects" id="toc-absolute-vs-relative-redirects" class="nav-link" data-scroll-target="#absolute-vs-relative-redirects">Absolute vs Relative Redirects</a></li>
+  </ul></li>
+  <li><a href="#rate-limiting" id="toc-rate-limiting" class="nav-link" data-scroll-target="#rate-limiting">Rate Limiting</a>
+  <ul class="collapse">
+  <li><a href="#rate-limit-headers" id="toc-rate-limit-headers" class="nav-link" data-scroll-target="#rate-limit-headers">Rate Limit Headers</a></li>
+  </ul></li>
+  <li><a href="#rate-limit-exceeded" id="toc-rate-limit-exceeded" class="nav-link" data-scroll-target="#rate-limit-exceeded">Rate Limit Exceeded</a></li>
+  <li><a href="#timeouts" id="toc-timeouts" class="nav-link" data-scroll-target="#timeouts">Timeouts</a>
+  <ul class="collapse">
+  <li><a href="#request-timeout" id="toc-request-timeout" class="nav-link" data-scroll-target="#request-timeout">Request Timeout</a></li>
+  </ul></li>
+  <li><a href="#security-headers" id="toc-security-headers" class="nav-link" data-scroll-target="#security-headers">Security Headers</a>
+  <ul class="collapse">
+  <li><a href="#common-security-headers" id="toc-common-security-headers" class="nav-link" data-scroll-target="#common-security-headers">Common Security Headers</a></li>
+  </ul></li>
+  <li><a href="#webhooks-and-server-push" id="toc-webhooks-and-server-push" class="nav-link" data-scroll-target="#webhooks-and-server-push">Webhooks and Server Push</a>
+  <ul class="collapse">
+  <li><a href="#webhook-request-example" id="toc-webhook-request-example" class="nav-link" data-scroll-target="#webhook-request-example">Webhook Request Example</a></li>
+  <li><a href="#long-polling" id="toc-long-polling" class="nav-link" data-scroll-target="#long-polling">Long Polling</a></li>
+  <li><a href="#server-sent-events" id="toc-server-sent-events" class="nav-link" data-scroll-target="#server-sent-events">Server-Sent Events</a></li>
+  </ul></li>
+  <li><a href="#http-request-lifecycle" id="toc-http-request-lifecycle" class="nav-link" data-scroll-target="#http-request-lifecycle">HTTP Request Lifecycle</a></li>
+  <li><a href="#http-debugging" id="toc-http-debugging" class="nav-link" data-scroll-target="#http-debugging">HTTP Debugging</a>
+  <ul class="collapse">
+  <li><a href="#echo-request-details" id="toc-echo-request-details" class="nav-link" data-scroll-target="#echo-request-details">Echo Request Details</a></li>
+  <li><a href="#test-http-methods" id="toc-test-http-methods" class="nav-link" data-scroll-target="#test-http-methods">Test HTTP Methods</a></li>
+  </ul></li>
+  <li><a href="#simulate-delays" id="toc-simulate-delays" class="nav-link" data-scroll-target="#simulate-delays">Simulate Delays</a>
+  <ul class="collapse">
+  <li><a href="#test-response-codes" id="toc-test-response-codes" class="nav-link" data-scroll-target="#test-response-codes">Test Response Codes</a></li>
+  </ul></li>
+  <li><a href="#performance" id="toc-performance" class="nav-link" data-scroll-target="#performance">Performance</a>
+  <ul class="collapse">
+  <li><a href="#security" id="toc-security" class="nav-link" data-scroll-target="#security">Security</a></li>
+  </ul></li>
+  <li><a href="#reliability" id="toc-reliability" class="nav-link" data-scroll-target="#reliability">Reliability</a></li>
+  <li><a href="#practice-exercises" id="toc-practice-exercises" class="nav-link" data-scroll-target="#practice-exercises">Practice Exercises</a></li>
+  <li><a href="#rfc-references" id="toc-rfc-references" class="nav-link" data-scroll-target="#rfc-references">RFC References</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/05-request-response.html">Working with HTTP</a></li><li class="breadcrumb-item"><a href="../chapters/07-advanced.html">7. Advanced Topics</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Chapter 7: Advanced Topics</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">CORS, Caching, Compression, and Modern HTTP</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction-to-advanced-http" class="level1">
+<h1>Introduction to Advanced HTTP</h1>
+<p>This chapter covers advanced HTTP concepts that are crucial for building production-ready APIs and web applications.</p>
+<p>CORS is a security mechanism that controls how web pages from one domain can request resources from another domain.</p>
+<section id="cors-cross-origin-resource-sharing" class="level2">
+<h2 class="anchored" data-anchor-id="cors-cross-origin-resource-sharing">CORS (Cross-Origin Resource Sharing)</h2>
+<section id="why-cors-exists" class="level3">
+<h3 class="anchored" data-anchor-id="why-cors-exists">Why CORS Exists</h3>
+<p>Browsers enforce the Same-Origin Policy for security: - <code>https://example.com</code> cannot access <code>https://api.other.com</code> by default - CORS headers explicitly allow cross-origin requests</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    A[Browser loads page from&lt;br/&gt;example.com] --&gt; B[JavaScript tries to&lt;br/&gt;fetch api.other.com]
+    B --&gt; C{Same Origin?}
+
+    C --&gt;|Yes&lt;br/&gt;same domain| D[Request allowed ✓]
+    C --&gt;|No&lt;br/&gt;different domain| E{CORS headers present?}
+
+    E --&gt;|Yes&lt;br/&gt;Access-Control-Allow-Origin| F[Request allowed ✓]
+    E --&gt;|No| G[Request blocked ✗&lt;br/&gt;CORS error]
+
+    style D fill:#c8e6c9
+    style F fill:#c8e6c9
+    style G fill:#ffccbc
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="simple-cors-request" class="level3">
+<h3 class="anchored" data-anchor-id="simple-cors-request">Simple CORS Request</h3>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/get
+Origin: https://example.com</code></pre>
+<p>The server responds with CORS headers: - <code>Access-Control-Allow-Origin</code>: Which origins are allowed - <code>Access-Control-Allow-Methods</code>: Which HTTP methods are allowed - <code>Access-Control-Allow-Headers</code>: Which headers are allowed</p>
+</section>
+<section id="cors-preflight-request" class="level3">
+<h3 class="anchored" data-anchor-id="cors-preflight-request">CORS Preflight Request</h3>
+<p>For complex requests (POST with JSON, custom headers), browsers send an OPTIONS request first:</p>
+<pre class="{hurl}"><code>
+
+
+OPTIONS https://httpbin.io/post
+Origin: https://example.com
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type, Authorization</code></pre>
+</section>
+<section id="cors-headers-in-response" class="level3">
+<h3 class="anchored" data-anchor-id="cors-headers-in-response">CORS Headers in Response</h3>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/get
+Origin: https://myapp.com</code></pre>
+<p>Look for these headers in the response:</p>
+<pre><code>Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization
+Access-Control-Max-Age: 86400</code></pre>
+</section>
+</section>
+<section id="cors-with-credentials" class="level2">
+<h2 class="anchored" data-anchor-id="cors-with-credentials">CORS with Credentials</h2>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/get
+Origin: https://example.com
+Cookie: session=abc123</code></pre>
+<p>When sending credentials (cookies, auth headers), the server must respond with:</p>
+<pre><code>Access-Control-Allow-Origin: https://example.com
+Access-Control-Allow-Credentials: true</code></pre>
+<p>Note: Cannot use <code>Access-Control-Allow-Origin: *</code> with credentials.</p>
+<section id="cors-configuration-examples" class="level3">
+<h3 class="anchored" data-anchor-id="cors-configuration-examples">CORS Configuration Examples</h3>
+<p><strong>Allowing all origins (permissive):</strong></p>
+<pre><code>Access-Control-Allow-Origin: *</code></pre>
+<p><strong>Allowing specific origin:</strong></p>
+<pre><code>Access-Control-Allow-Origin: https://trusted-app.com</code></pre>
+<p><strong>Allowing multiple origins:</strong> Server must check the <code>Origin</code> header and respond dynamically.</p>
+<p>Caching improves performance by storing and reusing previous responses.</p>
+</section>
+</section>
+<section id="http-caching" class="level2">
+<h2 class="anchored" data-anchor-id="http-caching">HTTP Caching</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant Client
+    participant Cache
+    participant Server
+
+    Client-&gt;&gt;Server: GET /data
+    Server-&gt;&gt;Client: 200 OK&lt;br/&gt;Cache-Control: max-age=3600&lt;br/&gt;Data
+
+    Note over Client,Cache: Resource cached for 1 hour
+
+    Client-&gt;&gt;Cache: GET /data (within 1 hour)
+    Cache-&gt;&gt;Client: 200 OK&lt;br/&gt;Data (from cache)
+
+    Note over Client,Cache: Fast! No server roundtrip
+
+    Client-&gt;&gt;Cache: GET /data (after 1 hour)
+    Cache-&gt;&gt;Server: GET /data&lt;br/&gt;If-None-Match: "etag123"
+
+    alt Not Modified
+        Server-&gt;&gt;Cache: 304 Not Modified
+        Cache-&gt;&gt;Client: 200 OK&lt;br/&gt;Data (from cache)
+    else Modified
+        Server-&gt;&gt;Cache: 200 OK&lt;br/&gt;New Data
+        Cache-&gt;&gt;Client: 200 OK&lt;br/&gt;New Data
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="cache-control-header" class="level3">
+<h3 class="anchored" data-anchor-id="cache-control-header">Cache-Control Header</h3>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/cache
+Cache-Control: max-age=3600</code></pre>
+</section>
+</section>
+<section id="cache-control-directives" class="level2">
+<h2 class="anchored" data-anchor-id="cache-control-directives">Cache-Control Directives</h2>
+<p><strong>Request Directives:</strong> - <code>no-cache</code>: Validate with server before using cache - <code>no-store</code>: Don’t cache at all - <code>max-age=N</code>: Use cached version if less than N seconds old - <code>max-stale=N</code>: Accept stale responses up to N seconds - <code>min-fresh=N</code>: Require response to be fresh for at least N seconds</p>
+<p><strong>Response Directives:</strong> - <code>public</code>: Cacheable by any cache (CDN, browser) - <code>private</code>: Only cacheable by browser - <code>no-cache</code>: Must revalidate before using - <code>no-store</code>: Don’t cache anywhere - <code>max-age=N</code>: Fresh for N seconds - <code>s-maxage=N</code>: Fresh for N seconds in shared caches - <code>must-revalidate</code>: Must validate when stale</p>
+<section id="caching-examples" class="level3">
+<h3 class="anchored" data-anchor-id="caching-examples">Caching Examples</h3>
+<pre class="{hurl}"><code>
+
+
+
+GET https://httpbin.io/get
+Cache-Control: no-store</code></pre>
+<pre class="{hurl}"><code>
+
+
+
+GET https://httpbin.io/cache/3600
+Cache-Control: private, max-age=3600</code></pre>
+<pre class="{hurl}"><code>
+
+
+
+GET https://httpbin.io/cache
+Cache-Control: public, max-age=3600, s-maxage=86400</code></pre>
+</section>
+<section id="etag-and-conditional-requests" class="level3">
+<h3 class="anchored" data-anchor-id="etag-and-conditional-requests">ETag and Conditional Requests</h3>
+<p>ETags enable efficient cache validation:</p>
+<pre class="{hurl}"><code>
+
+
+
+GET https://httpbin.io/etag/abc123def456</code></pre>
+<pre class="{hurl}"><code>
+
+
+
+GET https://httpbin.io/etag/abc123def456
+If-None-Match: "abc123def456"</code></pre>
+<p>If unchanged, server returns <code>304 Not Modified</code> with no body, saving bandwidth.</p>
+</section>
+</section>
+<section id="last-modified-and-if-modified-since" class="level2">
+<h2 class="anchored" data-anchor-id="last-modified-and-if-modified-since">Last-Modified and If-Modified-Since</h2>
+<pre class="{hurl}"><code>
+
+
+
+GET https://httpbin.io/response-headers?Last-Modified=Mon,%2027%20Oct%202024%2015:30:00%20GMT</code></pre>
+<pre class="{hurl}"><code>
+
+
+
+GET https://httpbin.io/response-headers?Last-Modified=Mon,%2027%20Oct%202024%2015:30:00%20GMT
+If-Modified-Since: Mon, 27 Oct 2024 15:30:00 GMT</code></pre>
+<section id="vary-header" class="level3">
+<h3 class="anchored" data-anchor-id="vary-header">Vary Header</h3>
+<p>Tells caches which request headers affect the response:</p>
+<pre class="{hurl}"><code>
+%%include
+GET https://httpbin.io/response-headers?Vary=Accept-Encoding,%20Accept-Language
+Accept-Encoding: gzip
+Accept-Language: en-US
+[Options]
+compressed: true</code></pre>
+<p>The cache must store separate versions for different combinations of these headers.</p>
+<p>Compression reduces bandwidth and improves performance.</p>
+</section>
+</section>
+<section id="compression" class="level2">
+<h2 class="anchored" data-anchor-id="compression">Compression</h2>
+<section id="gzip-compression" class="level3">
+<h3 class="anchored" data-anchor-id="gzip-compression">Gzip Compression</h3>
+<pre class="{hurl}"><code>%%include
+GET https://httpbin.io/gzip
+Accept-Encoding: gzip
+[Options]
+compressed: true</code></pre>
+<p>Response includes: <code>Content-Encoding: gzip</code></p>
+</section>
+<section id="deflate-compression" class="level3">
+<h3 class="anchored" data-anchor-id="deflate-compression">Deflate Compression</h3>
+<pre class="{hurl}"><code>%%include
+GET https://httpbin.io/deflate
+Accept-Encoding: deflate
+[Options]
+compressed: true</code></pre>
+</section>
+<section id="brotli-compression" class="level3">
+<h3 class="anchored" data-anchor-id="brotli-compression">Brotli Compression</h3>
+<pre class="{hurl}"><code>%%include
+GET https://httpbin.io/brotli
+Accept-Encoding: br
+[Options]
+compressed: true</code></pre>
+<p>Brotli typically provides better compression than gzip.</p>
+</section>
+<section id="multiple-compression-options" class="level3">
+<h3 class="anchored" data-anchor-id="multiple-compression-options">Multiple Compression Options</h3>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/get
+Accept-Encoding: br, gzip, deflate</code></pre>
+<p>Server chooses the best supported algorithm.</p>
+</section>
+<section id="when-to-use-compression" class="level3">
+<h3 class="anchored" data-anchor-id="when-to-use-compression">When to Use Compression</h3>
+<p><strong>Compress:</strong> - Text content (HTML, CSS, JavaScript, JSON, XML) - Large responses - API responses</p>
+<p><strong>Don’t Compress:</strong> - Already compressed (images, videos, PDFs) - Very small responses (overhead not worth it) - Streaming data that needs immediate access</p>
+<p>Clients and servers negotiate the best content format.</p>
+</section>
+</section>
+<section id="content-negotiation" class="level2">
+<h2 class="anchored" data-anchor-id="content-negotiation">Content Negotiation</h2>
+<section id="accept-header" class="level3">
+<h3 class="anchored" data-anchor-id="accept-header">Accept Header</h3>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/get
+Accept: application/json, application/xml;q=0.9, text/plain;q=0.8</code></pre>
+<p>Quality values (q) indicate preference (0.0 to 1.0, default 1.0).</p>
+</section>
+</section>
+<section id="accept-language" class="level2">
+<h2 class="anchored" data-anchor-id="accept-language">Accept-Language</h2>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/get
+Accept-Language: fr-FR, en-US;q=0.9, en;q=0.8</code></pre>
+</section>
+<section id="accept-charset" class="level2">
+<h2 class="anchored" data-anchor-id="accept-charset">Accept-Charset</h2>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/get
+Accept-Charset: utf-8, iso-8859-1;q=0.7</code></pre>
+</section>
+<section id="accept-encoding" class="level2">
+<h2 class="anchored" data-anchor-id="accept-encoding">Accept-Encoding</h2>
+<p>Already covered in compression section.</p>
+<section id="complete-content-negotiation" class="level3">
+<h3 class="anchored" data-anchor-id="complete-content-negotiation">Complete Content Negotiation</h3>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/get
+Accept: application/json;q=1.0, application/xml;q=0.8
+Accept-Language: en-US, fr;q=0.8
+Accept-Encoding: br, gzip
+Accept-Charset: utf-8</code></pre>
+<p>Request partial content, useful for resuming downloads or streaming.</p>
+</section>
+</section>
+<section id="range-requests" class="level2">
+<h2 class="anchored" data-anchor-id="range-requests">Range Requests</h2>
+<section id="request-byte-range" class="level3">
+<h3 class="anchored" data-anchor-id="request-byte-range">Request Byte Range</h3>
+<pre class="{hurl}"><code>%%verbose
+%%output=request-range.bin
+GET https://httpbin.io/range/1000
+Range: bytes=0-499</code></pre>
+<p>Server responds with <code>206 Partial Content</code> and <code>Content-Range</code> header.</p>
+</section>
+<section id="multiple-ranges" class="level3">
+<h3 class="anchored" data-anchor-id="multiple-ranges">Multiple Ranges</h3>
+<pre class="{hurl}"><code>%%verbose
+%%output=request-range2.bin
+GET https://httpbin.io/range/1000
+Range: bytes=0-99, 200-299, 400-499</code></pre>
+</section>
+</section>
+<section id="resume-download" class="level2">
+<h2 class="anchored" data-anchor-id="resume-download">Resume Download</h2>
+<pre class="{hurl}"><code>%%verbose
+%%output=request-range3.bin
+GET https://httpbin.io/range/1000
+Range: bytes=0-499</code></pre>
+<pre class="{hurl}"><code>%%verbose
+%%output=request-range4.bin
+GET https://httpbin.io/range/1000
+Range: bytes=500-999</code></pre>
+<section id="accept-ranges-header" class="level3">
+<h3 class="anchored" data-anchor-id="accept-ranges-header">Accept-Ranges Header</h3>
+<p>Indicates server supports range requests:</p>
+<pre class="{hurl}"><code>
+%%include
+HEAD https://httpbin.io/range/1000</code></pre>
+<p>Look for <code>Accept-Ranges: bytes</code> in response.</p>
+</section>
+</section>
+<section id="persistent-connections" class="level2">
+<h2 class="anchored" data-anchor-id="persistent-connections">Persistent Connections</h2>
+<section id="connection-keep-alive" class="level3">
+<h3 class="anchored" data-anchor-id="connection-keep-alive">Connection: keep-alive</h3>
+<pre class="{hurl}"><code>
+GET https://httpbin.io/get
+Connection: keep-alive</code></pre>
+<p>Reuses the TCP connection for multiple requests (default in HTTP/1.1).</p>
+</section>
+</section>
+<section id="connection-close" class="level2">
+<h2 class="anchored" data-anchor-id="connection-close">Connection: close</h2>
+<pre class="{hurl}"><code>
+GET https://httpbin.io/get
+Connection: close</code></pre>
+<p>Closes connection after this request.</p>
+</section>
+<section id="keep-alive-settings" class="level2">
+<h2 class="anchored" data-anchor-id="keep-alive-settings">Keep-Alive Settings</h2>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/get
+Connection: keep-alive
+Keep-Alive: timeout=5, max=100</code></pre>
+<ul>
+<li><code>timeout=5</code>: Keep connection open for 5 seconds</li>
+<li><code>max=100</code>: Allow 100 requests on this connection</li>
+</ul>
+<p>HTTP/2 brings significant improvements over HTTP/1.1:</p>
+</section>
+<section id="http2-features" class="level2">
+<h2 class="anchored" data-anchor-id="http2-features">HTTP/2 Features</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    A[HTTP/2 Improvements] --&gt; B[Multiplexing]
+    A --&gt; C[Server Push]
+    A --&gt; D[Header Compression]
+    A --&gt; E[Binary Protocol]
+    A --&gt; F[Stream Priority]
+
+    B --&gt; B1[Multiple requests&lt;br/&gt;on single connection]
+    C --&gt; C1[Server sends resources&lt;br/&gt;before requested]
+    D --&gt; D1[HPACK compression&lt;br/&gt;reduces overhead]
+    E --&gt; E1[Binary framing&lt;br/&gt;faster parsing]
+    F --&gt; F1[Prioritize critical&lt;br/&gt;resources]
+
+    style A fill:#e1f5ff
+    style B fill:#c8e6c9
+    style C fill:#c8e6c9
+    style D fill:#c8e6c9
+    style E fill:#c8e6c9
+    style F fill:#c8e6c9
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="multiplexing" class="level3">
+<h3 class="anchored" data-anchor-id="multiplexing">Multiplexing</h3>
+<p>Multiple requests/responses on single connection simultaneously.</p>
+</section>
+</section>
+<section id="server-push" class="level2">
+<h2 class="anchored" data-anchor-id="server-push">Server Push</h2>
+<p>Server can proactively send resources to client.</p>
+<section id="header-compression" class="level3">
+<h3 class="anchored" data-anchor-id="header-compression">Header Compression</h3>
+<p>HPACK compression reduces header overhead.</p>
+</section>
+</section>
+<section id="binary-protocol" class="level2">
+<h2 class="anchored" data-anchor-id="binary-protocol">Binary Protocol</h2>
+<p>More efficient parsing than text-based HTTP/1.1.</p>
+<section id="request-priority" class="level3">
+<h3 class="anchored" data-anchor-id="request-priority">Request Priority</h3>
+<p>Clients can prioritize important resources.</p>
+</section>
+<section id="testing-http2" class="level3">
+<h3 class="anchored" data-anchor-id="testing-http2">Testing HTTP/2</h3>
+<pre class="{hurl}"><code>
+%%include
+GET https://httpbin.io/get</code></pre>
+<p>Check response protocol in output - may show HTTP/2 if supported.</p>
+</section>
+</section>
+<section id="http3-and-quic" class="level2">
+<h2 class="anchored" data-anchor-id="http3-and-quic">HTTP/3 and QUIC</h2>
+<p>HTTP/3 uses QUIC (over UDP) instead of TCP:</p>
+<ul>
+<li>Faster connection establishment</li>
+<li>Better handling of packet loss</li>
+<li>Improved performance on mobile networks</li>
+</ul>
+</section>
+<section id="redirects" class="level2">
+<h2 class="anchored" data-anchor-id="redirects">Redirects</h2>
+<section id="types-of-redirects" class="level3">
+<h3 class="anchored" data-anchor-id="types-of-redirects">Types of Redirects</h3>
+</section>
+</section>
+<section id="permanent-redirect" class="level2">
+<h2 class="anchored" data-anchor-id="permanent-redirect">301 Permanent Redirect</h2>
+<pre class="{hurl}"><code>%%include
+
+GET https://httpbin.io/redirect-to?url=https://httpbin.io/get&amp;status_code=301</code></pre>
+</section>
+<section id="temporary-redirect" class="level2">
+<h2 class="anchored" data-anchor-id="temporary-redirect">302 Temporary Redirect</h2>
+<pre class="{hurl}"><code>%%include
+
+GET https://httpbin.io/redirect-to?url=https://httpbin.io/get&amp;status_code=302</code></pre>
+</section>
+<section id="temporary-method-preserved" class="level2">
+<h2 class="anchored" data-anchor-id="temporary-method-preserved">307 Temporary (method preserved)</h2>
+<pre class="{hurl}"><code>%%include
+GET https://httpbin.io/redirect-to?url=https://httpbin.io/get&amp;status_code=307</code></pre>
+<section id="multiple-redirects" class="level3">
+<h3 class="anchored" data-anchor-id="multiple-redirects">Multiple Redirects</h3>
+<pre class="{hurl}"><code>
+
+
+
+GET https://httpbin.io/redirect/3</code></pre>
+<p>This redirects 3 times before returning final response.</p>
+</section>
+<section id="absolute-vs-relative-redirects" class="level3">
+<h3 class="anchored" data-anchor-id="absolute-vs-relative-redirects">Absolute vs Relative Redirects</h3>
+<pre class="{hurl}"><code>
+
+
+
+GET https://httpbin.io/absolute-redirect/1</code></pre>
+<pre class="{hurl}"><code>
+
+
+
+GET https://httpbin.io/relative-redirect/1</code></pre>
+</section>
+</section>
+<section id="rate-limiting" class="level2">
+<h2 class="anchored" data-anchor-id="rate-limiting">Rate Limiting</h2>
+<p>APIs implement rate limiting to prevent abuse.</p>
+<section id="rate-limit-headers" class="level3">
+<h3 class="anchored" data-anchor-id="rate-limit-headers">Rate Limit Headers</h3>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/get</code></pre>
+<p>Look for headers like:</p>
+<pre><code>X-RateLimit-Limit: 5000
+X-RateLimit-Remaining: 4999
+X-RateLimit-Reset: 1640995200</code></pre>
+</section>
+</section>
+<section id="rate-limit-exceeded" class="level2">
+<h2 class="anchored" data-anchor-id="rate-limit-exceeded">Rate Limit Exceeded</h2>
+<pre class="{hurl}"><code>
+
+
+
+GET https://httpbin.io/status/429</code></pre>
+<p>Response includes <code>Retry-After</code> header indicating when to retry.</p>
+</section>
+<section id="timeouts" class="level2">
+<h2 class="anchored" data-anchor-id="timeouts">Timeouts</h2>
+<section id="request-timeout" class="level3">
+<h3 class="anchored" data-anchor-id="request-timeout">Request Timeout</h3>
+<pre class="{hurl}"><code>
+
+
+
+GET https://httpbin.io/delay/2</code></pre>
+<p>This delays response by 2 seconds.</p>
+</section>
+</section>
+<section id="security-headers" class="level2">
+<h2 class="anchored" data-anchor-id="security-headers">Security Headers</h2>
+<section id="common-security-headers" class="level3">
+<h3 class="anchored" data-anchor-id="common-security-headers">Common Security Headers</h3>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/response-headers?Strict-Transport-Security=max-age=31536000&amp;X-Content-Type-Options=nosniff&amp;X-Frame-Options=DENY</code></pre>
+<p>Important security headers: - <code>Strict-Transport-Security</code>: Force HTTPS - <code>X-Content-Type-Options: nosniff</code>: Prevent MIME sniffing - <code>X-Frame-Options: DENY</code>: Prevent clickjacking - <code>Content-Security-Policy</code>: Control resource loading - <code>X-XSS-Protection</code>: Enable XSS filter (legacy)</p>
+</section>
+</section>
+<section id="webhooks-and-server-push" class="level2">
+<h2 class="anchored" data-anchor-id="webhooks-and-server-push">Webhooks and Server Push</h2>
+<p>Webhooks allow servers to push data to clients.</p>
+<section id="webhook-request-example" class="level3">
+<h3 class="anchored" data-anchor-id="webhook-request-example">Webhook Request Example</h3>
+<pre class="{hurl}"><code>
+
+
+
+POST https://httpbin.io/post
+Content-Type: application/json
+X-Webhook-Signature: sha256=abc123def456
+
+{
+  "event": "user.created",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "data": {
+    "user_id": 123,
+    "email": "newuser@example.com"
+  }
+}</code></pre>
+</section>
+<section id="long-polling" class="level3">
+<h3 class="anchored" data-anchor-id="long-polling">Long Polling</h3>
+<p>Client repeatedly requests updates until new data is available.</p>
+<pre class="{hurl}"><code>
+
+
+
+GET https://httpbin.io/delay/5</code></pre>
+<p>Server holds connection open until data is available or timeout.</p>
+</section>
+<section id="server-sent-events" class="level3">
+<h3 class="anchored" data-anchor-id="server-sent-events">Server-Sent Events</h3>
+<p>One-way streaming from server to client.</p>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/stream/5
+Accept: text/event-stream</code></pre>
+</section>
+</section>
+<section id="http-request-lifecycle" class="level2">
+<h2 class="anchored" data-anchor-id="http-request-lifecycle">HTTP Request Lifecycle</h2>
+<p>Complete lifecycle of an HTTP request:</p>
+<ol type="1">
+<li><strong>DNS Resolution</strong>: Resolve hostname to IP</li>
+<li><strong>TCP Connection</strong>: Three-way handshake</li>
+<li><strong>TLS Handshake</strong>: (HTTPS only) Establish encryption</li>
+<li><strong>HTTP Request</strong>: Send request</li>
+<li><strong>HTTP Response</strong>: Receive response</li>
+<li><strong>Connection Close/Keep-Alive</strong>: Close or reuse connection</li>
+</ol>
+</section>
+<section id="http-debugging" class="level2">
+<h2 class="anchored" data-anchor-id="http-debugging">HTTP Debugging</h2>
+<section id="echo-request-details" class="level3">
+<h3 class="anchored" data-anchor-id="echo-request-details">Echo Request Details</h3>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/anything
+X-Custom-Header: debug-mode
+User-Agent: Testing-Client/1.0</code></pre>
+</section>
+<section id="test-http-methods" class="level3">
+<h3 class="anchored" data-anchor-id="test-http-methods">Test HTTP Methods</h3>
+<pre class="{hurl}"><code>
+GET https://httpbin.io/anything</code></pre>
+</section>
+</section>
+<section id="simulate-delays" class="level2">
+<h2 class="anchored" data-anchor-id="simulate-delays">Simulate Delays</h2>
+<pre class="{hurl}"><code>
+
+
+GET https://httpbin.io/delay/3</code></pre>
+<section id="test-response-codes" class="level3">
+<h3 class="anchored" data-anchor-id="test-response-codes">Test Response Codes</h3>
+<pre class="{hurl}"><code>
+
+GET https://httpbin.io/status/418</code></pre>
+</section>
+</section>
+<section id="performance" class="level2">
+<h2 class="anchored" data-anchor-id="performance">Performance</h2>
+<ol type="1">
+<li>Enable compression (gzip/brotli)</li>
+<li>Use caching appropriately</li>
+<li>Implement HTTP/2 or HTTP/3</li>
+<li>Use connection keep-alive</li>
+<li>Minimize header size</li>
+<li>Use range requests for large files</li>
+</ol>
+<section id="security" class="level3">
+<h3 class="anchored" data-anchor-id="security">Security</h3>
+<ol type="1">
+<li>Always use HTTPS</li>
+<li>Implement CORS correctly</li>
+<li>Add security headers</li>
+<li>Validate inputs</li>
+<li>Rate limit requests</li>
+<li>Use proper authentication</li>
+</ol>
+</section>
+</section>
+<section id="reliability" class="level2">
+<h2 class="anchored" data-anchor-id="reliability">Reliability</h2>
+<ol type="1">
+<li>Handle redirects</li>
+<li>Implement retries with backoff</li>
+<li>Set appropriate timeouts</li>
+<li>Handle rate limits gracefully</li>
+<li>Validate responses</li>
+<li>Log errors properly</li>
+</ol>
+</section>
+<section id="practice-exercises" class="level2">
+<h2 class="anchored" data-anchor-id="practice-exercises">Practice Exercises</h2>
+<p>Try these on your own:</p>
+<ol type="1">
+<li>Send a CORS preflight request and examine the response</li>
+<li>Make a conditional request using ETag</li>
+<li>Request compressed content and verify the encoding</li>
+<li>Test range requests with different byte ranges</li>
+<li>Follow a redirect chain and observe each step</li>
+<li>Simulate rate limiting and check Retry-After header</li>
+</ol>
+<ul>
+<li><strong>CORS</strong>: Controls cross-origin requests, requires proper headers</li>
+<li><strong>Caching</strong>: Improves performance with Cache-Control, ETag, and conditional requests</li>
+<li><strong>Compression</strong>: Reduces bandwidth with gzip, deflate, or brotli</li>
+<li><strong>Range Requests</strong>: Enable partial content and resume capabilities</li>
+<li><strong>HTTP/2</strong>: Provides multiplexing, header compression, and server push</li>
+<li><strong>Security</strong>: Use HTTPS, CORS, security headers, and rate limiting</li>
+<li><strong>Modern APIs</strong>: Implement webhooks, SSE, and proper error handling</li>
+</ul>
+<p>You’ve now completed the HTTP Fundamentals training! You’ve learned:</p>
+<ol type="1">
+<li><strong>HTTP Basics</strong>: Protocol fundamentals and request/response cycle</li>
+<li><strong>HTTP Methods</strong>: GET, POST, PUT, PATCH, DELETE, and their semantics</li>
+<li><strong>HTTP Headers</strong>: Controlling behavior with request and response headers</li>
+<li><strong>Status Codes</strong>: Understanding and using 1xx through 5xx responses</li>
+<li><strong>Bodies</strong>: Working with JSON, form data, and other content types</li>
+<li><strong>Authentication</strong>: Securing APIs with Basic, Bearer, and other methods</li>
+<li><strong>Advanced Topics</strong>: CORS, caching, compression, and modern HTTP features</li>
+</ol>
+<ul>
+<li><p><strong>REST API Design</strong>: Design principles and best practices</p></li>
+<li><p><strong>GraphQL</strong>: Alternative to REST for flexible queries</p></li>
+<li><p><strong>WebSockets</strong>: Full-duplex communication</p></li>
+<li><p><strong>gRPC</strong>: High-performance RPC framework</p></li>
+<li><p><strong>API Documentation</strong>: OpenAPI/Swagger specifications</p></li>
+<li><p><strong>Load Testing</strong>: Performance testing with tools like k6 or Locust</p></li>
+<li><p><strong>API Gateways</strong>: Kong, Nginx, AWS API Gateway</p></li>
+<li><p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP">MDN HTTP Documentation</a></p></li>
+<li><p><a href="https://tools.ietf.org/html/rfc7230">RFC 7230-7237</a>: HTTP/1.1 Specification</p></li>
+<li><p><a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a>: HTTP/2 Specification</p></li>
+<li><p><a href="https://httpbin.io">httpbin.io</a>: HTTP testing service</p></li>
+<li><p><a href="https://hurl.dev">Hurl Documentation</a>: Hurl testing tool</p></li>
+</ul>
+<p>Thank you for completing this HTTP Fundamentals training! You now have a solid foundation for working with HTTP in your development projects.</p>
+<hr>
+</section>
+<section id="rfc-references" class="level2">
+<h2 class="anchored" data-anchor-id="rfc-references">RFC References</h2>
+<p>This chapter covers concepts from the following RFCs:</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>HTTP Semantics and Encoding
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong><a href="https://www.rfc-editor.org/rfc/rfc9110.html">RFC 9110</a></strong> - HTTP Semantics
+<ul>
+<li>Section 8.4: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-8.4">Content Encoding</a></li>
+<li>Section 8.6: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#content.negotiation">Content Negotiation</a></li>
+<li>Section 14: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-14">Range Requests</a></li>
+<li>Section 14.1: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#field.range">Range</a></li>
+<li>Section 14.2: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#field.accept-ranges">Accept-Ranges</a></li>
+<li>Section 17.2: <a href="https://www.rfc-editor.org/rfc/rfc9110.html#redirection.3xx">Redirection 3xx</a></li>
+</ul></li>
+</ul>
+<section id="http-caching-1" class="level3">
+<h3 class="anchored" data-anchor-id="http-caching-1">HTTP Caching</h3>
+<ul>
+<li><strong><a href="https://www.rfc-editor.org/rfc/rfc9111.html">RFC 9111</a></strong> - HTTP Caching
+<ul>
+<li>Section 3: <a href="https://www.rfc-editor.org/rfc/rfc9111.html#section-3">Storing Responses in Caches</a></li>
+<li>Section 4: <a href="https://www.rfc-editor.org/rfc/rfc9111.html#section-4">Constructing Responses from Caches</a></li>
+<li>Section 5.2: <a href="https://www.rfc-editor.org/rfc/rfc9111.html#field.cache-control">Cache-Control</a></li>
+<li>Section 8: <a href="https://www.rfc-editor.org/rfc/rfc9111.html#invalidation">Invalidation</a></li>
+</ul></li>
+</ul>
+</section>
+<section id="http2-and-http3" class="level3">
+<h3 class="anchored" data-anchor-id="http2-and-http3">HTTP/2 and HTTP/3</h3>
+<ul>
+<li><strong><a href="https://www.rfc-editor.org/rfc/rfc9113.html">RFC 9113</a></strong> - HTTP/2
+<ul>
+<li>Section 5: <a href="https://www.rfc-editor.org/rfc/rfc9113.html#StreamsLayer">Streams and Multiplexing</a></li>
+<li>Section 8: <a href="https://www.rfc-editor.org/rfc/rfc9113.html#HttpSequence">HTTP Message Exchanges</a></li>
+</ul></li>
+<li><strong><a href="https://www.rfc-editor.org/rfc/rfc9114.html">RFC 9114</a></strong> - HTTP/3</li>
+<li><strong><a href="https://www.rfc-editor.org/rfc/rfc9000.html">RFC 9000</a></strong> - QUIC: A UDP-Based Multiplexed and Secure Transport</li>
+</ul>
+</section>
+<section id="cors-and-additional-topics" class="level3">
+<h3 class="anchored" data-anchor-id="cors-and-additional-topics">CORS and Additional Topics</h3>
+<ul>
+<li><strong><a href="https://fetch.spec.whatwg.org/#http-cors-protocol">Fetch Standard</a></strong> - CORS Protocol (WHATWG)</li>
+<li><strong><a href="https://www.rfc-editor.org/rfc/rfc9209.html">RFC 9209</a></strong> - The Proxy-Status HTTP Response Header Field</li>
+<li><strong><a href="https://www.rfc-editor.org/rfc/rfc7694.html">RFC 7694</a></strong> - HTTP Client-Initiated Content Encoding</li>
+</ul>
+</section>
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/micedre\.github\.io\/http-fondamentals\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Chapter 7: Advanced Topics"</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "CORS, Caching, Compression, and Modern HTTP"</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="fu"># Introduction to Advanced HTTP</span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>This chapter covers advanced HTTP concepts that are crucial for building production-ready APIs and web applications.</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>CORS is a security mechanism that controls how web pages from one domain can request resources from another domain.</span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a><span class="fu">## CORS (Cross-Origin Resource Sharing)</span></span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why CORS Exists</span></span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a>Browsers enforce the Same-Origin Policy for security:</span>
+<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`https://example.com`</span> cannot access <span class="in">`https://api.other.com`</span> by default</span>
+<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>CORS headers explicitly allow cross-origin requests</span>
+<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-27"><a href="#cb53-27" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb53-28"><a href="#cb53-28" aria-hidden="true" tabindex="-1"></a>graph TD</span>
+<span id="cb53-29"><a href="#cb53-29" aria-hidden="true" tabindex="-1"></a>    A[Browser loads page from&lt;br/&gt;example.com] --&gt; B[JavaScript tries to&lt;br/&gt;fetch api.other.com]</span>
+<span id="cb53-30"><a href="#cb53-30" aria-hidden="true" tabindex="-1"></a>    B --&gt; C{Same Origin?}</span>
+<span id="cb53-31"><a href="#cb53-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-32"><a href="#cb53-32" aria-hidden="true" tabindex="-1"></a>    C --&gt;|Yes&lt;br/&gt;same domain| D[Request allowed ✓]</span>
+<span id="cb53-33"><a href="#cb53-33" aria-hidden="true" tabindex="-1"></a>    C --&gt;|No&lt;br/&gt;different domain| E{CORS headers present?}</span>
+<span id="cb53-34"><a href="#cb53-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-35"><a href="#cb53-35" aria-hidden="true" tabindex="-1"></a>    E --&gt;|Yes&lt;br/&gt;Access-Control-Allow-Origin| F[Request allowed ✓]</span>
+<span id="cb53-36"><a href="#cb53-36" aria-hidden="true" tabindex="-1"></a>    E --&gt;|No| G[Request blocked ✗&lt;br/&gt;CORS error]</span>
+<span id="cb53-37"><a href="#cb53-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-38"><a href="#cb53-38" aria-hidden="true" tabindex="-1"></a>    style D fill:<span class="co">#c8e6c9</span></span>
+<span id="cb53-39"><a href="#cb53-39" aria-hidden="true" tabindex="-1"></a>    style F fill:<span class="co">#c8e6c9</span></span>
+<span id="cb53-40"><a href="#cb53-40" aria-hidden="true" tabindex="-1"></a>    style G fill:<span class="co">#ffccbc</span></span>
+<span id="cb53-41"><a href="#cb53-41" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-42"><a href="#cb53-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-43"><a href="#cb53-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-44"><a href="#cb53-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-45"><a href="#cb53-45" aria-hidden="true" tabindex="-1"></a><span class="fu">### Simple CORS Request</span></span>
+<span id="cb53-46"><a href="#cb53-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-49"><a href="#cb53-49" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-50"><a href="#cb53-50" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb53-51"><a href="#cb53-51" aria-hidden="true" tabindex="-1"></a>Origin<span class="op">:</span> https<span class="op">:</span><span class="co">//example.com</span></span>
+<span id="cb53-52"><a href="#cb53-52" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-53"><a href="#cb53-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-54"><a href="#cb53-54" aria-hidden="true" tabindex="-1"></a>The server responds with CORS headers:</span>
+<span id="cb53-55"><a href="#cb53-55" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Access-Control-Allow-Origin`</span>: Which origins are allowed</span>
+<span id="cb53-56"><a href="#cb53-56" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Access-Control-Allow-Methods`</span>: Which HTTP methods are allowed</span>
+<span id="cb53-57"><a href="#cb53-57" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Access-Control-Allow-Headers`</span>: Which headers are allowed</span>
+<span id="cb53-58"><a href="#cb53-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-59"><a href="#cb53-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-60"><a href="#cb53-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-61"><a href="#cb53-61" aria-hidden="true" tabindex="-1"></a><span class="fu">### CORS Preflight Request</span></span>
+<span id="cb53-62"><a href="#cb53-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-63"><a href="#cb53-63" aria-hidden="true" tabindex="-1"></a>For complex requests (POST with JSON, custom headers), browsers send an OPTIONS request first:</span>
+<span id="cb53-64"><a href="#cb53-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-67"><a href="#cb53-67" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-68"><a href="#cb53-68" aria-hidden="true" tabindex="-1"></a>OPTIONS https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb53-69"><a href="#cb53-69" aria-hidden="true" tabindex="-1"></a>Origin<span class="op">:</span> https<span class="op">:</span><span class="co">//example.com</span></span>
+<span id="cb53-70"><a href="#cb53-70" aria-hidden="true" tabindex="-1"></a>Access<span class="op">-</span>Control<span class="op">-</span>Request<span class="op">-</span>Method<span class="op">:</span> POST</span>
+<span id="cb53-71"><a href="#cb53-71" aria-hidden="true" tabindex="-1"></a>Access<span class="op">-</span>Control<span class="op">-</span>Request<span class="op">-</span>Headers<span class="op">:</span> Content<span class="op">-</span>Type<span class="op">,</span> Authorization</span>
+<span id="cb53-72"><a href="#cb53-72" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-73"><a href="#cb53-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-74"><a href="#cb53-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-75"><a href="#cb53-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-76"><a href="#cb53-76" aria-hidden="true" tabindex="-1"></a><span class="fu">### CORS Headers in Response</span></span>
+<span id="cb53-77"><a href="#cb53-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-80"><a href="#cb53-80" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-81"><a href="#cb53-81" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb53-82"><a href="#cb53-82" aria-hidden="true" tabindex="-1"></a>Origin<span class="op">:</span> https<span class="op">:</span><span class="co">//myapp.com</span></span>
+<span id="cb53-83"><a href="#cb53-83" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-84"><a href="#cb53-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-85"><a href="#cb53-85" aria-hidden="true" tabindex="-1"></a>Look for these headers in the response:</span>
+<span id="cb53-86"><a href="#cb53-86" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-87"><a href="#cb53-87" aria-hidden="true" tabindex="-1"></a><span class="in">Access-Control-Allow-Origin: *</span></span>
+<span id="cb53-88"><a href="#cb53-88" aria-hidden="true" tabindex="-1"></a><span class="in">Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS</span></span>
+<span id="cb53-89"><a href="#cb53-89" aria-hidden="true" tabindex="-1"></a><span class="in">Access-Control-Allow-Headers: Content-Type, Authorization</span></span>
+<span id="cb53-90"><a href="#cb53-90" aria-hidden="true" tabindex="-1"></a><span class="in">Access-Control-Max-Age: 86400</span></span>
+<span id="cb53-91"><a href="#cb53-91" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-92"><a href="#cb53-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-93"><a href="#cb53-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-94"><a href="#cb53-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-95"><a href="#cb53-95" aria-hidden="true" tabindex="-1"></a><span class="fu">## CORS with Credentials</span></span>
+<span id="cb53-96"><a href="#cb53-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-99"><a href="#cb53-99" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-100"><a href="#cb53-100" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb53-101"><a href="#cb53-101" aria-hidden="true" tabindex="-1"></a>Origin<span class="op">:</span> https<span class="op">:</span><span class="co">//example.com</span></span>
+<span id="cb53-102"><a href="#cb53-102" aria-hidden="true" tabindex="-1"></a>Cookie<span class="op">:</span> session<span class="op">=</span>abc123</span>
+<span id="cb53-103"><a href="#cb53-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-104"><a href="#cb53-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-105"><a href="#cb53-105" aria-hidden="true" tabindex="-1"></a>When sending credentials (cookies, auth headers), the server must respond with:</span>
+<span id="cb53-106"><a href="#cb53-106" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-107"><a href="#cb53-107" aria-hidden="true" tabindex="-1"></a><span class="in">Access-Control-Allow-Origin: https://example.com</span></span>
+<span id="cb53-108"><a href="#cb53-108" aria-hidden="true" tabindex="-1"></a><span class="in">Access-Control-Allow-Credentials: true</span></span>
+<span id="cb53-109"><a href="#cb53-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-110"><a href="#cb53-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-111"><a href="#cb53-111" aria-hidden="true" tabindex="-1"></a>Note: Cannot use <span class="in">`Access-Control-Allow-Origin: *`</span> with credentials.</span>
+<span id="cb53-112"><a href="#cb53-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-113"><a href="#cb53-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-114"><a href="#cb53-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-115"><a href="#cb53-115" aria-hidden="true" tabindex="-1"></a><span class="fu">### CORS Configuration Examples</span></span>
+<span id="cb53-116"><a href="#cb53-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-117"><a href="#cb53-117" aria-hidden="true" tabindex="-1"></a>**Allowing all origins (permissive):**</span>
+<span id="cb53-118"><a href="#cb53-118" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-119"><a href="#cb53-119" aria-hidden="true" tabindex="-1"></a><span class="in">Access-Control-Allow-Origin: *</span></span>
+<span id="cb53-120"><a href="#cb53-120" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-121"><a href="#cb53-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-122"><a href="#cb53-122" aria-hidden="true" tabindex="-1"></a>**Allowing specific origin:**</span>
+<span id="cb53-123"><a href="#cb53-123" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-124"><a href="#cb53-124" aria-hidden="true" tabindex="-1"></a><span class="in">Access-Control-Allow-Origin: https://trusted-app.com</span></span>
+<span id="cb53-125"><a href="#cb53-125" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-126"><a href="#cb53-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-127"><a href="#cb53-127" aria-hidden="true" tabindex="-1"></a>**Allowing multiple origins:**</span>
+<span id="cb53-128"><a href="#cb53-128" aria-hidden="true" tabindex="-1"></a>Server must check the <span class="in">`Origin`</span> header and respond dynamically.</span>
+<span id="cb53-129"><a href="#cb53-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-130"><a href="#cb53-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-131"><a href="#cb53-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-132"><a href="#cb53-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-133"><a href="#cb53-133" aria-hidden="true" tabindex="-1"></a>Caching improves performance by storing and reusing previous responses.</span>
+<span id="cb53-134"><a href="#cb53-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-135"><a href="#cb53-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-136"><a href="#cb53-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-137"><a href="#cb53-137" aria-hidden="true" tabindex="-1"></a><span class="fu">## HTTP Caching</span></span>
+<span id="cb53-138"><a href="#cb53-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-141"><a href="#cb53-141" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb53-142"><a href="#cb53-142" aria-hidden="true" tabindex="-1"></a>sequenceDiagram</span>
+<span id="cb53-143"><a href="#cb53-143" aria-hidden="true" tabindex="-1"></a>    participant Client</span>
+<span id="cb53-144"><a href="#cb53-144" aria-hidden="true" tabindex="-1"></a>    participant Cache</span>
+<span id="cb53-145"><a href="#cb53-145" aria-hidden="true" tabindex="-1"></a>    participant Server</span>
+<span id="cb53-146"><a href="#cb53-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-147"><a href="#cb53-147" aria-hidden="true" tabindex="-1"></a>    Client-&gt;&gt;Server: GET /data</span>
+<span id="cb53-148"><a href="#cb53-148" aria-hidden="true" tabindex="-1"></a>    Server-&gt;&gt;Client: <span class="dv">200</span> OK&lt;br/&gt;Cache-Control: max-age=<span class="dv">3600</span>&lt;br/&gt;Data</span>
+<span id="cb53-149"><a href="#cb53-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-150"><a href="#cb53-150" aria-hidden="true" tabindex="-1"></a>    Note over Client,Cache: Resource cached <span class="kw">for</span> <span class="dv">1</span> hour</span>
+<span id="cb53-151"><a href="#cb53-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-152"><a href="#cb53-152" aria-hidden="true" tabindex="-1"></a>    Client-&gt;&gt;Cache: GET /data (within <span class="dv">1</span> hour)</span>
+<span id="cb53-153"><a href="#cb53-153" aria-hidden="true" tabindex="-1"></a>    Cache-&gt;&gt;Client: <span class="dv">200</span> OK&lt;br/&gt;Data (from cache)</span>
+<span id="cb53-154"><a href="#cb53-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-155"><a href="#cb53-155" aria-hidden="true" tabindex="-1"></a>    Note over Client,Cache: Fast! No server roundtrip</span>
+<span id="cb53-156"><a href="#cb53-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-157"><a href="#cb53-157" aria-hidden="true" tabindex="-1"></a>    Client-&gt;&gt;Cache: GET /data (after <span class="dv">1</span> hour)</span>
+<span id="cb53-158"><a href="#cb53-158" aria-hidden="true" tabindex="-1"></a>    Cache-&gt;&gt;Server: GET /data&lt;br/&gt;If-None-Match: <span class="ot">"</span><span class="st">etag123</span><span class="ot">"</span></span>
+<span id="cb53-159"><a href="#cb53-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-160"><a href="#cb53-160" aria-hidden="true" tabindex="-1"></a>    alt Not Modified</span>
+<span id="cb53-161"><a href="#cb53-161" aria-hidden="true" tabindex="-1"></a>        Server-&gt;&gt;Cache: <span class="dv">304</span> Not Modified</span>
+<span id="cb53-162"><a href="#cb53-162" aria-hidden="true" tabindex="-1"></a>        Cache-&gt;&gt;Client: <span class="dv">200</span> OK&lt;br/&gt;Data (from cache)</span>
+<span id="cb53-163"><a href="#cb53-163" aria-hidden="true" tabindex="-1"></a>    <span class="kw">else</span> Modified</span>
+<span id="cb53-164"><a href="#cb53-164" aria-hidden="true" tabindex="-1"></a>        Server-&gt;&gt;Cache: <span class="dv">200</span> OK&lt;br/&gt;New Data</span>
+<span id="cb53-165"><a href="#cb53-165" aria-hidden="true" tabindex="-1"></a>        Cache-&gt;&gt;Client: <span class="dv">200</span> OK&lt;br/&gt;New Data</span>
+<span id="cb53-166"><a href="#cb53-166" aria-hidden="true" tabindex="-1"></a>    end</span>
+<span id="cb53-167"><a href="#cb53-167" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-168"><a href="#cb53-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-169"><a href="#cb53-169" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cache-Control Header</span></span>
+<span id="cb53-170"><a href="#cb53-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-173"><a href="#cb53-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-174"><a href="#cb53-174" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/cache</span></span>
+<span id="cb53-175"><a href="#cb53-175" aria-hidden="true" tabindex="-1"></a>Cache<span class="op">-</span>Control<span class="op">:</span> max<span class="op">-</span>age<span class="op">=</span><span class="dv">3600</span></span>
+<span id="cb53-176"><a href="#cb53-176" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-177"><a href="#cb53-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-178"><a href="#cb53-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-179"><a href="#cb53-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-180"><a href="#cb53-180" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cache-Control Directives</span></span>
+<span id="cb53-181"><a href="#cb53-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-182"><a href="#cb53-182" aria-hidden="true" tabindex="-1"></a>**Request Directives:**</span>
+<span id="cb53-183"><a href="#cb53-183" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`no-cache`</span>: Validate with server before using cache</span>
+<span id="cb53-184"><a href="#cb53-184" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`no-store`</span>: Don't cache at all</span>
+<span id="cb53-185"><a href="#cb53-185" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`max-age=N`</span>: Use cached version if less than N seconds old</span>
+<span id="cb53-186"><a href="#cb53-186" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`max-stale=N`</span>: Accept stale responses up to N seconds</span>
+<span id="cb53-187"><a href="#cb53-187" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`min-fresh=N`</span>: Require response to be fresh for at least N seconds</span>
+<span id="cb53-188"><a href="#cb53-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-189"><a href="#cb53-189" aria-hidden="true" tabindex="-1"></a>**Response Directives:**</span>
+<span id="cb53-190"><a href="#cb53-190" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`public`</span>: Cacheable by any cache (CDN, browser)</span>
+<span id="cb53-191"><a href="#cb53-191" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`private`</span>: Only cacheable by browser</span>
+<span id="cb53-192"><a href="#cb53-192" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`no-cache`</span>: Must revalidate before using</span>
+<span id="cb53-193"><a href="#cb53-193" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`no-store`</span>: Don't cache anywhere</span>
+<span id="cb53-194"><a href="#cb53-194" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`max-age=N`</span>: Fresh for N seconds</span>
+<span id="cb53-195"><a href="#cb53-195" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`s-maxage=N`</span>: Fresh for N seconds in shared caches</span>
+<span id="cb53-196"><a href="#cb53-196" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`must-revalidate`</span>: Must validate when stale</span>
+<span id="cb53-197"><a href="#cb53-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-198"><a href="#cb53-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-199"><a href="#cb53-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-200"><a href="#cb53-200" aria-hidden="true" tabindex="-1"></a><span class="fu">### Caching Examples</span></span>
+<span id="cb53-201"><a href="#cb53-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-204"><a href="#cb53-204" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-205"><a href="#cb53-205" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb53-206"><a href="#cb53-206" aria-hidden="true" tabindex="-1"></a>Cache<span class="op">-</span>Control<span class="op">:</span> no<span class="op">-</span>store</span>
+<span id="cb53-207"><a href="#cb53-207" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-208"><a href="#cb53-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-211"><a href="#cb53-211" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-212"><a href="#cb53-212" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/cache/3600</span></span>
+<span id="cb53-213"><a href="#cb53-213" aria-hidden="true" tabindex="-1"></a>Cache<span class="op">-</span>Control<span class="op">:</span> private<span class="op">,</span> max<span class="op">-</span>age<span class="op">=</span><span class="dv">3600</span></span>
+<span id="cb53-214"><a href="#cb53-214" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-215"><a href="#cb53-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-218"><a href="#cb53-218" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-219"><a href="#cb53-219" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/cache</span></span>
+<span id="cb53-220"><a href="#cb53-220" aria-hidden="true" tabindex="-1"></a>Cache<span class="op">-</span>Control<span class="op">:</span> public<span class="op">,</span> max<span class="op">-</span>age<span class="op">=</span><span class="dv">3600</span><span class="op">,</span> s<span class="op">-</span>maxage<span class="op">=</span><span class="dv">86400</span></span>
+<span id="cb53-221"><a href="#cb53-221" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-222"><a href="#cb53-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-223"><a href="#cb53-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-224"><a href="#cb53-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-225"><a href="#cb53-225" aria-hidden="true" tabindex="-1"></a><span class="fu">### ETag and Conditional Requests</span></span>
+<span id="cb53-226"><a href="#cb53-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-227"><a href="#cb53-227" aria-hidden="true" tabindex="-1"></a>ETags enable efficient cache validation:</span>
+<span id="cb53-228"><a href="#cb53-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-231"><a href="#cb53-231" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-232"><a href="#cb53-232" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/etag/abc123def456</span></span>
+<span id="cb53-233"><a href="#cb53-233" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-234"><a href="#cb53-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-237"><a href="#cb53-237" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-238"><a href="#cb53-238" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/etag/abc123def456</span></span>
+<span id="cb53-239"><a href="#cb53-239" aria-hidden="true" tabindex="-1"></a>If<span class="op">-</span>None<span class="op">-</span>Match<span class="op">:</span> <span class="st">"abc123def456"</span></span>
+<span id="cb53-240"><a href="#cb53-240" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-241"><a href="#cb53-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-242"><a href="#cb53-242" aria-hidden="true" tabindex="-1"></a>If unchanged, server returns <span class="in">`304 Not Modified`</span> with no body, saving bandwidth.</span>
+<span id="cb53-243"><a href="#cb53-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-244"><a href="#cb53-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-245"><a href="#cb53-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-246"><a href="#cb53-246" aria-hidden="true" tabindex="-1"></a><span class="fu">## Last-Modified and If-Modified-Since</span></span>
+<span id="cb53-247"><a href="#cb53-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-250"><a href="#cb53-250" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-251"><a href="#cb53-251" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/response-headers?Last-Modified=Mon,%2027%20Oct%202024%2015:30:00%20GMT</span></span>
+<span id="cb53-252"><a href="#cb53-252" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-253"><a href="#cb53-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-256"><a href="#cb53-256" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-257"><a href="#cb53-257" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/response-headers?Last-Modified=Mon,%2027%20Oct%202024%2015:30:00%20GMT</span></span>
+<span id="cb53-258"><a href="#cb53-258" aria-hidden="true" tabindex="-1"></a>If<span class="op">-</span>Modified<span class="op">-</span>Since<span class="op">:</span> Mon<span class="op">,</span> <span class="dv">27</span> Oct <span class="dv">2024</span> <span class="dv">15</span><span class="op">:</span><span class="dv">30</span><span class="op">:</span><span class="bn">00</span> GMT</span>
+<span id="cb53-259"><a href="#cb53-259" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-260"><a href="#cb53-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-261"><a href="#cb53-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-262"><a href="#cb53-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-263"><a href="#cb53-263" aria-hidden="true" tabindex="-1"></a><span class="fu">### Vary Header</span></span>
+<span id="cb53-264"><a href="#cb53-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-265"><a href="#cb53-265" aria-hidden="true" tabindex="-1"></a>Tells caches which request headers affect the response:</span>
+<span id="cb53-266"><a href="#cb53-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-269"><a href="#cb53-269" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-270"><a href="#cb53-270" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>include</span>
+<span id="cb53-271"><a href="#cb53-271" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/response-headers?Vary=Accept-Encoding,%20Accept-Language</span></span>
+<span id="cb53-272"><a href="#cb53-272" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">-</span>Encoding<span class="op">:</span> gzip</span>
+<span id="cb53-273"><a href="#cb53-273" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">-</span>Language<span class="op">:</span> en<span class="op">-</span>US</span>
+<span id="cb53-274"><a href="#cb53-274" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>Options<span class="op">]</span></span>
+<span id="cb53-275"><a href="#cb53-275" aria-hidden="true" tabindex="-1"></a>compressed<span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb53-276"><a href="#cb53-276" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-277"><a href="#cb53-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-278"><a href="#cb53-278" aria-hidden="true" tabindex="-1"></a>The cache must store separate versions for different combinations of these headers.</span>
+<span id="cb53-279"><a href="#cb53-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-280"><a href="#cb53-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-281"><a href="#cb53-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-282"><a href="#cb53-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-283"><a href="#cb53-283" aria-hidden="true" tabindex="-1"></a>Compression reduces bandwidth and improves performance.</span>
+<span id="cb53-284"><a href="#cb53-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-285"><a href="#cb53-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-286"><a href="#cb53-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-287"><a href="#cb53-287" aria-hidden="true" tabindex="-1"></a><span class="fu">## Compression</span></span>
+<span id="cb53-288"><a href="#cb53-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-289"><a href="#cb53-289" aria-hidden="true" tabindex="-1"></a><span class="fu">### Gzip Compression</span></span>
+<span id="cb53-290"><a href="#cb53-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-293"><a href="#cb53-293" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-294"><a href="#cb53-294" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>include</span>
+<span id="cb53-295"><a href="#cb53-295" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/gzip</span></span>
+<span id="cb53-296"><a href="#cb53-296" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">-</span>Encoding<span class="op">:</span> gzip</span>
+<span id="cb53-297"><a href="#cb53-297" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>Options<span class="op">]</span></span>
+<span id="cb53-298"><a href="#cb53-298" aria-hidden="true" tabindex="-1"></a>compressed<span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb53-299"><a href="#cb53-299" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-300"><a href="#cb53-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-301"><a href="#cb53-301" aria-hidden="true" tabindex="-1"></a>Response includes: <span class="in">`Content-Encoding: gzip`</span></span>
+<span id="cb53-302"><a href="#cb53-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-303"><a href="#cb53-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-304"><a href="#cb53-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-305"><a href="#cb53-305" aria-hidden="true" tabindex="-1"></a><span class="fu">### Deflate Compression</span></span>
+<span id="cb53-306"><a href="#cb53-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-309"><a href="#cb53-309" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-310"><a href="#cb53-310" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>include</span>
+<span id="cb53-311"><a href="#cb53-311" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/deflate</span></span>
+<span id="cb53-312"><a href="#cb53-312" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">-</span>Encoding<span class="op">:</span> deflate</span>
+<span id="cb53-313"><a href="#cb53-313" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>Options<span class="op">]</span></span>
+<span id="cb53-314"><a href="#cb53-314" aria-hidden="true" tabindex="-1"></a>compressed<span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb53-315"><a href="#cb53-315" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-316"><a href="#cb53-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-317"><a href="#cb53-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-318"><a href="#cb53-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-319"><a href="#cb53-319" aria-hidden="true" tabindex="-1"></a><span class="fu">### Brotli Compression</span></span>
+<span id="cb53-320"><a href="#cb53-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-323"><a href="#cb53-323" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-324"><a href="#cb53-324" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>include</span>
+<span id="cb53-325"><a href="#cb53-325" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/brotli</span></span>
+<span id="cb53-326"><a href="#cb53-326" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">-</span>Encoding<span class="op">:</span> br</span>
+<span id="cb53-327"><a href="#cb53-327" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>Options<span class="op">]</span></span>
+<span id="cb53-328"><a href="#cb53-328" aria-hidden="true" tabindex="-1"></a>compressed<span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb53-329"><a href="#cb53-329" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-330"><a href="#cb53-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-331"><a href="#cb53-331" aria-hidden="true" tabindex="-1"></a>Brotli typically provides better compression than gzip.</span>
+<span id="cb53-332"><a href="#cb53-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-333"><a href="#cb53-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-334"><a href="#cb53-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-335"><a href="#cb53-335" aria-hidden="true" tabindex="-1"></a><span class="fu">### Multiple Compression Options</span></span>
+<span id="cb53-336"><a href="#cb53-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-339"><a href="#cb53-339" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-340"><a href="#cb53-340" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb53-341"><a href="#cb53-341" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">-</span>Encoding<span class="op">:</span> br<span class="op">,</span> gzip<span class="op">,</span> deflate</span>
+<span id="cb53-342"><a href="#cb53-342" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-343"><a href="#cb53-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-344"><a href="#cb53-344" aria-hidden="true" tabindex="-1"></a>Server chooses the best supported algorithm.</span>
+<span id="cb53-345"><a href="#cb53-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-346"><a href="#cb53-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-347"><a href="#cb53-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-348"><a href="#cb53-348" aria-hidden="true" tabindex="-1"></a><span class="fu">### When to Use Compression</span></span>
+<span id="cb53-349"><a href="#cb53-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-350"><a href="#cb53-350" aria-hidden="true" tabindex="-1"></a>**Compress:**</span>
+<span id="cb53-351"><a href="#cb53-351" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Text content (HTML, CSS, JavaScript, JSON, XML)</span>
+<span id="cb53-352"><a href="#cb53-352" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Large responses</span>
+<span id="cb53-353"><a href="#cb53-353" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>API responses</span>
+<span id="cb53-354"><a href="#cb53-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-355"><a href="#cb53-355" aria-hidden="true" tabindex="-1"></a>**Don't Compress:**</span>
+<span id="cb53-356"><a href="#cb53-356" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Already compressed (images, videos, PDFs)</span>
+<span id="cb53-357"><a href="#cb53-357" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Very small responses (overhead not worth it)</span>
+<span id="cb53-358"><a href="#cb53-358" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Streaming data that needs immediate access</span>
+<span id="cb53-359"><a href="#cb53-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-360"><a href="#cb53-360" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-361"><a href="#cb53-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-362"><a href="#cb53-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-363"><a href="#cb53-363" aria-hidden="true" tabindex="-1"></a>Clients and servers negotiate the best content format.</span>
+<span id="cb53-364"><a href="#cb53-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-365"><a href="#cb53-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-366"><a href="#cb53-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-367"><a href="#cb53-367" aria-hidden="true" tabindex="-1"></a><span class="fu">## Content Negotiation</span></span>
+<span id="cb53-368"><a href="#cb53-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-369"><a href="#cb53-369" aria-hidden="true" tabindex="-1"></a><span class="fu">### Accept Header</span></span>
+<span id="cb53-370"><a href="#cb53-370" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-373"><a href="#cb53-373" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-374"><a href="#cb53-374" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb53-375"><a href="#cb53-375" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">:</span> application<span class="op">/</span>json<span class="op">,</span> application<span class="op">/</span>xml<span class="op">;</span>q<span class="op">=</span><span class="fl">0.9</span><span class="op">,</span> text<span class="op">/</span>plain<span class="op">;</span>q<span class="op">=</span><span class="fl">0.8</span></span>
+<span id="cb53-376"><a href="#cb53-376" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-377"><a href="#cb53-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-378"><a href="#cb53-378" aria-hidden="true" tabindex="-1"></a>Quality values (q) indicate preference (0.0 to 1.0, default 1.0).</span>
+<span id="cb53-379"><a href="#cb53-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-380"><a href="#cb53-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-381"><a href="#cb53-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-382"><a href="#cb53-382" aria-hidden="true" tabindex="-1"></a><span class="fu">## Accept-Language</span></span>
+<span id="cb53-383"><a href="#cb53-383" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-386"><a href="#cb53-386" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-387"><a href="#cb53-387" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb53-388"><a href="#cb53-388" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">-</span>Language<span class="op">:</span> fr<span class="op">-</span>FR<span class="op">,</span> en<span class="op">-</span>US<span class="op">;</span>q<span class="op">=</span><span class="fl">0.9</span><span class="op">,</span> en<span class="op">;</span>q<span class="op">=</span><span class="fl">0.8</span></span>
+<span id="cb53-389"><a href="#cb53-389" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-390"><a href="#cb53-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-391"><a href="#cb53-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-392"><a href="#cb53-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-393"><a href="#cb53-393" aria-hidden="true" tabindex="-1"></a><span class="fu">## Accept-Charset</span></span>
+<span id="cb53-394"><a href="#cb53-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-397"><a href="#cb53-397" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-398"><a href="#cb53-398" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb53-399"><a href="#cb53-399" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">-</span>Charset<span class="op">:</span> utf<span class="op">-</span><span class="dv">8</span><span class="op">,</span> iso<span class="op">-</span><span class="dv">8859</span><span class="op">-</span><span class="dv">1</span><span class="op">;</span>q<span class="op">=</span><span class="fl">0.7</span></span>
+<span id="cb53-400"><a href="#cb53-400" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-401"><a href="#cb53-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-402"><a href="#cb53-402" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-403"><a href="#cb53-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-404"><a href="#cb53-404" aria-hidden="true" tabindex="-1"></a><span class="fu">## Accept-Encoding</span></span>
+<span id="cb53-405"><a href="#cb53-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-406"><a href="#cb53-406" aria-hidden="true" tabindex="-1"></a>Already covered in compression section.</span>
+<span id="cb53-407"><a href="#cb53-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-408"><a href="#cb53-408" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-409"><a href="#cb53-409" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-410"><a href="#cb53-410" aria-hidden="true" tabindex="-1"></a><span class="fu">### Complete Content Negotiation</span></span>
+<span id="cb53-411"><a href="#cb53-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-414"><a href="#cb53-414" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-415"><a href="#cb53-415" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb53-416"><a href="#cb53-416" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">:</span> application<span class="op">/</span>json<span class="op">;</span>q<span class="op">=</span><span class="fl">1.0</span><span class="op">,</span> application<span class="op">/</span>xml<span class="op">;</span>q<span class="op">=</span><span class="fl">0.8</span></span>
+<span id="cb53-417"><a href="#cb53-417" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">-</span>Language<span class="op">:</span> en<span class="op">-</span>US<span class="op">,</span> fr<span class="op">;</span>q<span class="op">=</span><span class="fl">0.8</span></span>
+<span id="cb53-418"><a href="#cb53-418" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">-</span>Encoding<span class="op">:</span> br<span class="op">,</span> gzip</span>
+<span id="cb53-419"><a href="#cb53-419" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">-</span>Charset<span class="op">:</span> utf<span class="op">-</span><span class="dv">8</span></span>
+<span id="cb53-420"><a href="#cb53-420" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-421"><a href="#cb53-421" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-422"><a href="#cb53-422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-423"><a href="#cb53-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-424"><a href="#cb53-424" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-425"><a href="#cb53-425" aria-hidden="true" tabindex="-1"></a>Request partial content, useful for resuming downloads or streaming.</span>
+<span id="cb53-426"><a href="#cb53-426" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-427"><a href="#cb53-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-428"><a href="#cb53-428" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-429"><a href="#cb53-429" aria-hidden="true" tabindex="-1"></a><span class="fu">## Range Requests</span></span>
+<span id="cb53-430"><a href="#cb53-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-431"><a href="#cb53-431" aria-hidden="true" tabindex="-1"></a><span class="fu">### Request Byte Range</span></span>
+<span id="cb53-432"><a href="#cb53-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-435"><a href="#cb53-435" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-436"><a href="#cb53-436" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>verbose</span>
+<span id="cb53-437"><a href="#cb53-437" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>output<span class="op">=</span>request<span class="op">-</span>range<span class="op">.</span>bin</span>
+<span id="cb53-438"><a href="#cb53-438" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/range/1000</span></span>
+<span id="cb53-439"><a href="#cb53-439" aria-hidden="true" tabindex="-1"></a>Range<span class="op">:</span> bytes<span class="op">=</span><span class="dv">0</span><span class="op">-</span><span class="dv">499</span></span>
+<span id="cb53-440"><a href="#cb53-440" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-441"><a href="#cb53-441" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-442"><a href="#cb53-442" aria-hidden="true" tabindex="-1"></a>Server responds with <span class="in">`206 Partial Content`</span> and <span class="in">`Content-Range`</span> header.</span>
+<span id="cb53-443"><a href="#cb53-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-444"><a href="#cb53-444" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-445"><a href="#cb53-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-446"><a href="#cb53-446" aria-hidden="true" tabindex="-1"></a><span class="fu">### Multiple Ranges</span></span>
+<span id="cb53-447"><a href="#cb53-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-450"><a href="#cb53-450" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-451"><a href="#cb53-451" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>verbose</span>
+<span id="cb53-452"><a href="#cb53-452" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>output<span class="op">=</span>request<span class="op">-</span>range2<span class="op">.</span>bin</span>
+<span id="cb53-453"><a href="#cb53-453" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/range/1000</span></span>
+<span id="cb53-454"><a href="#cb53-454" aria-hidden="true" tabindex="-1"></a>Range<span class="op">:</span> bytes<span class="op">=</span><span class="dv">0</span><span class="op">-</span><span class="dv">99</span><span class="op">,</span> <span class="dv">200</span><span class="op">-</span><span class="dv">299</span><span class="op">,</span> <span class="dv">400</span><span class="op">-</span><span class="dv">499</span></span>
+<span id="cb53-455"><a href="#cb53-455" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-456"><a href="#cb53-456" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-457"><a href="#cb53-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-458"><a href="#cb53-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-459"><a href="#cb53-459" aria-hidden="true" tabindex="-1"></a><span class="fu">## Resume Download</span></span>
+<span id="cb53-460"><a href="#cb53-460" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-463"><a href="#cb53-463" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-464"><a href="#cb53-464" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>verbose</span>
+<span id="cb53-465"><a href="#cb53-465" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>output<span class="op">=</span>request<span class="op">-</span>range3<span class="op">.</span>bin</span>
+<span id="cb53-466"><a href="#cb53-466" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/range/1000</span></span>
+<span id="cb53-467"><a href="#cb53-467" aria-hidden="true" tabindex="-1"></a>Range<span class="op">:</span> bytes<span class="op">=</span><span class="dv">0</span><span class="op">-</span><span class="dv">499</span></span>
+<span id="cb53-468"><a href="#cb53-468" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-469"><a href="#cb53-469" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-472"><a href="#cb53-472" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-473"><a href="#cb53-473" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>verbose</span>
+<span id="cb53-474"><a href="#cb53-474" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>output<span class="op">=</span>request<span class="op">-</span>range4<span class="op">.</span>bin</span>
+<span id="cb53-475"><a href="#cb53-475" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/range/1000</span></span>
+<span id="cb53-476"><a href="#cb53-476" aria-hidden="true" tabindex="-1"></a>Range<span class="op">:</span> bytes<span class="op">=</span><span class="dv">500</span><span class="op">-</span><span class="dv">999</span></span>
+<span id="cb53-477"><a href="#cb53-477" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-478"><a href="#cb53-478" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-479"><a href="#cb53-479" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-480"><a href="#cb53-480" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-481"><a href="#cb53-481" aria-hidden="true" tabindex="-1"></a><span class="fu">### Accept-Ranges Header</span></span>
+<span id="cb53-482"><a href="#cb53-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-483"><a href="#cb53-483" aria-hidden="true" tabindex="-1"></a>Indicates server supports range requests:</span>
+<span id="cb53-484"><a href="#cb53-484" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-487"><a href="#cb53-487" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-488"><a href="#cb53-488" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>include</span>
+<span id="cb53-489"><a href="#cb53-489" aria-hidden="true" tabindex="-1"></a>HEAD https<span class="op">:</span><span class="co">//httpbin.io/range/1000</span></span>
+<span id="cb53-490"><a href="#cb53-490" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-491"><a href="#cb53-491" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-492"><a href="#cb53-492" aria-hidden="true" tabindex="-1"></a>Look for <span class="in">`Accept-Ranges: bytes`</span> in response.</span>
+<span id="cb53-493"><a href="#cb53-493" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-494"><a href="#cb53-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-495"><a href="#cb53-495" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-496"><a href="#cb53-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-497"><a href="#cb53-497" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-498"><a href="#cb53-498" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-499"><a href="#cb53-499" aria-hidden="true" tabindex="-1"></a><span class="fu">## Persistent Connections</span></span>
+<span id="cb53-500"><a href="#cb53-500" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-501"><a href="#cb53-501" aria-hidden="true" tabindex="-1"></a><span class="fu">### Connection: keep-alive</span></span>
+<span id="cb53-502"><a href="#cb53-502" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-505"><a href="#cb53-505" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-506"><a href="#cb53-506" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb53-507"><a href="#cb53-507" aria-hidden="true" tabindex="-1"></a>Connection<span class="op">:</span> keep<span class="op">-</span>alive</span>
+<span id="cb53-508"><a href="#cb53-508" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-509"><a href="#cb53-509" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-510"><a href="#cb53-510" aria-hidden="true" tabindex="-1"></a>Reuses the TCP connection for multiple requests (default in HTTP/1.1).</span>
+<span id="cb53-511"><a href="#cb53-511" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-512"><a href="#cb53-512" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-513"><a href="#cb53-513" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-514"><a href="#cb53-514" aria-hidden="true" tabindex="-1"></a><span class="fu">## Connection: close</span></span>
+<span id="cb53-515"><a href="#cb53-515" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-518"><a href="#cb53-518" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-519"><a href="#cb53-519" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb53-520"><a href="#cb53-520" aria-hidden="true" tabindex="-1"></a>Connection<span class="op">:</span> close</span>
+<span id="cb53-521"><a href="#cb53-521" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-522"><a href="#cb53-522" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-523"><a href="#cb53-523" aria-hidden="true" tabindex="-1"></a>Closes connection after this request.</span>
+<span id="cb53-524"><a href="#cb53-524" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-525"><a href="#cb53-525" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-526"><a href="#cb53-526" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-527"><a href="#cb53-527" aria-hidden="true" tabindex="-1"></a><span class="fu">## Keep-Alive Settings</span></span>
+<span id="cb53-528"><a href="#cb53-528" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-531"><a href="#cb53-531" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-532"><a href="#cb53-532" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb53-533"><a href="#cb53-533" aria-hidden="true" tabindex="-1"></a>Connection<span class="op">:</span> keep<span class="op">-</span>alive</span>
+<span id="cb53-534"><a href="#cb53-534" aria-hidden="true" tabindex="-1"></a>Keep<span class="op">-</span>Alive<span class="op">:</span> timeout<span class="op">=</span><span class="dv">5</span><span class="op">,</span> max<span class="op">=</span><span class="dv">100</span></span>
+<span id="cb53-535"><a href="#cb53-535" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-536"><a href="#cb53-536" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-537"><a href="#cb53-537" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`timeout=5`</span>: Keep connection open for 5 seconds</span>
+<span id="cb53-538"><a href="#cb53-538" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`max=100`</span>: Allow 100 requests on this connection</span>
+<span id="cb53-539"><a href="#cb53-539" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-540"><a href="#cb53-540" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-541"><a href="#cb53-541" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-542"><a href="#cb53-542" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-543"><a href="#cb53-543" aria-hidden="true" tabindex="-1"></a>HTTP/2 brings significant improvements over HTTP/1.1:</span>
+<span id="cb53-544"><a href="#cb53-544" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-545"><a href="#cb53-545" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-546"><a href="#cb53-546" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-547"><a href="#cb53-547" aria-hidden="true" tabindex="-1"></a><span class="fu">## HTTP/2 Features</span></span>
+<span id="cb53-548"><a href="#cb53-548" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-551"><a href="#cb53-551" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb53-552"><a href="#cb53-552" aria-hidden="true" tabindex="-1"></a>graph TD</span>
+<span id="cb53-553"><a href="#cb53-553" aria-hidden="true" tabindex="-1"></a>    A[HTTP/<span class="dv">2</span> Improvements] --&gt; B[Multiplexing]</span>
+<span id="cb53-554"><a href="#cb53-554" aria-hidden="true" tabindex="-1"></a>    A --&gt; C[Server Push]</span>
+<span id="cb53-555"><a href="#cb53-555" aria-hidden="true" tabindex="-1"></a>    A --&gt; D[Header Compression]</span>
+<span id="cb53-556"><a href="#cb53-556" aria-hidden="true" tabindex="-1"></a>    A --&gt; E[Binary Protocol]</span>
+<span id="cb53-557"><a href="#cb53-557" aria-hidden="true" tabindex="-1"></a>    A --&gt; F[Stream Priority]</span>
+<span id="cb53-558"><a href="#cb53-558" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-559"><a href="#cb53-559" aria-hidden="true" tabindex="-1"></a>    B --&gt; B1[Multiple requests&lt;br/&gt;on single connection]</span>
+<span id="cb53-560"><a href="#cb53-560" aria-hidden="true" tabindex="-1"></a>    C --&gt; C1[Server sends resources&lt;br/&gt;before requested]</span>
+<span id="cb53-561"><a href="#cb53-561" aria-hidden="true" tabindex="-1"></a>    D --&gt; D1[HPACK compression&lt;br/&gt;reduces overhead]</span>
+<span id="cb53-562"><a href="#cb53-562" aria-hidden="true" tabindex="-1"></a>    E --&gt; E1[Binary framing&lt;br/&gt;faster parsing]</span>
+<span id="cb53-563"><a href="#cb53-563" aria-hidden="true" tabindex="-1"></a>    F --&gt; F1[Prioritize critical&lt;br/&gt;resources]</span>
+<span id="cb53-564"><a href="#cb53-564" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-565"><a href="#cb53-565" aria-hidden="true" tabindex="-1"></a>    style A fill:<span class="co">#e1f5ff</span></span>
+<span id="cb53-566"><a href="#cb53-566" aria-hidden="true" tabindex="-1"></a>    style B fill:<span class="co">#c8e6c9</span></span>
+<span id="cb53-567"><a href="#cb53-567" aria-hidden="true" tabindex="-1"></a>    style C fill:<span class="co">#c8e6c9</span></span>
+<span id="cb53-568"><a href="#cb53-568" aria-hidden="true" tabindex="-1"></a>    style D fill:<span class="co">#c8e6c9</span></span>
+<span id="cb53-569"><a href="#cb53-569" aria-hidden="true" tabindex="-1"></a>    style E fill:<span class="co">#c8e6c9</span></span>
+<span id="cb53-570"><a href="#cb53-570" aria-hidden="true" tabindex="-1"></a>    style F fill:<span class="co">#c8e6c9</span></span>
+<span id="cb53-571"><a href="#cb53-571" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-572"><a href="#cb53-572" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-573"><a href="#cb53-573" aria-hidden="true" tabindex="-1"></a><span class="fu">### Multiplexing</span></span>
+<span id="cb53-574"><a href="#cb53-574" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-575"><a href="#cb53-575" aria-hidden="true" tabindex="-1"></a>Multiple requests/responses on single connection simultaneously.</span>
+<span id="cb53-576"><a href="#cb53-576" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-577"><a href="#cb53-577" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-578"><a href="#cb53-578" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-579"><a href="#cb53-579" aria-hidden="true" tabindex="-1"></a><span class="fu">## Server Push</span></span>
+<span id="cb53-580"><a href="#cb53-580" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-581"><a href="#cb53-581" aria-hidden="true" tabindex="-1"></a>Server can proactively send resources to client.</span>
+<span id="cb53-582"><a href="#cb53-582" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-583"><a href="#cb53-583" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-584"><a href="#cb53-584" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-585"><a href="#cb53-585" aria-hidden="true" tabindex="-1"></a><span class="fu">### Header Compression</span></span>
+<span id="cb53-586"><a href="#cb53-586" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-587"><a href="#cb53-587" aria-hidden="true" tabindex="-1"></a>HPACK compression reduces header overhead.</span>
+<span id="cb53-588"><a href="#cb53-588" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-589"><a href="#cb53-589" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-590"><a href="#cb53-590" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-591"><a href="#cb53-591" aria-hidden="true" tabindex="-1"></a><span class="fu">## Binary Protocol</span></span>
+<span id="cb53-592"><a href="#cb53-592" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-593"><a href="#cb53-593" aria-hidden="true" tabindex="-1"></a>More efficient parsing than text-based HTTP/1.1.</span>
+<span id="cb53-594"><a href="#cb53-594" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-595"><a href="#cb53-595" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-596"><a href="#cb53-596" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-597"><a href="#cb53-597" aria-hidden="true" tabindex="-1"></a><span class="fu">### Request Priority</span></span>
+<span id="cb53-598"><a href="#cb53-598" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-599"><a href="#cb53-599" aria-hidden="true" tabindex="-1"></a>Clients can prioritize important resources.</span>
+<span id="cb53-600"><a href="#cb53-600" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-601"><a href="#cb53-601" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-602"><a href="#cb53-602" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-603"><a href="#cb53-603" aria-hidden="true" tabindex="-1"></a><span class="fu">### Testing HTTP/2</span></span>
+<span id="cb53-604"><a href="#cb53-604" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-607"><a href="#cb53-607" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-608"><a href="#cb53-608" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>include</span>
+<span id="cb53-609"><a href="#cb53-609" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb53-610"><a href="#cb53-610" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-611"><a href="#cb53-611" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-612"><a href="#cb53-612" aria-hidden="true" tabindex="-1"></a>Check response protocol in output - may show HTTP/2 if supported.</span>
+<span id="cb53-613"><a href="#cb53-613" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-614"><a href="#cb53-614" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-615"><a href="#cb53-615" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-616"><a href="#cb53-616" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-617"><a href="#cb53-617" aria-hidden="true" tabindex="-1"></a><span class="fu">## HTTP/3 and QUIC</span></span>
+<span id="cb53-618"><a href="#cb53-618" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-619"><a href="#cb53-619" aria-hidden="true" tabindex="-1"></a>HTTP/3 uses QUIC (over UDP) instead of TCP:</span>
+<span id="cb53-620"><a href="#cb53-620" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-621"><a href="#cb53-621" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Faster connection establishment</span>
+<span id="cb53-622"><a href="#cb53-622" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Better handling of packet loss</span>
+<span id="cb53-623"><a href="#cb53-623" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Improved performance on mobile networks</span>
+<span id="cb53-624"><a href="#cb53-624" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-625"><a href="#cb53-625" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-626"><a href="#cb53-626" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-627"><a href="#cb53-627" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-628"><a href="#cb53-628" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-629"><a href="#cb53-629" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-630"><a href="#cb53-630" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-631"><a href="#cb53-631" aria-hidden="true" tabindex="-1"></a><span class="fu">## Redirects</span></span>
+<span id="cb53-632"><a href="#cb53-632" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-633"><a href="#cb53-633" aria-hidden="true" tabindex="-1"></a><span class="fu">### Types of Redirects</span></span>
+<span id="cb53-634"><a href="#cb53-634" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-635"><a href="#cb53-635" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-636"><a href="#cb53-636" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-637"><a href="#cb53-637" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-638"><a href="#cb53-638" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-639"><a href="#cb53-639" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-640"><a href="#cb53-640" aria-hidden="true" tabindex="-1"></a><span class="fu">## 301 Permanent Redirect</span></span>
+<span id="cb53-641"><a href="#cb53-641" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-644"><a href="#cb53-644" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-645"><a href="#cb53-645" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>include</span>
+<span id="cb53-646"><a href="#cb53-646" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-647"><a href="#cb53-647" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/redirect-to?url=https://httpbin.io/get&amp;status_code=301</span></span>
+<span id="cb53-648"><a href="#cb53-648" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-649"><a href="#cb53-649" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-650"><a href="#cb53-650" aria-hidden="true" tabindex="-1"></a><span class="fu">## 302 Temporary Redirect</span></span>
+<span id="cb53-653"><a href="#cb53-653" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-654"><a href="#cb53-654" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>include</span>
+<span id="cb53-655"><a href="#cb53-655" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-656"><a href="#cb53-656" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/redirect-to?url=https://httpbin.io/get&amp;status_code=302</span></span>
+<span id="cb53-657"><a href="#cb53-657" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-658"><a href="#cb53-658" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-659"><a href="#cb53-659" aria-hidden="true" tabindex="-1"></a><span class="fu">## 307 Temporary (method preserved)</span></span>
+<span id="cb53-662"><a href="#cb53-662" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-663"><a href="#cb53-663" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>include</span>
+<span id="cb53-664"><a href="#cb53-664" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/redirect-to?url=https://httpbin.io/get&amp;status_code=307</span></span>
+<span id="cb53-665"><a href="#cb53-665" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-666"><a href="#cb53-666" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-667"><a href="#cb53-667" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-668"><a href="#cb53-668" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-669"><a href="#cb53-669" aria-hidden="true" tabindex="-1"></a><span class="fu">### Multiple Redirects</span></span>
+<span id="cb53-670"><a href="#cb53-670" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-673"><a href="#cb53-673" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-674"><a href="#cb53-674" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/redirect/3</span></span>
+<span id="cb53-675"><a href="#cb53-675" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-676"><a href="#cb53-676" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-677"><a href="#cb53-677" aria-hidden="true" tabindex="-1"></a>This redirects 3 times before returning final response.</span>
+<span id="cb53-678"><a href="#cb53-678" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-679"><a href="#cb53-679" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-680"><a href="#cb53-680" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-681"><a href="#cb53-681" aria-hidden="true" tabindex="-1"></a><span class="fu">### Absolute vs Relative Redirects</span></span>
+<span id="cb53-682"><a href="#cb53-682" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-685"><a href="#cb53-685" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-686"><a href="#cb53-686" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/absolute-redirect/1</span></span>
+<span id="cb53-687"><a href="#cb53-687" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-688"><a href="#cb53-688" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-691"><a href="#cb53-691" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-692"><a href="#cb53-692" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/relative-redirect/1</span></span>
+<span id="cb53-693"><a href="#cb53-693" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-694"><a href="#cb53-694" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-695"><a href="#cb53-695" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-696"><a href="#cb53-696" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-697"><a href="#cb53-697" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-698"><a href="#cb53-698" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rate Limiting</span></span>
+<span id="cb53-699"><a href="#cb53-699" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-700"><a href="#cb53-700" aria-hidden="true" tabindex="-1"></a>APIs implement rate limiting to prevent abuse.</span>
+<span id="cb53-701"><a href="#cb53-701" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-702"><a href="#cb53-702" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-703"><a href="#cb53-703" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-704"><a href="#cb53-704" aria-hidden="true" tabindex="-1"></a><span class="fu">### Rate Limit Headers</span></span>
+<span id="cb53-705"><a href="#cb53-705" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-708"><a href="#cb53-708" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-709"><a href="#cb53-709" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/get</span></span>
+<span id="cb53-710"><a href="#cb53-710" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-711"><a href="#cb53-711" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-712"><a href="#cb53-712" aria-hidden="true" tabindex="-1"></a>Look for headers like:</span>
+<span id="cb53-713"><a href="#cb53-713" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-714"><a href="#cb53-714" aria-hidden="true" tabindex="-1"></a><span class="in">X-RateLimit-Limit: 5000</span></span>
+<span id="cb53-715"><a href="#cb53-715" aria-hidden="true" tabindex="-1"></a><span class="in">X-RateLimit-Remaining: 4999</span></span>
+<span id="cb53-716"><a href="#cb53-716" aria-hidden="true" tabindex="-1"></a><span class="in">X-RateLimit-Reset: 1640995200</span></span>
+<span id="cb53-717"><a href="#cb53-717" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-718"><a href="#cb53-718" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-719"><a href="#cb53-719" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-720"><a href="#cb53-720" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-721"><a href="#cb53-721" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rate Limit Exceeded</span></span>
+<span id="cb53-722"><a href="#cb53-722" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-725"><a href="#cb53-725" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-726"><a href="#cb53-726" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/status/429</span></span>
+<span id="cb53-727"><a href="#cb53-727" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-728"><a href="#cb53-728" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-729"><a href="#cb53-729" aria-hidden="true" tabindex="-1"></a>Response includes <span class="in">`Retry-After`</span> header indicating when to retry.</span>
+<span id="cb53-730"><a href="#cb53-730" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-731"><a href="#cb53-731" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-732"><a href="#cb53-732" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-733"><a href="#cb53-733" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-734"><a href="#cb53-734" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-735"><a href="#cb53-735" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-736"><a href="#cb53-736" aria-hidden="true" tabindex="-1"></a><span class="fu">## Timeouts</span></span>
+<span id="cb53-737"><a href="#cb53-737" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-738"><a href="#cb53-738" aria-hidden="true" tabindex="-1"></a><span class="fu">### Request Timeout</span></span>
+<span id="cb53-739"><a href="#cb53-739" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-742"><a href="#cb53-742" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-743"><a href="#cb53-743" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/delay/2</span></span>
+<span id="cb53-744"><a href="#cb53-744" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-745"><a href="#cb53-745" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-746"><a href="#cb53-746" aria-hidden="true" tabindex="-1"></a>This delays response by 2 seconds.</span>
+<span id="cb53-747"><a href="#cb53-747" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-748"><a href="#cb53-748" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-749"><a href="#cb53-749" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-750"><a href="#cb53-750" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-751"><a href="#cb53-751" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-752"><a href="#cb53-752" aria-hidden="true" tabindex="-1"></a><span class="fu">## Security Headers</span></span>
+<span id="cb53-753"><a href="#cb53-753" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-754"><a href="#cb53-754" aria-hidden="true" tabindex="-1"></a><span class="fu">### Common Security Headers</span></span>
+<span id="cb53-755"><a href="#cb53-755" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-758"><a href="#cb53-758" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-759"><a href="#cb53-759" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/response-headers?Strict-Transport-Security=max-age=31536000&amp;X-Content-Type-Options=nosniff&amp;X-Frame-Options=DENY</span></span>
+<span id="cb53-760"><a href="#cb53-760" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-761"><a href="#cb53-761" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-762"><a href="#cb53-762" aria-hidden="true" tabindex="-1"></a>Important security headers:</span>
+<span id="cb53-763"><a href="#cb53-763" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Strict-Transport-Security`</span>: Force HTTPS</span>
+<span id="cb53-764"><a href="#cb53-764" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`X-Content-Type-Options: nosniff`</span>: Prevent MIME sniffing</span>
+<span id="cb53-765"><a href="#cb53-765" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`X-Frame-Options: DENY`</span>: Prevent clickjacking</span>
+<span id="cb53-766"><a href="#cb53-766" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Content-Security-Policy`</span>: Control resource loading</span>
+<span id="cb53-767"><a href="#cb53-767" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`X-XSS-Protection`</span>: Enable XSS filter (legacy)</span>
+<span id="cb53-768"><a href="#cb53-768" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-769"><a href="#cb53-769" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-770"><a href="#cb53-770" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-771"><a href="#cb53-771" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-772"><a href="#cb53-772" aria-hidden="true" tabindex="-1"></a><span class="fu">## Webhooks and Server Push</span></span>
+<span id="cb53-773"><a href="#cb53-773" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-774"><a href="#cb53-774" aria-hidden="true" tabindex="-1"></a>Webhooks allow servers to push data to clients.</span>
+<span id="cb53-775"><a href="#cb53-775" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-776"><a href="#cb53-776" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-777"><a href="#cb53-777" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-778"><a href="#cb53-778" aria-hidden="true" tabindex="-1"></a><span class="fu">### Webhook Request Example</span></span>
+<span id="cb53-779"><a href="#cb53-779" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-782"><a href="#cb53-782" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-783"><a href="#cb53-783" aria-hidden="true" tabindex="-1"></a>POST https<span class="op">:</span><span class="co">//httpbin.io/post</span></span>
+<span id="cb53-784"><a href="#cb53-784" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Type<span class="op">:</span> application<span class="op">/</span>json</span>
+<span id="cb53-785"><a href="#cb53-785" aria-hidden="true" tabindex="-1"></a>X<span class="op">-</span>Webhook<span class="op">-</span>Signature<span class="op">:</span> sha256<span class="op">=</span>abc123def456</span>
+<span id="cb53-786"><a href="#cb53-786" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-787"><a href="#cb53-787" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb53-788"><a href="#cb53-788" aria-hidden="true" tabindex="-1"></a>  <span class="st">"event"</span><span class="op">:</span> <span class="st">"user.created"</span><span class="op">,</span></span>
+<span id="cb53-789"><a href="#cb53-789" aria-hidden="true" tabindex="-1"></a>  <span class="st">"timestamp"</span><span class="op">:</span> <span class="st">"2024-01-15T10:30:00Z"</span><span class="op">,</span></span>
+<span id="cb53-790"><a href="#cb53-790" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data"</span><span class="op">:</span> <span class="op">{</span></span>
+<span id="cb53-791"><a href="#cb53-791" aria-hidden="true" tabindex="-1"></a>    <span class="st">"user_id"</span><span class="op">:</span> <span class="dv">123</span><span class="op">,</span></span>
+<span id="cb53-792"><a href="#cb53-792" aria-hidden="true" tabindex="-1"></a>    <span class="st">"email"</span><span class="op">:</span> <span class="st">"newuser@example.com"</span></span>
+<span id="cb53-793"><a href="#cb53-793" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb53-794"><a href="#cb53-794" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb53-795"><a href="#cb53-795" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-796"><a href="#cb53-796" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-797"><a href="#cb53-797" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-798"><a href="#cb53-798" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-799"><a href="#cb53-799" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-800"><a href="#cb53-800" aria-hidden="true" tabindex="-1"></a><span class="fu">### Long Polling</span></span>
+<span id="cb53-801"><a href="#cb53-801" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-802"><a href="#cb53-802" aria-hidden="true" tabindex="-1"></a>Client repeatedly requests updates until new data is available.</span>
+<span id="cb53-803"><a href="#cb53-803" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-806"><a href="#cb53-806" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-807"><a href="#cb53-807" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/delay/5</span></span>
+<span id="cb53-808"><a href="#cb53-808" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-809"><a href="#cb53-809" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-810"><a href="#cb53-810" aria-hidden="true" tabindex="-1"></a>Server holds connection open until data is available or timeout.</span>
+<span id="cb53-811"><a href="#cb53-811" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-812"><a href="#cb53-812" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-813"><a href="#cb53-813" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-814"><a href="#cb53-814" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-815"><a href="#cb53-815" aria-hidden="true" tabindex="-1"></a><span class="fu">### Server-Sent Events</span></span>
+<span id="cb53-816"><a href="#cb53-816" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-817"><a href="#cb53-817" aria-hidden="true" tabindex="-1"></a>One-way streaming from server to client.</span>
+<span id="cb53-818"><a href="#cb53-818" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-821"><a href="#cb53-821" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-822"><a href="#cb53-822" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/stream/5</span></span>
+<span id="cb53-823"><a href="#cb53-823" aria-hidden="true" tabindex="-1"></a>Accept<span class="op">:</span> text<span class="op">/</span>event<span class="op">-</span>stream</span>
+<span id="cb53-824"><a href="#cb53-824" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-825"><a href="#cb53-825" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-826"><a href="#cb53-826" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-827"><a href="#cb53-827" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-828"><a href="#cb53-828" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-829"><a href="#cb53-829" aria-hidden="true" tabindex="-1"></a><span class="fu">## HTTP Request Lifecycle</span></span>
+<span id="cb53-830"><a href="#cb53-830" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-831"><a href="#cb53-831" aria-hidden="true" tabindex="-1"></a>Complete lifecycle of an HTTP request:</span>
+<span id="cb53-832"><a href="#cb53-832" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-833"><a href="#cb53-833" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**DNS Resolution**: Resolve hostname to IP</span>
+<span id="cb53-834"><a href="#cb53-834" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**TCP Connection**: Three-way handshake</span>
+<span id="cb53-835"><a href="#cb53-835" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**TLS Handshake**: (HTTPS only) Establish encryption</span>
+<span id="cb53-836"><a href="#cb53-836" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**HTTP Request**: Send request</span>
+<span id="cb53-837"><a href="#cb53-837" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**HTTP Response**: Receive response</span>
+<span id="cb53-838"><a href="#cb53-838" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>**Connection Close/Keep-Alive**: Close or reuse connection</span>
+<span id="cb53-839"><a href="#cb53-839" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-840"><a href="#cb53-840" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-841"><a href="#cb53-841" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-842"><a href="#cb53-842" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-843"><a href="#cb53-843" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-844"><a href="#cb53-844" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-845"><a href="#cb53-845" aria-hidden="true" tabindex="-1"></a><span class="fu">## HTTP Debugging</span></span>
+<span id="cb53-846"><a href="#cb53-846" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-847"><a href="#cb53-847" aria-hidden="true" tabindex="-1"></a><span class="fu">### Echo Request Details</span></span>
+<span id="cb53-848"><a href="#cb53-848" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-851"><a href="#cb53-851" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-852"><a href="#cb53-852" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/anything</span></span>
+<span id="cb53-853"><a href="#cb53-853" aria-hidden="true" tabindex="-1"></a>X<span class="op">-</span>Custom<span class="op">-</span>Header<span class="op">:</span> debug<span class="op">-</span>mode</span>
+<span id="cb53-854"><a href="#cb53-854" aria-hidden="true" tabindex="-1"></a>User<span class="op">-</span>Agent<span class="op">:</span> Testing<span class="op">-</span>Client<span class="op">/</span><span class="fl">1.0</span></span>
+<span id="cb53-855"><a href="#cb53-855" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-856"><a href="#cb53-856" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-857"><a href="#cb53-857" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-858"><a href="#cb53-858" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-859"><a href="#cb53-859" aria-hidden="true" tabindex="-1"></a><span class="fu">### Test HTTP Methods</span></span>
+<span id="cb53-860"><a href="#cb53-860" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-863"><a href="#cb53-863" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-864"><a href="#cb53-864" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/anything</span></span>
+<span id="cb53-865"><a href="#cb53-865" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-866"><a href="#cb53-866" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-867"><a href="#cb53-867" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-868"><a href="#cb53-868" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-869"><a href="#cb53-869" aria-hidden="true" tabindex="-1"></a><span class="fu">## Simulate Delays</span></span>
+<span id="cb53-870"><a href="#cb53-870" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-873"><a href="#cb53-873" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-874"><a href="#cb53-874" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/delay/3</span></span>
+<span id="cb53-875"><a href="#cb53-875" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-876"><a href="#cb53-876" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-877"><a href="#cb53-877" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-878"><a href="#cb53-878" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-879"><a href="#cb53-879" aria-hidden="true" tabindex="-1"></a><span class="fu">### Test Response Codes</span></span>
+<span id="cb53-880"><a href="#cb53-880" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-883"><a href="#cb53-883" aria-hidden="true" tabindex="-1"></a><span class="in">```{hurl}</span></span>
+<span id="cb53-884"><a href="#cb53-884" aria-hidden="true" tabindex="-1"></a>GET https<span class="op">:</span><span class="co">//httpbin.io/status/418</span></span>
+<span id="cb53-885"><a href="#cb53-885" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb53-886"><a href="#cb53-886" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-887"><a href="#cb53-887" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-888"><a href="#cb53-888" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-889"><a href="#cb53-889" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-890"><a href="#cb53-890" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-891"><a href="#cb53-891" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-892"><a href="#cb53-892" aria-hidden="true" tabindex="-1"></a><span class="fu">## Performance</span></span>
+<span id="cb53-893"><a href="#cb53-893" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-894"><a href="#cb53-894" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Enable compression (gzip/brotli)</span>
+<span id="cb53-895"><a href="#cb53-895" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Use caching appropriately</span>
+<span id="cb53-896"><a href="#cb53-896" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Implement HTTP/2 or HTTP/3</span>
+<span id="cb53-897"><a href="#cb53-897" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Use connection keep-alive</span>
+<span id="cb53-898"><a href="#cb53-898" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Minimize header size</span>
+<span id="cb53-899"><a href="#cb53-899" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Use range requests for large files</span>
+<span id="cb53-900"><a href="#cb53-900" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-901"><a href="#cb53-901" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-902"><a href="#cb53-902" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-903"><a href="#cb53-903" aria-hidden="true" tabindex="-1"></a><span class="fu">### Security</span></span>
+<span id="cb53-904"><a href="#cb53-904" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-905"><a href="#cb53-905" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Always use HTTPS</span>
+<span id="cb53-906"><a href="#cb53-906" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Implement CORS correctly</span>
+<span id="cb53-907"><a href="#cb53-907" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Add security headers</span>
+<span id="cb53-908"><a href="#cb53-908" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Validate inputs</span>
+<span id="cb53-909"><a href="#cb53-909" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Rate limit requests</span>
+<span id="cb53-910"><a href="#cb53-910" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Use proper authentication</span>
+<span id="cb53-911"><a href="#cb53-911" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-912"><a href="#cb53-912" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-913"><a href="#cb53-913" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-914"><a href="#cb53-914" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reliability</span></span>
+<span id="cb53-915"><a href="#cb53-915" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-916"><a href="#cb53-916" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Handle redirects</span>
+<span id="cb53-917"><a href="#cb53-917" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Implement retries with backoff</span>
+<span id="cb53-918"><a href="#cb53-918" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Set appropriate timeouts</span>
+<span id="cb53-919"><a href="#cb53-919" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Handle rate limits gracefully</span>
+<span id="cb53-920"><a href="#cb53-920" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Validate responses</span>
+<span id="cb53-921"><a href="#cb53-921" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Log errors properly</span>
+<span id="cb53-922"><a href="#cb53-922" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-923"><a href="#cb53-923" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-924"><a href="#cb53-924" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-925"><a href="#cb53-925" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-926"><a href="#cb53-926" aria-hidden="true" tabindex="-1"></a><span class="fu">## Practice Exercises</span></span>
+<span id="cb53-927"><a href="#cb53-927" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-928"><a href="#cb53-928" aria-hidden="true" tabindex="-1"></a>Try these on your own:</span>
+<span id="cb53-929"><a href="#cb53-929" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-930"><a href="#cb53-930" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Send a CORS preflight request and examine the response</span>
+<span id="cb53-931"><a href="#cb53-931" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Make a conditional request using ETag</span>
+<span id="cb53-932"><a href="#cb53-932" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Request compressed content and verify the encoding</span>
+<span id="cb53-933"><a href="#cb53-933" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Test range requests with different byte ranges</span>
+<span id="cb53-934"><a href="#cb53-934" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Follow a redirect chain and observe each step</span>
+<span id="cb53-935"><a href="#cb53-935" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Simulate rate limiting and check Retry-After header</span>
+<span id="cb53-936"><a href="#cb53-936" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-937"><a href="#cb53-937" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-938"><a href="#cb53-938" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-939"><a href="#cb53-939" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-940"><a href="#cb53-940" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**CORS**: Controls cross-origin requests, requires proper headers</span>
+<span id="cb53-941"><a href="#cb53-941" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Caching**: Improves performance with Cache-Control, ETag, and conditional requests</span>
+<span id="cb53-942"><a href="#cb53-942" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Compression**: Reduces bandwidth with gzip, deflate, or brotli</span>
+<span id="cb53-943"><a href="#cb53-943" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Range Requests**: Enable partial content and resume capabilities</span>
+<span id="cb53-944"><a href="#cb53-944" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**HTTP/2**: Provides multiplexing, header compression, and server push</span>
+<span id="cb53-945"><a href="#cb53-945" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Security**: Use HTTPS, CORS, security headers, and rate limiting</span>
+<span id="cb53-946"><a href="#cb53-946" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Modern APIs**: Implement webhooks, SSE, and proper error handling</span>
+<span id="cb53-947"><a href="#cb53-947" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-948"><a href="#cb53-948" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-949"><a href="#cb53-949" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-950"><a href="#cb53-950" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-951"><a href="#cb53-951" aria-hidden="true" tabindex="-1"></a>You've now completed the HTTP Fundamentals training! You've learned:</span>
+<span id="cb53-952"><a href="#cb53-952" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-953"><a href="#cb53-953" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**HTTP Basics**: Protocol fundamentals and request/response cycle</span>
+<span id="cb53-954"><a href="#cb53-954" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**HTTP Methods**: GET, POST, PUT, PATCH, DELETE, and their semantics</span>
+<span id="cb53-955"><a href="#cb53-955" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**HTTP Headers**: Controlling behavior with request and response headers</span>
+<span id="cb53-956"><a href="#cb53-956" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Status Codes**: Understanding and using 1xx through 5xx responses</span>
+<span id="cb53-957"><a href="#cb53-957" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Bodies**: Working with JSON, form data, and other content types</span>
+<span id="cb53-958"><a href="#cb53-958" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>**Authentication**: Securing APIs with Basic, Bearer, and other methods</span>
+<span id="cb53-959"><a href="#cb53-959" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>**Advanced Topics**: CORS, caching, compression, and modern HTTP features</span>
+<span id="cb53-960"><a href="#cb53-960" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-961"><a href="#cb53-961" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-962"><a href="#cb53-962" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-963"><a href="#cb53-963" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-964"><a href="#cb53-964" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**REST API Design**: Design principles and best practices</span>
+<span id="cb53-965"><a href="#cb53-965" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**GraphQL**: Alternative to REST for flexible queries</span>
+<span id="cb53-966"><a href="#cb53-966" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**WebSockets**: Full-duplex communication</span>
+<span id="cb53-967"><a href="#cb53-967" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**gRPC**: High-performance RPC framework</span>
+<span id="cb53-968"><a href="#cb53-968" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**API Documentation**: OpenAPI/Swagger specifications</span>
+<span id="cb53-969"><a href="#cb53-969" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Load Testing**: Performance testing with tools like k6 or Locust</span>
+<span id="cb53-970"><a href="#cb53-970" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**API Gateways**: Kong, Nginx, AWS API Gateway</span>
+<span id="cb53-971"><a href="#cb53-971" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-972"><a href="#cb53-972" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-973"><a href="#cb53-973" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-974"><a href="#cb53-974" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-975"><a href="#cb53-975" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">MDN HTTP Documentation</span><span class="co">](https://developer.mozilla.org/en-US/docs/Web/HTTP)</span></span>
+<span id="cb53-976"><a href="#cb53-976" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">RFC 7230-7237</span><span class="co">](https://tools.ietf.org/html/rfc7230)</span>: HTTP/1.1 Specification</span>
+<span id="cb53-977"><a href="#cb53-977" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">RFC 7540</span><span class="co">](https://tools.ietf.org/html/rfc7540)</span>: HTTP/2 Specification</span>
+<span id="cb53-978"><a href="#cb53-978" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">httpbin.io</span><span class="co">](https://httpbin.io)</span>: HTTP testing service</span>
+<span id="cb53-979"><a href="#cb53-979" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Hurl Documentation</span><span class="co">](https://hurl.dev)</span>: Hurl testing tool</span>
+<span id="cb53-980"><a href="#cb53-980" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-981"><a href="#cb53-981" aria-hidden="true" tabindex="-1"></a>Thank you for completing this HTTP Fundamentals training! You now have a solid foundation for working with HTTP in your development projects.</span>
+<span id="cb53-982"><a href="#cb53-982" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-983"><a href="#cb53-983" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb53-984"><a href="#cb53-984" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-985"><a href="#cb53-985" aria-hidden="true" tabindex="-1"></a><span class="fu">## RFC References</span></span>
+<span id="cb53-986"><a href="#cb53-986" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-987"><a href="#cb53-987" aria-hidden="true" tabindex="-1"></a>This chapter covers concepts from the following RFCs:</span>
+<span id="cb53-988"><a href="#cb53-988" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-989"><a href="#cb53-989" aria-hidden="true" tabindex="-1"></a>::: {.callout-note icon=false}</span>
+<span id="cb53-990"><a href="#cb53-990" aria-hidden="true" tabindex="-1"></a><span class="fu">### HTTP Semantics and Encoding</span></span>
+<span id="cb53-991"><a href="#cb53-991" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-992"><a href="#cb53-992" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)** - HTTP Semantics</span>
+<span id="cb53-993"><a href="#cb53-993" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 8.4: <span class="co">[</span><span class="ot">Content Encoding</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-8.4)</span></span>
+<span id="cb53-994"><a href="#cb53-994" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 8.6: <span class="co">[</span><span class="ot">Content Negotiation</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#content.negotiation)</span></span>
+<span id="cb53-995"><a href="#cb53-995" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 14: <span class="co">[</span><span class="ot">Range Requests</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#section-14)</span></span>
+<span id="cb53-996"><a href="#cb53-996" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 14.1: <span class="co">[</span><span class="ot">Range</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#field.range)</span></span>
+<span id="cb53-997"><a href="#cb53-997" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 14.2: <span class="co">[</span><span class="ot">Accept-Ranges</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#field.accept-ranges)</span></span>
+<span id="cb53-998"><a href="#cb53-998" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 17.2: <span class="co">[</span><span class="ot">Redirection 3xx</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9110.html#redirection.3xx)</span></span>
+<span id="cb53-999"><a href="#cb53-999" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-1000"><a href="#cb53-1000" aria-hidden="true" tabindex="-1"></a><span class="fu">### HTTP Caching</span></span>
+<span id="cb53-1001"><a href="#cb53-1001" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-1002"><a href="#cb53-1002" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 9111](https://www.rfc-editor.org/rfc/rfc9111.html)** - HTTP Caching</span>
+<span id="cb53-1003"><a href="#cb53-1003" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 3: <span class="co">[</span><span class="ot">Storing Responses in Caches</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9111.html#section-3)</span></span>
+<span id="cb53-1004"><a href="#cb53-1004" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 4: <span class="co">[</span><span class="ot">Constructing Responses from Caches</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9111.html#section-4)</span></span>
+<span id="cb53-1005"><a href="#cb53-1005" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 5.2: <span class="co">[</span><span class="ot">Cache-Control</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9111.html#field.cache-control)</span></span>
+<span id="cb53-1006"><a href="#cb53-1006" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 8: <span class="co">[</span><span class="ot">Invalidation</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9111.html#invalidation)</span></span>
+<span id="cb53-1007"><a href="#cb53-1007" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-1008"><a href="#cb53-1008" aria-hidden="true" tabindex="-1"></a><span class="fu">### HTTP/2 and HTTP/3</span></span>
+<span id="cb53-1009"><a href="#cb53-1009" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-1010"><a href="#cb53-1010" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 9113](https://www.rfc-editor.org/rfc/rfc9113.html)** - HTTP/2</span>
+<span id="cb53-1011"><a href="#cb53-1011" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 5: <span class="co">[</span><span class="ot">Streams and Multiplexing</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9113.html#StreamsLayer)</span></span>
+<span id="cb53-1012"><a href="#cb53-1012" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Section 8: <span class="co">[</span><span class="ot">HTTP Message Exchanges</span><span class="co">](https://www.rfc-editor.org/rfc/rfc9113.html#HttpSequence)</span></span>
+<span id="cb53-1013"><a href="#cb53-1013" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 9114](https://www.rfc-editor.org/rfc/rfc9114.html)** - HTTP/3</span>
+<span id="cb53-1014"><a href="#cb53-1014" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 9000](https://www.rfc-editor.org/rfc/rfc9000.html)** - QUIC: A UDP-Based Multiplexed and Secure Transport</span>
+<span id="cb53-1015"><a href="#cb53-1015" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-1016"><a href="#cb53-1016" aria-hidden="true" tabindex="-1"></a><span class="fu">### CORS and Additional Topics</span></span>
+<span id="cb53-1017"><a href="#cb53-1017" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-1018"><a href="#cb53-1018" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[Fetch Standard](https://fetch.spec.whatwg.org/#http-cors-protocol)** - CORS Protocol (WHATWG)</span>
+<span id="cb53-1019"><a href="#cb53-1019" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 9209](https://www.rfc-editor.org/rfc/rfc9209.html)** - The Proxy-Status HTTP Response Header Field</span>
+<span id="cb53-1020"><a href="#cb53-1020" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**[RFC 7694](https://www.rfc-editor.org/rfc/rfc7694.html)** - HTTP Client-Initiated Content Encoding</span>
+<span id="cb53-1021"><a href="#cb53-1021" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
