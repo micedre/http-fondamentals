@@ -32,3 +32,5 @@ assets/binaries/*.bin
 assets/images/*.jpeg
 assets/images/*.jpg
 assets/images/*.png
+
+/.quarto/

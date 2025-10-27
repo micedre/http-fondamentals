@@ -35,6 +35,9 @@ jobs:
       - name: Install Python dependencies
         run: uv sync
 
+      - name: Install Hurl kernel
+        run: uv run install-hurl-kernel
+
       - name: Configure Git
         run: |
           git config --global user.name "github-actions[bot]"
